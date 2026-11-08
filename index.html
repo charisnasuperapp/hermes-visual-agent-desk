@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hermes Pixel Office — Virtual Agent Floor</title>
-    <!-- Tailwind CSS for UI controls -->
+    <title>Star Office World × Hermes Cockpit</title>
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Pixel & Developer Fonts -->
+    <!-- Fonts: ArkPixel / Press Start 2P & JetBrains Mono -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=JetBrains+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -15,19 +15,18 @@
 
     <style>
         :root {
-            --pixel-bg: #110d1a;
-            --pixel-panel: #1b1429;
-            --pixel-panel-border: #3b2a59;
-            --pixel-gold: #f3c44c;
-            --pixel-amber: #e58e26;
-            --pixel-green: #2ecc71;
-            --pixel-blue: #3498db;
-            --pixel-cyan: #00d2d3;
-            --pixel-purple: #9b59b6;
-            --pixel-pink: #fd79a8;
-            --pixel-red: #e74c3c;
-            --pixel-text: #f5f6fa;
-            --pixel-text-dim: #8b80a6;
+            --star-bg: #0f111a;
+            --star-sidebar: #0b0d14;
+            --star-panel: #141722;
+            --star-panel-border: #232738;
+            --star-gold: #f3c44c;
+            --star-amber: #e58e26;
+            --star-green: #2ecc71;
+            --star-blue: #38bdf8;
+            --star-purple: #9b59b6;
+            --star-rose: #f43f5e;
+            --star-text: #f1f5f9;
+            --star-text-dim: #94a3b8;
         }
 
         * {
@@ -42,8 +41,8 @@
             width: 100%;
             height: 100%;
             overflow: hidden;
-            background-color: var(--pixel-bg);
-            color: var(--pixel-text);
+            background-color: var(--star-bg);
+            color: var(--star-text);
             font-family: 'JetBrains Mono', monospace;
         }
 
@@ -51,7 +50,7 @@
             font-family: 'Press Start 2P', monospace;
         }
 
-        /* Crisp 2D Pixel Canvas */
+        /* Star Office Canvas */
         #office-canvas {
             image-rendering: -moz-crisp-edges;
             image-rendering: -webkit-crisp-edges;
@@ -60,24 +59,23 @@
             display: block;
             cursor: grab;
         }
-
         #office-canvas:active {
             cursor: grabbing;
         }
 
-        /* Retro Pixel Borders & Buttons */
-        .pixel-box {
-            background: var(--pixel-panel);
-            border: 2px solid var(--pixel-panel-border);
-            box-shadow: inset -2px -2px 0px rgba(0,0,0,0.4), inset 2px 2px 0px rgba(255,255,255,0.1), 0 4px 16px rgba(0,0,0,0.6);
+        /* Star Office World Retro Beveled Box */
+        .star-box {
+            background: #141722;
+            border: 2px solid #282d40;
+            box-shadow: inset -2px -2px 0px rgba(0,0,0,0.5), inset 2px 2px 0px rgba(255,255,255,0.08), 0 6px 20px rgba(0,0,0,0.7);
         }
 
-        .pixel-btn {
-            background: #281d3d;
-            border: 2px solid #4a3473;
+        .star-btn {
+            background: #1e2233;
+            border: 2px solid #353b54;
             color: #dcd6f7;
-            box-shadow: inset -2px -2px 0px rgba(0,0,0,0.5), inset 2px 2px 0px rgba(255,255,255,0.15);
-            transition: all 0.1s ease;
+            box-shadow: inset -2px -2px 0px rgba(0,0,0,0.5), inset 2px 2px 0px rgba(255,255,255,0.12);
+            transition: all 0.12s ease;
             cursor: pointer;
             display: inline-flex;
             align-items: center;
@@ -85,80 +83,49 @@
             font-size: 11px;
             font-weight: 600;
         }
-
-        .pixel-btn:hover {
-            background: #392857;
-            border-color: var(--pixel-gold);
+        .star-btn:hover {
+            background: #2a3047;
+            border-color: var(--star-gold);
             color: #fff;
             transform: translateY(-1px);
         }
-
-        .pixel-btn:active {
+        .star-btn:active {
             transform: translateY(1px);
             box-shadow: inset 2px 2px 0px rgba(0,0,0,0.6);
         }
-
-        .pixel-btn.active {
-            background: #493372;
-            border-color: var(--pixel-gold);
-            color: var(--pixel-gold);
+        .star-btn.active {
+            background: #394263;
+            border-color: var(--star-gold);
+            color: var(--star-gold);
         }
 
-        .pixel-btn-gold {
-            background: #8e681b;
-            border-color: #f3c44c;
-            color: #fff;
-        }
-        .pixel-btn-gold:hover {
-            background: #b58522;
-        }
-
-        .pixel-btn-green {
-            background: #1e6b37;
-            border-color: #2ecc71;
-            color: #fff;
-        }
-        .pixel-btn-green:hover {
-            background: #278d49;
-        }
-
-        .pixel-btn-blue {
-            background: #1c527e;
-            border-color: #3498db;
-            color: #fff;
-        }
-        .pixel-btn-blue:hover {
-            background: #246ba4;
-        }
-
-        /* Custom Scrollbar for Drawer */
+        /* Custom Scrollbar */
         ::-webkit-scrollbar {
-            width: 6px;
-            height: 6px;
+            width: 5px;
+            height: 5px;
         }
         ::-webkit-scrollbar-track {
-            background: #161022;
+            background: #0d0f17;
         }
         ::-webkit-scrollbar-thumb {
-            background: #423063;
+            background: #2d3348;
             border-radius: 3px;
         }
         ::-webkit-scrollbar-thumb:hover {
-            background: #5d448c;
+            background: #475173;
         }
 
-        /* CRT Scanline effect (subtle) */
+        /* CRT Scanline */
         .crt-scanlines {
             position: absolute;
             inset: 0;
             pointer-events: none;
-            background: linear-gradient(rgba(18, 16, 26, 0) 50%, rgba(0, 0, 0, 0.25) 50%);
+            background: linear-gradient(rgba(18, 16, 26, 0) 50%, rgba(0, 0, 0, 0.22) 50%);
             background-size: 100% 4px;
-            z-index: 20;
-            opacity: 0.35;
+            z-index: 15;
+            opacity: 0.25;
         }
 
-        /* Pulsing animations */
         @keyframes pixelBlink {
             0%, 49% { opacity: 1; }
             50%, 100% { opacity: 0; }
@@ -167,582 +134,482 @@
             animation: pixelBlink 1s infinite;
         }
 
-        @keyframes steamFloat {
-            0% { transform: translateY(0px) scale(0.8); opacity: 0.8; }
-            50% { transform: translateY(-8px) scale(1.1); opacity: 0.5; }
-            100% { transform: translateY(-16px) scale(1.3); opacity: 0; }
+        /* Corner pet bobbing */
+        @keyframes petBob {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-3px); }
+        }
+        .pet-bob {
+            animation: petBob 1.6s ease-in-out infinite;
         }
     </style>
 </head>
-<body class="w-screen h-screen relative select-none">
+<body class="w-screen h-screen flex flex-col relative select-none">
 
     <!-- CRT Scanline Overlay -->
     <div class="crt-scanlines"></div>
 
-    <!-- MAIN CANVAS VIEWPORT -->
-    <canvas id="office-canvas" class="w-full h-full absolute inset-0 z-0"></canvas>
-
-    <!-- TOP HEADER / RETRO NAVIGATION DOCK -->
-    <header class="absolute top-0 left-0 right-0 z-30 px-3 py-2 flex items-center justify-between pointer-events-auto bg-[#130f1df2] border-b-2 border-[#33244d] shadow-lg backdrop-blur-sm">
-        <!-- Brand & Connection Status -->
+    <!-- TOP BAR (HERMES HEADER & LAYOUT TOGGLES) -->
+    <header class="h-10 px-3 bg-[#0d0f17] border-b border-[#232738] flex items-center justify-between z-30 shrink-0">
+        <!-- Left: Logo & Active Session Tabs -->
         <div class="flex items-center space-x-3">
-            <div class="flex items-center space-x-2">
-                <span class="text-amber-400 text-lg font-bold">☤</span>
-                <span class="font-pixel text-[11px] text-amber-300 tracking-wider">HERMES PIXEL OFFICE</span>
+            <button id="btn-toggle-sidebar" class="star-btn w-7 h-7 text-xs text-slate-300" title="Toggle Sidebar (Ctrl+B)">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+            <div class="flex items-center space-x-1.5">
+                <span class="text-amber-400 text-sm font-bold">☤</span>
+                <span class="font-pixel text-[10px] text-amber-300 tracking-wider hidden sm:inline">STAR OFFICE</span>
             </div>
-            <div id="bridge-badge" class="flex items-center space-x-1.5 px-2 py-0.5 rounded bg-emerald-950/80 border border-emerald-600/50 text-[10px] text-emerald-300 font-mono">
-                <span class="w-2 h-2 rounded-full bg-emerald-400 pixel-blink"></span>
-                <span id="bridge-text">DUAL-STACK ONLINE</span>
+
+            <!-- Tab Pills (Matching Hermes Desktop App) -->
+            <div class="flex items-center space-x-1 overflow-x-auto max-w-lg" id="session-tabs">
+                <div class="star-btn active px-3 py-1 text-[11px] flex items-center space-x-1.5 border-b-2 border-amber-400">
+                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 pixel-blink"></span>
+                    <span id="header-active-session" class="truncate max-w-[170px]">Buat ONAL Universal Memory</span>
+                </div>
             </div>
         </div>
 
-        <!-- Hermes Worksheets Tabs (Topic Switcher) -->
-        <div class="flex items-center space-x-1 overflow-x-auto max-w-[48%] py-0.5 px-2 bg-[#1b1429] rounded border border-[#3b2a59]" id="worksheets-dock">
-            <!-- Rendered dynamically -->
-            <button class="pixel-btn active px-2.5 py-1 text-[11px]">
-                <span class="text-amber-400 font-bold mr-1">[A]</span> Intelligence Memory
-            </button>
-            <button class="pixel-btn px-2.5 py-1 text-[11px]">
-                <span class="text-amber-400 font-bold mr-1">[B]</span> AI Office Bridge
-            </button>
-            <button class="pixel-btn px-2.5 py-1 text-[11px]">
-                <span class="text-amber-400 font-bold mr-1">[C]</span> Pixel Campus
-            </button>
-            <button id="btn-new-ws" class="pixel-btn px-2 py-1 text-[10px] text-amber-300" title="Buat Lembar Kerja Baru">
-                <i class="fa-solid fa-plus"></i>
-            </button>
-        </div>
+        <!-- Right: Layout Switcher & Toggles -->
+        <div class="flex items-center space-x-2">
+            <!-- Layout Switcher (Split / Office / Hermes) -->
+            <div class="flex items-center bg-[#151926] p-0.5 rounded border border-[#2b3147]">
+                <button id="layout-split" class="star-btn active px-2.5 py-1 text-[10px]" title="Split Screen: Star Office + Hermes Console">
+                    <i class="fa-solid fa-table-columns mr-1 text-amber-400"></i> Split
+                </button>
+                <button id="layout-office" class="star-btn px-2.5 py-1 text-[10px]" title="Full Screen Star Office World">
+                    <i class="fa-solid fa-gamepad mr-1 text-purple-400"></i> Kantor
+                </button>
+                <button id="layout-hermes" class="star-btn px-2.5 py-1 text-[10px]" title="Full Screen Hermes Workspace Console">
+                    <i class="fa-solid fa-terminal mr-1 text-emerald-400"></i> Hermes
+                </button>
+            </div>
 
-        <!-- Macro Controls & Actions -->
-        <div class="flex items-center space-x-1.5">
-            <!-- Macro Action Buttons -->
-            <button id="macro-meeting" class="pixel-btn px-2.5 py-1 text-[10px] text-amber-200" title="Panggil semua agen berkumpul rapat di Conference Room">
-                <i class="fa-solid fa-users mr-1 text-amber-400"></i> Rapat
-            </button>
-            <button id="macro-break" class="pixel-btn px-2.5 py-1 text-[10px] text-emerald-200" title="Suruh semua agen rehat ke Coffee Lounge & Taman Sakura">
-                <i class="fa-solid fa-mug-hot mr-1 text-emerald-400"></i> Rehat
-            </button>
-            <button id="macro-sprint" class="pixel-btn px-2.5 py-1 text-[10px] text-sky-200" title="Semua agen kembali ke meja kerja sprint coding">
-                <i class="fa-solid fa-bolt mr-1 text-sky-400"></i> Sprint
-            </button>
-            <button id="macro-roam" class="pixel-btn px-2.5 py-1 text-[10px] text-purple-200" title="Bebas santai berkeliling kantor & taman">
-                <i class="fa-solid fa-person-walking mr-1 text-purple-400"></i> Bebas
+            <!-- Atmosphere Lighting Toggle -->
+            <button id="btn-theme" class="star-btn px-2.5 py-1 text-[10px] text-amber-300" title="Ganti Suasana (Malam / Senja / Siang)">
+                <i class="fa-solid fa-moon text-indigo-400" id="theme-icon"></i> <span id="theme-text" class="hidden md:inline ml-1 text-[9px]">Malam</span>
             </button>
 
-            <div class="h-4 w-[1px] bg-[#3b2a59] mx-1"></div>
-
-            <!-- 8-Bit Audio Toggle -->
-            <button id="btn-sound" class="pixel-btn px-2 py-1 text-[10px]" title="Toggle 8-bit Sound Effects">
+            <!-- 8-Bit Audio -->
+            <button id="btn-sound" class="star-btn w-7 h-7 text-xs" title="Toggle 8-bit Audio">
                 <i class="fa-solid fa-volume-high text-amber-400" id="sound-icon"></i>
-            </button>
-
-            <!-- Atmosphere / Lighting Mode Toggle -->
-            <button id="btn-theme" class="pixel-btn px-2 py-1 text-[10px] text-amber-300" title="Ganti Suasana (Cyberpunk / Senja / Siang)">
-                <i class="fa-solid fa-moon text-indigo-400" id="theme-icon"></i> <span id="theme-text" class="hidden sm:inline ml-1 text-[9px]">Malam</span>
-            </button>
-
-            <!-- Worksheets Drawer Toggle -->
-            <button id="btn-toggle-drawer" class="pixel-btn px-2 py-1 text-[10px] text-amber-300" title="Buka Lembar Kerja & Log">
-                <i class="fa-solid fa-file-lines mr-1"></i> Catatan
             </button>
         </div>
     </header>
 
-    <!-- FLOATING ZOOM & CAMERA CONTROLS (BOTTOM-LEFT) -->
-    <div class="absolute bottom-3 left-3 z-30 flex items-center space-x-1 pixel-box p-1.5 rounded-lg bg-[#140f22f0]">
-        <button id="btn-zoom-in" class="pixel-btn w-7 h-7 text-xs" title="Zoom In (+)">
-            <i class="fa-solid fa-plus"></i>
-        </button>
-        <button id="btn-zoom-out" class="pixel-btn w-7 h-7 text-xs" title="Zoom Out (-)">
-            <i class="fa-solid fa-minus"></i>
-        </button>
-        <button id="btn-zoom-reset" class="pixel-btn px-2 h-7 text-[10px]" title="Reset View (200%)">
-            <i class="fa-solid fa-compress mr-1"></i> <span id="zoom-text">200%</span>
-        </button>
-        <button id="btn-focus-office" class="pixel-btn px-2 h-7 text-[10px] text-amber-300" title="Pusatkan Kamera ke Area Kerja">
-            <i class="fa-solid fa-crosshairs mr-1"></i> Kantor
-        </button>
-        <div class="h-4 w-[1px] bg-[#3b2a59] mx-0.5"></div>
-        <div class="text-[9px] text-slate-400 px-1 hidden md:block">
-            🖱️ Scroll: Zoom | Drag: Geser | Klik: Info Agen
-        </div>
-    </div>
+    <!-- MAIN BODY CONTAINER (SIDEBAR + CONTENT WORKSPACE) -->
+    <div class="flex-1 flex overflow-hidden relative">
 
-    <!-- LIVE TELEMETRY TICKER (BOTTOM-RIGHT) -->
-    <div class="absolute bottom-3 right-3 z-30 max-w-sm hidden sm:flex items-center space-x-2 pixel-box px-3 py-1.5 rounded-lg bg-[#140f22f0] border border-[#3b2a59] text-[10px]">
-        <span class="w-2 h-2 rounded-full bg-amber-400 pixel-blink"></span>
-        <span class="text-amber-400 font-bold">LOG:</span>
-        <span id="ticker-text" class="text-slate-300 truncate font-mono">Memuat stream telemetri agen...</span>
-    </div>
+        <!-- 1. LEFT HERMES SIDEBAR (Matching User's Desktop App) -->
+        <aside id="hermes-sidebar" class="w-64 bg-[#0b0d14] border-r border-[#1f2435] flex flex-col shrink-0 z-20 transition-all duration-200">
+            <!-- Sidebar Top Actions -->
+            <div class="p-3 border-b border-[#1c202f] space-y-2">
+                <button id="btn-new-session" class="w-full star-btn py-1.5 px-3 text-xs justify-between bg-[#191d2c] text-white hover:bg-[#252b40]">
+                    <span><i class="fa-solid fa-plus text-amber-400 mr-2"></i>New session</span>
+                    <span class="text-[9px] text-slate-400 font-mono">Ctrl N</span>
+                </button>
 
-    <!-- AGENT DOSSIER / INSPECTOR MODAL (CLICKED ON AGENT) -->
-    <div id="agent-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm hidden">
-        <div class="pixel-box w-full max-w-md p-5 rounded-xl bg-[#181126] border-2 border-[#543b82] relative text-[#e2dcf2] shadow-2xl">
-            <!-- Close Button -->
-            <button id="btn-close-modal" class="absolute top-3 right-3 pixel-btn w-7 h-7 text-xs text-rose-400 hover:text-white">
-                <i class="fa-solid fa-xmark"></i>
-            </button>
-
-            <!-- Header Info -->
-            <div class="flex items-start space-x-4">
-                <!-- 4x Animated Pixel Avatar Canvas -->
-                <div class="w-20 h-24 bg-[#0e0a16] border-2 border-[#4b3573] rounded flex items-center justify-center p-1 relative overflow-hidden">
-                    <canvas id="avatar-portrait-canvas" width="64" height="80" class="image-rendering-pixelated"></canvas>
-                    <span id="modal-agent-badge" class="absolute bottom-0 inset-x-0 bg-amber-500/90 text-black font-pixel text-[7px] text-center py-0.5">LVL 5</span>
+                <!-- Hermes Main Nav Items -->
+                <div class="space-y-0.5 text-xs text-slate-300">
+                    <div class="p-1.5 rounded hover:bg-[#151926] cursor-pointer flex items-center space-x-2 text-slate-300">
+                        <i class="fa-solid fa-bolt text-amber-400 w-4"></i>
+                        <span>Capabilities</span>
+                    </div>
+                    <div class="p-1.5 rounded hover:bg-[#151926] cursor-pointer flex items-center space-x-2 text-slate-300">
+                        <i class="fa-solid fa-comments text-sky-400 w-4"></i>
+                        <span>Messaging</span>
+                    </div>
+                    <div class="p-1.5 rounded hover:bg-[#151926] cursor-pointer flex items-center space-x-2 text-slate-300">
+                        <i class="fa-solid fa-box-archive text-purple-400 w-4"></i>
+                        <span>Artifacts</span>
+                    </div>
+                    <div class="p-1.5 rounded hover:bg-[#151926] cursor-pointer flex items-center space-x-2 text-slate-300">
+                        <i class="fa-solid fa-clock text-emerald-400 w-4"></i>
+                        <span>Scheduled jobs</span>
+                    </div>
                 </div>
 
-                <!-- Identity Details -->
-                <div class="flex-1">
-                    <div class="flex items-center justify-between">
-                        <h3 id="modal-agent-name" class="font-pixel text-[13px] text-amber-300">HERMES PRIME</h3>
-                    </div>
-                    <p id="modal-agent-role" class="text-xs text-purple-300 font-medium mt-0.5">Lead Architect & Orchestrator</p>
-                    <p id="modal-agent-model" class="text-[10px] text-slate-400 font-mono mt-0.5">Model: Hermes-3-70B</p>
+                <!-- Session Search -->
+                <div class="relative mt-2">
+                    <i class="fa-solid fa-magnifying-glass absolute left-2.5 top-2.5 text-[10px] text-slate-500"></i>
+                    <input type="text" id="session-search" placeholder="Search sessions..." class="w-full bg-[#131722] border border-[#232838] rounded px-2 pl-7 py-1 text-xs text-slate-200 placeholder-slate-500 focus:outline-none focus:border-amber-400 font-mono">
+                </div>
+            </div>
 
-                    <!-- RPG XP Bar -->
+            <!-- Sessions List (PINNED & RECENT from state.db) -->
+            <div class="flex-1 overflow-y-auto p-2 space-y-3 text-xs" id="sidebar-sessions-list">
+                <!-- PINNED -->
+                <div>
+                    <div class="text-[10px] font-bold text-slate-500 px-2 uppercase tracking-wider mb-1">
+                        <i class="fa-solid fa-thumbtack text-amber-400 mr-1 text-[9px]"></i> PINNED
+                    </div>
+                    <div id="pinned-sessions" class="space-y-0.5">
+                        <div class="p-2 rounded bg-[#161a29] border border-amber-500/30 text-amber-200 cursor-pointer flex items-center justify-between">
+                            <span class="truncate">Buat ONAL Universal Mem...</span>
+                            <span class="text-[9px] text-slate-500">19h</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- RECENT SESSIONS -->
+                <div>
+                    <div class="text-[10px] font-bold text-slate-500 px-2 uppercase tracking-wider mb-1">
+                        <i class="fa-solid fa-clock-rotate-left mr-1 text-[9px]"></i> SESSIONS
+                    </div>
+                    <div id="recent-sessions" class="space-y-0.5">
+                        <!-- Populated dynamically from /api/hermes/sessions -->
+                        <div class="p-2 rounded hover:bg-[#131722] text-slate-300 cursor-pointer flex items-center justify-between">
+                            <span class="truncate">CHARISNA SuperApp</span>
+                            <span class="text-[9px] text-slate-500">1d</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- 2. MAIN WORKSPACE AREA (STAR OFFICE WORLD + HERMES CONSOLE) -->
+        <main class="flex-1 flex flex-col overflow-hidden relative" id="workspace-main">
+
+            <!-- UPPER SECTION: STAR OFFICE WORLD PIXEL STAGE -->
+            <div id="star-office-stage" class="relative w-full h-[54%] border-b border-[#232738] bg-[#090b12] overflow-hidden shrink-0">
+                <!-- Canvas -->
+                <canvas id="office-canvas" class="w-full h-full absolute inset-0 z-0"></canvas>
+
+                <!-- Floating Canvas Controls (Bottom-Left) -->
+                <div class="absolute bottom-2 left-2 z-20 flex items-center space-x-1 star-box p-1 rounded bg-[#111420f0]">
+                    <button id="btn-zoom-in" class="star-btn w-6 h-6 text-[10px]" title="Zoom In (+)"><i class="fa-solid fa-plus"></i></button>
+                    <button id="btn-zoom-out" class="star-btn w-6 h-6 text-[10px]" title="Zoom Out (-)"><i class="fa-solid fa-minus"></i></button>
+                    <button id="btn-zoom-reset" class="star-btn px-2 h-6 text-[9px]"><span id="zoom-text">200%</span></button>
+                    <button id="btn-focus-office" class="star-btn px-2 h-6 text-[9px] text-amber-300"><i class="fa-solid fa-crosshairs mr-1"></i> Kantor</button>
+                </div>
+
+                <!-- Live Office Ticker (Top-Right of Stage) -->
+                <div class="absolute top-2 right-2 z-20 flex items-center space-x-2 star-box px-2.5 py-1 rounded bg-[#111420f0] text-[10px] text-slate-300 font-mono">
+                    <span class="w-2 h-2 rounded-full bg-emerald-400 pixel-blink"></span>
+                    <span id="stage-ticker">Hermes Prime coding write_file in orchestrator.py (+35 XP)</span>
+                </div>
+            </div>
+
+            <!-- LOWER SECTION: STAR OFFICE BOTTOM PANELS & HERMES WORKSPACE -->
+            <div id="lower-panels-container" class="flex-1 flex overflow-hidden bg-[#0d0f17]">
+
+                <!-- PANEL 1 (LEFT): HERMES CONVERSATION HISTORY & EXECUTION STREAM -->
+                <div class="flex-1 flex flex-col border-r border-[#1f2435] overflow-hidden" id="hermes-chat-pane">
+                    <!-- Session Subtitle Bar -->
+                    <div class="h-8 px-3 bg-[#111420] border-b border-[#1f2435] flex items-center justify-between text-xs text-slate-400 shrink-0">
+                        <div class="flex items-center space-x-2">
+                            <span class="text-amber-400 font-bold"><i class="fa-solid fa-terminal mr-1"></i></span>
+                            <span id="active-session-title" class="text-white font-medium truncate">Buat ONAL Universal Memory Bridge</span>
+                        </div>
+                        <span class="text-[10px] text-slate-500 font-mono" id="session-msg-count">27 Peristiwa Tercatat</span>
+                    </div>
+
+                    <!-- Chat & Event History Stream ("baca hal-hal yang sudah terjadi") -->
+                    <div class="flex-1 overflow-y-auto p-3 space-y-3 font-mono text-xs" id="chat-messages-stream">
+                        <!-- Populated dynamically from /api/hermes/messages -->
+                        <div class="flex items-start space-x-2.5">
+                            <div class="w-6 h-6 rounded bg-amber-500/20 border border-amber-500/40 text-amber-400 flex items-center justify-center font-pixel text-[8px] shrink-0">H</div>
+                            <div class="flex-1 space-y-1">
+                                <div class="text-[10px] text-slate-400 flex items-center space-x-2">
+                                    <span class="text-amber-300 font-bold">Hermes Prime</span>
+                                    <span>•</span>
+                                    <span>19:05:12</span>
+                                </div>
+                                <div class="p-2.5 rounded bg-[#141824] border border-[#262c3f] text-slate-200 leading-relaxed whitespace-pre-wrap">Halo! Seluruh arsitektur CHARISNA SuperApp & Star Office World telah tersambung secara dual-stack.</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- WHAT'S NEXT? INPUT CONSOLE (MATCHING USER SCREENSHOT) -->
+                    <div class="p-2.5 bg-[#0f111a] border-t border-[#1f2435] shrink-0">
+                        <div class="relative flex items-center bg-[#151926] border border-[#2b3147] rounded-xl p-1.5 focus-within:border-amber-400">
+                            <input type="text" id="whats-next-input" placeholder="What's next?" class="flex-1 bg-transparent px-3 py-1.5 text-xs text-white placeholder-slate-500 focus:outline-none font-mono">
+                            
+                            <div class="flex items-center space-x-2 pr-1">
+                                <span class="px-2 py-0.5 rounded bg-[#1e2335] text-[9px] text-slate-400 font-mono hidden sm:inline">TUI 128K</span>
+                                <span class="px-2 py-0.5 rounded bg-[#1e2335] text-[9px] text-amber-400 font-mono hidden sm:inline">High</span>
+                                <button id="btn-send-whats-next" class="w-7 h-7 rounded-lg bg-amber-500 hover:bg-amber-400 text-black flex items-center justify-center text-xs font-bold transition">
+                                    <i class="fa-solid fa-arrow-up"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PANEL 2 (MIDDLE): STAR OFFICE STATE CONTROLS (#control-bar) -->
+                <div class="w-48 bg-[#111420] border-r border-[#1f2435] flex flex-col p-2.5 shrink-0 hidden lg:flex">
+                    <div class="text-[10px] font-pixel text-amber-400 text-center tracking-wider mb-2">STATUS AKSI</div>
+                    <div class="flex-1 flex flex-col justify-between space-y-1.5">
+                        <button id="btn-state-idle" class="star-btn w-full py-2 px-2 text-[10px] text-emerald-300 justify-start" title="Agen Rehat di Sofa / Bangku Taman">
+                            <i class="fa-solid fa-couch mr-2 text-emerald-400"></i> 1. REHAT (IDLE)
+                        </button>
+                        <button id="btn-state-writing" class="star-btn active w-full py-2 px-2 text-[10px] text-amber-200 justify-start" title="Agen Bekerja di Workstation">
+                            <i class="fa-solid fa-laptop-code mr-2 text-amber-400"></i> 2. KERJA (CODE)
+                        </button>
+                        <button id="btn-state-syncing" class="star-btn w-full py-2 px-2 text-[10px] text-sky-300 justify-start" title="Sinkronisasi Memori FTS5">
+                            <i class="fa-solid fa-rotate mr-2 text-sky-400"></i> 3. SYNC MEMORI
+                        </button>
+                        <button id="btn-state-meeting" class="star-btn w-full py-2 px-2 text-[10px] text-purple-300 justify-start" title="Panggil Rapat All-Hands">
+                            <i class="fa-solid fa-users mr-2 text-purple-400"></i> 4. RAPAT ALL
+                        </button>
+                        <button id="btn-state-sprint" class="star-btn w-full py-2 px-2 text-[10px] text-rose-300 justify-start" title="Turbo Sprint Coding">
+                            <i class="fa-solid fa-bolt mr-2 text-rose-400"></i> 5. TURBO SPRINT
+                        </button>
+                    </div>
+
+                    <!-- Mochi Pet Quick Interaction -->
+                    <div class="mt-2 p-2 rounded bg-[#161a29] border border-amber-500/20 text-center">
+                        <div class="text-[9px] text-slate-400 mb-1">Maskot Kantor</div>
+                        <button id="btn-pet-mochi" class="star-btn w-full py-1 text-[10px] text-amber-200">
+                            🐱 Elus Mochi (+Morale)
+                        </button>
+                    </div>
+                </div>
+
+                <!-- PANEL 3 (RIGHT): SQUAD & AGENT ROSTER (#guest-agent-panel) -->
+                <div class="w-72 bg-[#0e101a] flex flex-col p-2.5 shrink-0 hidden md:flex">
+                    <div class="flex items-center justify-between text-[10px] font-pixel text-slate-400 tracking-wider mb-2">
+                        <span>TIM AGEN</span>
+                        <span class="text-emerald-400 font-mono" id="active-squad-count">5 ONLINE</span>
+                    </div>
+
+                    <div class="flex-1 overflow-y-auto space-y-1.5" id="squad-list">
+                        <!-- Populated dynamically -->
+                    </div>
+                </div>
+
+            </div>
+
+        </main>
+    </div>
+
+    <!-- BOTTOM STATUS BAR (MATCHING USER'S HERMES DESKTOP APP) -->
+    <footer class="h-6 px-3 bg-[#0a0c13] border-t border-[#1c202f] flex items-center justify-between text-[10px] font-mono text-slate-400 z-30 shrink-0">
+        <!-- Left: Status Indicators -->
+        <div class="flex items-center space-x-3">
+            <span class="flex items-center space-x-1 text-emerald-400">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+                <span>Backend ready</span>
+            </span>
+            <span>•</span>
+            <span class="text-slate-300">ZENNITH</span>
+            <span>•</span>
+            <span class="text-amber-400">Smart Agent</span>
+        </div>
+
+        <!-- Center: Quick Tip -->
+        <div class="hidden lg:block text-slate-500 text-[9px]">
+            Star Office World Engine • Ketik di "What's next?" untuk beri perintah langsung
+        </div>
+
+        <!-- Right: Version & Animated Corner Pet (from Hermes Screenshot) -->
+        <div class="flex items-center space-x-3 relative">
+            <span class="text-slate-400">v0.23.0</span>
+            <span id="footer-clock" class="text-slate-300">02:15</span>
+
+            <!-- Corner Pixel Pet (Corgi in box from screenshot) -->
+            <div id="corner-pet" class="relative cursor-pointer pet-bob" title="Pixel Pet: Mochi / Corgi">
+                <canvas id="corner-pet-canvas" width="28" height="24" class="image-rendering-pixelated"></canvas>
+            </div>
+        </div>
+    </footer>
+
+    <!-- AGENT DOSSIER / INSPECTOR MODAL -->
+    <div id="agent-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm hidden">
+        <div class="star-box w-full max-w-md p-5 rounded-xl bg-[#141724] border-2 border-[#3b4363] relative text-white shadow-2xl">
+            <button id="btn-close-modal" class="absolute top-3 right-3 star-btn w-7 h-7 text-xs text-rose-400"><i class="fa-solid fa-xmark"></i></button>
+            <div class="flex items-start space-x-4">
+                <div class="w-20 h-24 bg-[#0a0c13] border border-[#2d344d] rounded p-1 flex items-center justify-center">
+                    <canvas id="avatar-portrait-canvas" width="64" height="80"></canvas>
+                </div>
+                <div class="flex-1">
+                    <h3 id="modal-agent-name" class="font-pixel text-xs text-amber-300">HERMES PRIME</h3>
+                    <p id="modal-agent-role" class="text-xs text-purple-300 mt-0.5">Lead Architect</p>
                     <div class="mt-2.5">
-                        <div class="flex justify-between text-[9px] font-mono text-slate-300 mb-0.5">
-                            <span id="modal-level-text">Level 5 Architect</span>
+                        <div class="flex justify-between text-[9px] text-slate-400 mb-0.5">
+                            <span id="modal-level-text">Level 5</span>
                             <span id="modal-xp-text">840 / 1000 XP</span>
                         </div>
-                        <div class="w-full h-2.5 bg-[#0e0a16] border border-[#4b3573] rounded overflow-hidden p-0.5">
+                        <div class="w-full h-2 bg-[#090b12] rounded overflow-hidden p-0.5 border border-[#2d344d]">
                             <div id="modal-xp-bar" class="h-full bg-gradient-to-r from-amber-500 to-emerald-400 rounded-sm" style="width: 84%;"></div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Current Status Box -->
-            <div class="mt-4 p-2.5 rounded bg-[#0f0b18] border border-[#3b2a59] text-[11px] font-mono">
-                <div class="flex items-center space-x-2 text-slate-400 text-[10px] mb-1">
-                    <span id="modal-status-dot" class="w-2 h-2 rounded-full bg-emerald-400"></span>
-                    <span id="modal-status-label" class="uppercase text-emerald-400 font-bold">WORKING</span>
-                    <span>•</span>
-                    <span id="modal-location">Workstation 01 (Bay A)</span>
-                </div>
-                <p id="modal-detail-text" class="text-slate-200">Sedang menulis modul orkestrasi hybrid storage...</p>
+            <div class="mt-4 p-2.5 rounded bg-[#0a0c13] border border-[#22283a] text-xs font-mono">
+                <div class="text-[10px] text-emerald-400 font-bold uppercase mb-1" id="modal-status-label">WORKING • WORKSTATION 01</div>
+                <p id="modal-detail-text" class="text-slate-300">Mengerjakan tugas orkestrasi sistem.</p>
             </div>
 
-            <!-- Quick Action Micro-Commands -->
-            <div class="mt-4">
-                <div class="text-[10px] text-slate-400 font-bold uppercase tracking-wider mb-1.5">Kirim Tindakan Cepat (Micro-Command):</div>
-                <div class="grid grid-cols-2 gap-1.5">
-                    <button id="cmd-work" class="pixel-btn py-1.5 px-2 text-[10px] text-amber-200 justify-start">
-                        <i class="fa-solid fa-laptop-code mr-1.5 text-amber-400"></i> Ke Meja Kerja
-                    </button>
-                    <button id="cmd-bench" class="pixel-btn py-1.5 px-2 text-[10px] text-emerald-200 justify-start">
-                        <i class="fa-solid fa-tree mr-1.5 text-emerald-400"></i> Duduk di Taman
-                    </button>
-                    <button id="cmd-coffee" class="pixel-btn py-1.5 px-2 text-[10px] text-rose-200 justify-start">
-                        <i class="fa-solid fa-mug-saucer mr-1.5 text-rose-400"></i> Ambil Kopi
-                    </button>
-                    <button id="cmd-meeting" class="pixel-btn py-1.5 px-2 text-[10px] text-sky-200 justify-start">
-                        <i class="fa-solid fa-comments mr-1.5 text-sky-400"></i> Ruang Rapat
-                    </button>
-                </div>
-            </div>
-
-            <!-- Direct User Instruction Prompt -->
-            <div class="mt-3.5">
-                <div class="text-[10px] text-slate-400 font-bold uppercase tracking-wider mb-1">Beri Instruksi Khusus:</div>
-                <div class="flex items-center space-x-1.5">
-                    <input type="text" id="agent-instruction-input" placeholder="Tulis instruksi untuk agen ini..." class="flex-1 bg-[#0d0916] border border-[#4b3573] rounded px-2.5 py-1.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-amber-400 font-mono">
-                    <button id="btn-send-instruction" class="pixel-btn pixel-btn-gold px-3 py-1.5 text-xs">
-                        <i class="fa-solid fa-paper-plane mr-1"></i> Kirim
-                    </button>
-                </div>
+            <div class="mt-3 grid grid-cols-2 gap-1.5 text-xs">
+                <button id="cmd-work" class="star-btn py-1.5 text-[10px] text-amber-200 justify-start"><i class="fa-solid fa-laptop-code mr-1.5 text-amber-400"></i> Ke Meja Kerja</button>
+                <button id="cmd-bench" class="star-btn py-1.5 text-[10px] text-emerald-200 justify-start"><i class="fa-solid fa-tree mr-1.5 text-emerald-400"></i> Duduk di Taman</button>
+                <button id="cmd-coffee" class="star-btn py-1.5 text-[10px] text-rose-200 justify-start"><i class="fa-solid fa-mug-hot mr-1.5 text-rose-400"></i> Ambil Kopi</button>
+                <button id="cmd-meeting" class="star-btn py-1.5 text-[10px] text-sky-200 justify-start"><i class="fa-solid fa-comments mr-1.5 text-sky-400"></i> Ruang Rapat</button>
             </div>
         </div>
     </div>
 
-    <!-- ARCHITECTURE WHITEBOARD MODAL (CLICK ON BOARDROOM WHITEBOARD) -->
-    <div id="whiteboard-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/75 backdrop-blur-sm hidden">
-        <div class="pixel-box w-full max-w-2xl p-5 rounded-xl bg-[#181126] border-2 border-[#543b82] relative text-[#e2dcf2] shadow-2xl">
-            <button id="btn-close-whiteboard" class="absolute top-3 right-3 pixel-btn w-7 h-7 text-xs text-rose-400 hover:text-white">
-                <i class="fa-solid fa-xmark"></i>
-            </button>
-            <div class="flex items-center space-x-2 mb-3">
-                <i class="fa-solid fa-diagram-project text-amber-400"></i>
-                <h3 class="font-pixel text-[11px] text-amber-300">CHARISNA DECOUPLED ARCHITECTURE & MULTI-BUSINESS</h3>
-            </div>
-            <div class="p-4 bg-[#0d0916] rounded-lg border border-[#3b2a59] font-mono text-xs space-y-3">
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-2.5 text-center text-[11px]">
-                    <div class="p-3 rounded bg-[#162235] border border-blue-500/40">
-                        <div class="text-blue-400 font-bold mb-1">🛒 Bumi Makmur POS</div>
-                        <div class="text-[9px] text-slate-300">Authoritative Source of Truth: Transaksi, Stok Barang & Kasir Toko</div>
-                    </div>
-                    <div class="p-3 rounded bg-[#2a1736] border border-purple-500/40">
-                        <div class="text-purple-400 font-bold mb-1">🏠 CHARISNA Homestay</div>
-                        <div class="text-[9px] text-slate-300">Authoritative Source of Truth: Unit Kamar, Penyewa & Sewa Bulanan</div>
-                    </div>
-                    <div class="p-3 rounded bg-[#162d22] border border-emerald-500/40">
-                        <div class="text-emerald-400 font-bold mb-1">💰 Money Management</div>
-                        <div class="text-[9px] text-slate-300">Authoritative Source of Truth: Pembukuan & Rekening Pribadi/Keluarga</div>
-                    </div>
-                </div>
-                <div class="flex items-center justify-center space-x-2 text-amber-400 text-xs py-1 font-bold">
-                    <span>⬇</span> <span>Event Stream & Normalized Ledgers with Full Data Provenance</span> <span>⬇</span>
-                </div>
-                <div class="p-3 rounded-lg bg-[#271a3e] border-2 border-amber-400/60 text-center">
-                    <div class="text-amber-300 font-bold text-xs mb-1">🧠 CHARISNA Core Intelligence Hub & Holographic Memory</div>
-                    <div class="text-[10px] text-slate-300">SQLite FTS5 Incremental Indexing • Hybrid Storage (Lokal + Arsip Google Drive) • Audit Ledgers</div>
-                </div>
-            </div>
-            <div class="mt-3 flex justify-end">
-                <button id="btn-done-whiteboard" class="pixel-btn pixel-btn-gold px-4 py-1.5 text-xs">
-                    Tutup Papan Tulis
-                </button>
-            </div>
-        </div>
-    </div>
-    <div id="side-drawer" class="fixed top-0 bottom-0 right-0 w-full max-w-md z-40 bg-[#161024f8] border-l-2 border-[#412e63] shadow-2xl backdrop-blur-md transform translate-x-full transition-transform duration-200 ease-in-out flex flex-col">
-        <!-- Drawer Header -->
-        <div class="p-3 bg-[#110c1c] border-b border-[#362654] flex items-center justify-between">
-            <div class="flex items-center space-x-2">
-                <button id="tab-btn-ws" class="pixel-btn active px-3 py-1 text-xs">
-                    <i class="fa-solid fa-file-pen mr-1 text-amber-400"></i> Lembar Kerja
-                </button>
-                <button id="tab-btn-telemetry" class="pixel-btn px-3 py-1 text-xs">
-                    <i class="fa-solid fa-terminal mr-1 text-emerald-400"></i> Telemetri Log
-                </button>
-            </div>
-            <button id="btn-close-drawer" class="pixel-btn w-7 h-7 text-xs text-slate-400 hover:text-white">
-                <i class="fa-solid fa-xmark"></i>
-            </button>
-        </div>
-
-        <!-- Drawer Content 1: Active Worksheet Editor -->
-        <div id="drawer-tab-ws" class="flex-1 flex flex-col p-4 overflow-y-auto">
-            <div class="flex items-center justify-between mb-2">
-                <div>
-                    <span id="ws-code-badge" class="px-2 py-0.5 rounded bg-amber-500/20 text-amber-400 border border-amber-500/40 font-bold text-xs">TOPIK A</span>
-                    <h2 id="ws-title" class="text-sm font-bold text-white mt-1">CHARISNA Intelligence System & Holographic Memory</h2>
-                </div>
-            </div>
-
-            <div class="text-[11px] text-slate-400 mb-3 font-mono bg-[#0e0a17] p-2 rounded border border-[#2d1f45]">
-                <div class="text-amber-300 font-semibold mb-0.5">Tujuan & Target:</div>
-                <div id="ws-goal">Implementasi hybrid storage: aktif = lokal, arsip = Drive I:/My Drive/Charisna SuperApp. SQLite FTS5.</div>
-                <div class="mt-2 text-slate-300">
-                    <span class="text-purple-300">Agen Ditugaskan:</span> <span id="ws-assigned" class="font-bold text-amber-200">Hermes Prime, Athena Owl</span>
-                </div>
-            </div>
-
-            <!-- Markdown Deliverable Scratchpad -->
-            <div class="flex-1 flex flex-col">
-                <div class="flex items-center justify-between text-[11px] text-slate-400 mb-1">
-                    <span class="font-bold text-amber-300"><i class="fa-solid fa-feather mr-1"></i> Catatan & Deliverable:</span>
-                    <span id="save-status" class="text-emerald-400 text-[10px] hidden"><i class="fa-solid fa-check mr-0.5"></i> Tersimpan</span>
-                </div>
-                <textarea id="ws-content-editor" class="flex-1 w-full p-2.5 bg-[#0d0916] border border-[#3b2a59] rounded-lg text-xs font-mono text-slate-200 placeholder-slate-600 focus:outline-none focus:border-amber-400 resize-none leading-relaxed" placeholder="Catatan kerja agen..."></textarea>
-            </div>
-
-            <!-- Action Buttons -->
-            <div class="mt-3 flex items-center justify-between pt-2 border-t border-[#31224d]">
-                <button id="btn-save-notes" class="pixel-btn pixel-btn-green px-3 py-1.5 text-xs">
-                    <i class="fa-solid fa-floppy-disk mr-1"></i> Simpan Catatan
-                </button>
-                <button id="btn-export-artifact" class="pixel-btn pixel-btn-blue px-3 py-1.5 text-xs">
-                    <i class="fa-solid fa-box-archive mr-1"></i> Export ke Artefak
-                </button>
-            </div>
-        </div>
-
-        <!-- Drawer Content 2: Telemetry Log Stream -->
-        <div id="drawer-tab-telemetry" class="flex-1 p-3 overflow-y-auto hidden flex flex-col space-y-2 font-mono text-xs" id="telemetry-log-list">
-            <div class="text-[11px] text-slate-400 mb-1 flex items-center justify-between">
-                <span>Riwayat Aktivitas & Peristiwa Agen</span>
-                <span class="text-[10px] text-amber-400">Live Auto-Scroll</span>
-            </div>
-            <div id="telemetry-items" class="space-y-1.5 overflow-y-auto max-h-full">
-                <!-- Items populated dynamically -->
-            </div>
-        </div>
-    </div>
-
-    <!-- MAIN JAVASCRIPT: ENGINE & LOGIC -->
+    <!-- MAIN ENGINE JAVASCRIPT -->
     <script>
     "use strict";
 
     /* =========================================================================
-       HERMES PIXEL OFFICE — 2D RETRO CANVAS ENGINE
-       Reverse-engineered & inspired by Pixel Office & Hermes Agent Architecture
+       STAR OFFICE WORLD × HERMES ENGINE
        ========================================================================= */
-
     const cv = document.getElementById("office-canvas");
     const ctx = cv.getContext("2d");
 
-    // Map Dimensions (in tiles)
     const TILE = 16;
-    const COLS = 64; // 1024 px world width
-    const ROWS = 40; // 640 px world height
+    const COLS = 64;
+    const ROWS = 40;
     const WORLD_W = COLS * TILE;
     const WORLD_H = ROWS * TILE;
 
-    // Camera & Pan/Zoom State
-    const camera = {
-        x: 0,
-        y: 0,
-        zoom: 2.0,
-        minZoom: 0.9,
-        maxZoom: 4.5
-    };
-
+    const camera = { x: 0, y: 0, zoom: 2.0, minZoom: 0.9, maxZoom: 4.5 };
     let isDragging = false;
-    let dragStartX = 0;
-    let dragStartY = 0;
+    let dragStartX = 0, dragStartY = 0, dragMoved = 0;
     let frame = 0;
 
-    // Live Server State
+    // Server State
     let agents = [];
-    let worksheets = [];
-    let activeWorksheetId = "ws-topic-a";
-    let isConnected = false;
-    let lastEventTs = 0;
-
-    // Selected Agent for Dossier Modal
+    let hermesSessions = [];
+    let currentSessionId = "local-d88d47d76f7775a808ef671244ea73631e9554801dd17fa85dd86c688d172234";
     let selectedAgent = null;
+    let currentTheme = "night";
 
-    // Sakura Tree Petal Particle System
+    // Sakura Petals
     const sakuraPetals = [];
-    for (let i = 0; i < 45; i++) {
+    for (let i = 0; i < 40; i++) {
         sakuraPetals.push({
             x: 650 + Math.random() * 260,
             y: 350 + Math.random() * 200,
             speedX: 0.3 + Math.random() * 0.7,
             speedY: 0.4 + Math.random() * 0.8,
-            w: 2 + Math.floor(Math.random() * 2),
-            h: 2 + Math.floor(Math.random() * 2),
+            w: 2, h: 2,
             color: Math.random() > 0.4 ? "#f8a5c2" : "#f78fb3",
             sway: Math.random() * Math.PI * 2
         });
     }
 
-    // Agent Visual State Representation
-    // Mapping agent ID -> internal positional & animation data
+    // Agent Visual Map
     const agentVisuals = new Map();
 
-    // Defined Room Points of Interest (World Pixel Coordinates)
     const POI = {
-        // Workstation Desks (Bay 1)
         desks: [
-            { x: 120, y: 130, dir: "down", label: "Meja 1 (Hermes)" },
-            { x: 230, y: 130, dir: "down", label: "Meja 2 (Athena)" },
-            { x: 340, y: 130, dir: "down", label: "Meja 3 (Hephaestus)" },
-            { x: 170, y: 240, dir: "down", label: "Meja 4 (Iris)" },
-            { x: 290, y: 240, dir: "down", label: "Meja 5 (Zephyr)" },
+            { x: 120, y: 130, label: "Meja 1" },
+            { x: 230, y: 130, label: "Meja 2" },
+            { x: 340, y: 130, label: "Meja 3" },
+            { x: 170, y: 240, label: "Meja 4" },
+            { x: 290, y: 240, label: "Meja 5" },
         ],
-        // Park Benches (Outdoor Sakura Terrace)
         benches: [
-            { x: 740, y: 490, dir: "up", label: "Bangku Sakura #1" },
-            { x: 880, y: 490, dir: "up", label: "Bangku Teras #2" },
-            { x: 680, y: 530, dir: "right", label: "Gazebo Taman" },
+            { x: 740, y: 490, label: "Bangku Sakura #1" },
+            { x: 880, y: 490, label: "Bangku Teras #2" },
         ],
-        // Break Room & Coffee Lounge
-        lounge: {
-            coffee: { x: 90, y: 450, dir: "up", label: "Mesin Espresso" },
-            cooler: { x: 60, y: 450, dir: "up", label: "Water Cooler" },
-            sofa: { x: 220, y: 490, dir: "down", label: "Sofa Lounge" },
-            arcade: { x: 170, y: 430, dir: "up", label: "Arcade HERMES-88" }
-        },
-        // Boardroom Meeting Table
+        coffee: { x: 90, y: 450, label: "Mesin Espresso" },
         meeting: [
-            { x: 500, y: 110, dir: "down", label: "Rapat Kursi 1" },
-            { x: 560, y: 110, dir: "down", label: "Rapat Kursi 2" },
-            { x: 620, y: 110, dir: "down", label: "Rapat Kursi 3" },
-            { x: 500, y: 175, dir: "up", label: "Rapat Kursi 4" },
-            { x: 560, y: 175, dir: "up", label: "Rapat Kursi 5" },
-            { x: 620, y: 175, dir: "up", label: "Rapat Kursi 6" },
+            { x: 500, y: 110 }, { x: 560, y: 110 }, { x: 620, y: 110 },
+            { x: 500, y: 175 }, { x: 560, y: 175 }, { x: 620, y: 175 }
         ],
-        // Outdoor Garden Strolling Waypoints
-        roam: [
-            { x: 720, y: 420 },
-            { x: 840, y: 400 },
-            { x: 910, y: 480 },
-            { x: 790, y: 550 },
-            { x: 440, y: 320 }
-        ]
+        roam: [ { x: 720, y: 420 }, { x: 840, y: 400 }, { x: 440, y: 320 } ]
+    };
+
+    // Mochi Pet
+    const pet = {
+        x: 740, y: 510, targetX: 740, targetY: 510,
+        state: "sleep", facing: "right", heartTimer: 0, actionTimer: 180
     };
 
     /* =========================================================================
-       8-BIT AUDIO SYNTHESIS (Zero External Audio File Dependency)
+       AUDIO SYNTHESIZER
        ========================================================================= */
-    let audioCtx = null;
-    let soundEnabled = true;
-    try {
-        const stored = localStorage.getItem("pixelOfficeSound");
-        if (stored !== null) soundEnabled = stored === "1";
-    } catch(e) {}
-
-    function updateSoundBtn() {
-        const icon = document.getElementById("sound-icon");
-        const btn = document.getElementById("btn-sound");
-        if (soundEnabled) {
-            icon.className = "fa-solid fa-volume-high text-amber-400";
-            btn.classList.add("active");
-            btn.title = "8-Bit Sound ON (Klik untuk Mute)";
-        } else {
-            icon.className = "fa-solid fa-volume-xmark text-slate-500";
-            btn.classList.remove("active");
-            btn.title = "8-Bit Sound MUTED (Klik untuk Aktifkan)";
-        }
-    }
-    updateSoundBtn();
-
-    document.getElementById("btn-sound").addEventListener("click", () => {
-        soundEnabled = !soundEnabled;
-        try { localStorage.setItem("pixelOfficeSound", soundEnabled ? "1" : "0"); } catch(e) {}
-        updateSoundBtn();
-        if (soundEnabled) playSfx("blip");
-    });
-
+    let audioCtx = null, soundEnabled = true;
     function playSfx(type) {
         if (!soundEnabled) return;
         try {
             audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
             if (audioCtx.state === "suspended") audioCtx.resume();
             const now = audioCtx.currentTime;
-
             if (type === "blip") {
-                const osc = audioCtx.createOscillator();
-                const gain = audioCtx.createGain();
+                const osc = audioCtx.createOscillator(), g = audioCtx.createGain();
                 osc.type = "square";
                 osc.frequency.setValueAtTime(580, now);
                 osc.frequency.exponentialRampToValueAtTime(880, now + 0.08);
-                gain.gain.setValueAtTime(0.08, now);
-                gain.gain.exponentialRampToValueAtTime(0.001, now + 0.08);
-                osc.connect(gain);
-                gain.connect(audioCtx.destination);
-                osc.start(now);
-                osc.stop(now + 0.09);
-            } else if (type === "click") {
-                const osc = audioCtx.createOscillator();
-                const gain = audioCtx.createGain();
-                osc.type = "triangle";
-                osc.frequency.setValueAtTime(320, now);
-                gain.gain.setValueAtTime(0.05, now);
-                gain.gain.exponentialRampToValueAtTime(0.001, now + 0.04);
-                osc.connect(gain);
-                gain.connect(audioCtx.destination);
-                osc.start(now);
-                osc.stop(now + 0.05);
-            } else if (type === "coffee") {
-                [520, 650, 780].forEach((freq, idx) => {
-                    const osc = audioCtx.createOscillator();
-                    const gain = audioCtx.createGain();
-                    osc.type = "sine";
-                    osc.frequency.setValueAtTime(freq, now + idx * 0.06);
-                    gain.gain.setValueAtTime(0.06, now + idx * 0.06);
-                    gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.06 + 0.1);
-                    osc.connect(gain);
-                    gain.connect(audioCtx.destination);
-                    osc.start(now + idx * 0.06);
-                    osc.stop(now + idx * 0.06 + 0.11);
-                });
-            } else if (type === "meeting") {
-                [440, 554, 659, 880].forEach((freq, idx) => {
-                    const osc = audioCtx.createOscillator();
-                    const gain = audioCtx.createGain();
-                    osc.type = "triangle";
-                    osc.frequency.setValueAtTime(freq, now + idx * 0.08);
-                    gain.gain.setValueAtTime(0.08, now + idx * 0.08);
-                    gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.08 + 0.16);
-                    osc.connect(gain);
-                    gain.connect(audioCtx.destination);
-                    osc.start(now + idx * 0.08);
-                    osc.stop(now + idx * 0.08 + 0.18);
-                });
-            } else if (type === "levelup") {
-                [523, 659, 784, 1046].forEach((freq, idx) => {
-                    const osc = audioCtx.createOscillator();
-                    const gain = audioCtx.createGain();
-                    osc.type = "square";
-                    osc.frequency.setValueAtTime(freq, now + idx * 0.09);
-                    gain.gain.setValueAtTime(0.09, now + idx * 0.09);
-                    gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.09 + 0.2);
-                    osc.connect(gain);
-                    gain.connect(audioCtx.destination);
-                    osc.start(now + idx * 0.09);
-                    osc.stop(now + idx * 0.09 + 0.22);
-                });
+                g.gain.setValueAtTime(0.06, now);
+                g.gain.exponentialRampToValueAtTime(0.001, now + 0.08);
+                osc.connect(g); g.connect(audioCtx.destination);
+                osc.start(now); osc.stop(now + 0.09);
             } else if (type === "cat") {
-                const osc = audioCtx.createOscillator();
-                const gain = audioCtx.createGain();
+                const osc = audioCtx.createOscillator(), g = audioCtx.createGain();
                 osc.type = "sine";
                 osc.frequency.setValueAtTime(620, now);
                 osc.frequency.linearRampToValueAtTime(920, now + 0.09);
                 osc.frequency.exponentialRampToValueAtTime(680, now + 0.22);
-                gain.gain.setValueAtTime(0.08, now);
-                gain.gain.exponentialRampToValueAtTime(0.001, now + 0.24);
-                osc.connect(gain);
-                gain.connect(audioCtx.destination);
-                osc.start(now);
-                osc.stop(now + 0.25);
-            } else if (type === "arcade") {
-                [330, 440, 554, 659, 880].forEach((freq, idx) => {
-                    const osc = audioCtx.createOscillator();
-                    const gain = audioCtx.createGain();
-                    osc.type = "square";
+                g.gain.setValueAtTime(0.08, now);
+                g.gain.exponentialRampToValueAtTime(0.001, now + 0.24);
+                osc.connect(g); g.connect(audioCtx.destination);
+                osc.start(now); osc.stop(now + 0.25);
+            } else if (type === "coffee") {
+                [520, 650, 780].forEach((freq, idx) => {
+                    const osc = audioCtx.createOscillator(), g = audioCtx.createGain();
+                    osc.type = "sine";
                     osc.frequency.setValueAtTime(freq, now + idx * 0.06);
-                    gain.gain.setValueAtTime(0.08, now + idx * 0.06);
-                    gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.06 + 0.12);
-                    osc.connect(gain);
-                    gain.connect(audioCtx.destination);
-                    osc.start(now + idx * 0.06);
-                    osc.stop(now + idx * 0.06 + 0.14);
+                    g.gain.setValueAtTime(0.05, now + idx * 0.06);
+                    g.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.06 + 0.1);
+                    osc.connect(g); g.connect(audioCtx.destination);
+                    osc.start(now + idx * 0.06); osc.stop(now + idx * 0.06 + 0.11);
                 });
             }
         } catch(e) {}
     }
 
+    document.getElementById("btn-sound").addEventListener("click", () => {
+        soundEnabled = !soundEnabled;
+        document.getElementById("sound-icon").className = soundEnabled ? "fa-solid fa-volume-high text-amber-400" : "fa-solid fa-volume-xmark text-slate-500";
+        if (soundEnabled) playSfx("blip");
+    });
+
     /* =========================================================================
-       CANVAS RESIZING & PROJECTION
+       CANVAS RESIZE & PROJECTION
        ========================================================================= */
     function resizeCanvas() {
+        const stage = document.getElementById("star-office-stage");
         const dpr = window.devicePixelRatio || 1;
-        cv.width = window.innerWidth * dpr;
-        cv.height = window.innerHeight * dpr;
-        cv.style.width = window.innerWidth + "px";
-        cv.style.height = window.innerHeight + "px";
+        cv.width = stage.clientWidth * dpr;
+        cv.height = stage.clientHeight * dpr;
+        cv.style.width = stage.clientWidth + "px";
+        cv.style.height = stage.clientHeight + "px";
         ctx.scale(dpr, dpr);
         ctx.imageSmoothingEnabled = false;
     }
-    window.addEventListener("resize", resizeCanvas);
-    resizeCanvas();
+    window.addEventListener("resize", () => { resizeCanvas(); centerCamera(); });
+    setTimeout(resizeCanvas, 50);
 
-    function centerCameraOnOffice() {
-        const viewW = window.innerWidth;
-        const viewH = window.innerHeight;
+    function centerCamera() {
+        const stage = document.getElementById("star-office-stage");
         camera.zoom = 2.0;
-        camera.x = Math.round((viewW - WORLD_W * camera.zoom) / 2);
-        camera.y = Math.round((viewH - WORLD_H * camera.zoom) / 2) + 20;
-        updateZoomUI();
-    }
-    centerCameraOnOffice();
-
-    function updateZoomUI() {
+        camera.x = Math.round((stage.clientWidth - WORLD_W * camera.zoom) / 2);
+        camera.y = Math.round((stage.clientHeight - WORLD_H * camera.zoom) / 2) + 15;
         document.getElementById("zoom-text").textContent = Math.round(camera.zoom * 100) + "%";
     }
+    setTimeout(centerCamera, 100);
 
-    /* =========================================================================
-       PAN & ZOOM MOUSE / TOUCH EVENTS
-       ========================================================================= */
+    // Pan & Zoom
     cv.addEventListener("wheel", (e) => {
         e.preventDefault();
-        const mouseX = e.clientX;
-        const mouseY = e.clientY;
-        const oldZoom = camera.zoom;
-        const zoomDelta = e.deltaY < 0 ? 1.15 : 0.87;
-        const newZoom = Math.min(Math.max(camera.zoom * zoomDelta, camera.minZoom), camera.maxZoom);
-
-        // Zoom centered at mouse position
-        camera.x = mouseX - (mouseX - camera.x) * (newZoom / oldZoom);
-        camera.y = mouseY - (mouseY - camera.y) * (newZoom / oldZoom);
-        camera.zoom = newZoom;
-        updateZoomUI();
+        const rect = cv.getBoundingClientRect();
+        const mx = e.clientX - rect.left, my = e.clientY - rect.top;
+        const oldZ = camera.zoom;
+        const delta = e.deltaY < 0 ? 1.15 : 0.87;
+        const newZ = Math.min(Math.max(camera.zoom * delta, camera.minZoom), camera.maxZoom);
+        camera.x = mx - (mx - camera.x) * (newZ / oldZ);
+        camera.y = my - (my - camera.y) * (newZ / oldZ);
+        camera.zoom = newZ;
+        document.getElementById("zoom-text").textContent = Math.round(camera.zoom * 100) + "%";
     }, { passive: false });
 
-    let dragMoved = 0;
     cv.addEventListener("mousedown", (e) => {
         if (e.button === 0) {
             isDragging = true;
@@ -751,7 +618,6 @@
             dragMoved = 0;
         }
     });
-
     window.addEventListener("mousemove", (e) => {
         if (isDragging) {
             dragMoved += Math.hypot(e.movementX, e.movementY);
@@ -759,1095 +625,503 @@
             camera.y = e.clientY - dragStartY;
         }
     });
-
     window.addEventListener("mouseup", (e) => {
         if (isDragging) {
             isDragging = false;
-            // If mouse didn't drag far, treat as click to inspect agent
             if (dragMoved < 6) {
-                handleCanvasClick(e.clientX, e.clientY);
+                const rect = cv.getBoundingClientRect();
+                handleStageClick(e.clientX - rect.left, e.clientY - rect.top);
             }
         }
     });
 
-    // Touch Support for Mobile / Tablet
-    let initialTouchDist = null;
-    cv.addEventListener("touchstart", (e) => {
-        if (e.touches.length === 1) {
-            isDragging = true;
-            dragStartX = e.touches[0].clientX - camera.x;
-            dragStartY = e.touches[0].clientY - camera.y;
-            dragMoved = 0;
-        } else if (e.touches.length === 2) {
-            isDragging = false;
-            initialTouchDist = Math.hypot(
-                e.touches[0].clientX - e.touches[1].clientX,
-                e.touches[0].clientY - e.touches[1].clientY
-            );
-        }
-    }, { passive: true });
+    document.getElementById("btn-zoom-in").addEventListener("click", () => { camera.zoom = Math.min(camera.zoom * 1.25, camera.maxZoom); centerCamera(); playSfx("blip"); });
+    document.getElementById("btn-zoom-out").addEventListener("click", () => { camera.zoom = Math.max(camera.zoom / 1.25, camera.minZoom); centerCamera(); playSfx("blip"); });
+    document.getElementById("btn-zoom-reset").addEventListener("click", () => { centerCamera(); playSfx("blip"); });
+    document.getElementById("btn-focus-office").addEventListener("click", () => { centerCamera(); playSfx("blip"); });
 
-    cv.addEventListener("touchmove", (e) => {
-        if (e.touches.length === 1 && isDragging) {
-            camera.x = e.touches[0].clientX - dragStartX;
-            camera.y = e.touches[0].clientY - dragStartY;
-            dragMoved += 5;
-        } else if (e.touches.length === 2 && initialTouchDist) {
-            const dist = Math.hypot(
-                e.touches[0].clientX - e.touches[1].clientX,
-                e.touches[0].clientY - e.touches[1].clientY
-            );
-            const factor = dist / initialTouchDist;
-            camera.zoom = Math.min(Math.max(camera.zoom * factor, camera.minZoom), camera.maxZoom);
-            initialTouchDist = dist;
-            updateZoomUI();
-        }
-    }, { passive: true });
-
-    cv.addEventListener("touchend", (e) => {
-        isDragging = false;
-        initialTouchDist = null;
-        if (dragMoved < 6 && e.changedTouches.length === 1) {
-            handleCanvasClick(e.changedTouches[0].clientX, e.changedTouches[0].clientY);
-        }
-    });
-
-    // Zoom Buttons
-    document.getElementById("btn-zoom-in").addEventListener("click", () => {
-        const viewW = window.innerWidth / 2;
-        const viewH = window.innerHeight / 2;
-        const oldZoom = camera.zoom;
-        const newZoom = Math.min(camera.zoom * 1.25, camera.maxZoom);
-        camera.x = viewW - (viewW - camera.x) * (newZoom / oldZoom);
-        camera.y = viewH - (viewH - camera.y) * (newZoom / oldZoom);
-        camera.zoom = newZoom;
-        updateZoomUI();
-        playSfx("click");
-    });
-
-    document.getElementById("btn-zoom-out").addEventListener("click", () => {
-        const viewW = window.innerWidth / 2;
-        const viewH = window.innerHeight / 2;
-        const oldZoom = camera.zoom;
-        const newZoom = Math.max(camera.zoom / 1.25, camera.minZoom);
-        camera.x = viewW - (viewW - camera.x) * (newZoom / oldZoom);
-        camera.y = viewH - (viewH - camera.y) * (newZoom / oldZoom);
-        camera.zoom = newZoom;
-        updateZoomUI();
-        playSfx("click");
-    });
-
-    document.getElementById("btn-zoom-reset").addEventListener("click", () => {
-        camera.zoom = 2.0;
-        updateZoomUI();
-        playSfx("click");
-    });
-
-    document.getElementById("btn-focus-office").addEventListener("click", () => {
-        centerCameraOnOffice();
-        playSfx("blip");
-    });
-
-    /* =========================================================================
-       ATMOSPHERE & LIGHTING MODES (Cyberpunk Night, Golden Twilight, Studio Day)
-       ========================================================================= */
-    let currentTheme = "night";
-    function cycleTheme() {
-        const icon = document.getElementById("theme-icon");
-        const text = document.getElementById("theme-text");
-        if (currentTheme === "night") {
-            currentTheme = "twilight";
-            icon.className = "fa-solid fa-sun text-amber-400";
-            text.textContent = "Senja";
-            showToast("🌅 Suasana Senja Keemasan Diaktifkan");
-        } else if (currentTheme === "twilight") {
-            currentTheme = "day";
-            icon.className = "fa-solid fa-cloud-sun text-sky-400";
-            text.textContent = "Siang";
-            showToast("☀️ Suasana Siang Studio Diaktifkan");
-        } else {
-            currentTheme = "night";
-            icon.className = "fa-solid fa-moon text-indigo-400";
-            text.textContent = "Malam";
-            showToast("🌙 Suasana Malam Cyberpunk Diaktifkan");
-        }
-        playSfx("click");
-    }
-    document.getElementById("btn-theme").addEventListener("click", cycleTheme);
-
-    // Architecture Whiteboard Modal Controls
-    document.getElementById("btn-close-whiteboard").addEventListener("click", () => {
-        document.getElementById("whiteboard-modal").classList.add("hidden");
-        playSfx("click");
-    });
-    document.getElementById("btn-done-whiteboard").addEventListener("click", () => {
-        document.getElementById("whiteboard-modal").classList.add("hidden");
-        playSfx("click");
-    });
-
-    /* =========================================================================
-       OFFICE PET: MOCHI THE CALICO CAT
-       ========================================================================= */
-    const pet = {
-        x: 740,
-        y: 510,
-        targetX: 740,
-        targetY: 510,
-        state: "sleep", // "sleep", "walk", "sit"
-        facing: "right",
-        heartTimer: 0,
-        actionTimer: 180
-    };
-
-    function updatePet() {
-        pet.actionTimer--;
-        if (pet.heartTimer > 0) pet.heartTimer--;
-
-        if (pet.actionTimer <= 0) {
-            pet.actionTimer = 220 + Math.floor(Math.random() * 260);
-            const r = Math.random();
-            if (r < 0.40) {
-                pet.state = "sleep";
-                pet.targetX = 730 + Math.random() * 50;
-                pet.targetY = 505 + Math.random() * 25;
-            } else if (r < 0.75) {
-                pet.state = "walk";
-                if (Math.random() > 0.5) {
-                    pet.targetX = 640 + Math.random() * 260;
-                    pet.targetY = 430 + Math.random() * 110;
-                } else {
-                    pet.targetX = 170 + Math.random() * 110;
-                    pet.targetY = 460 + Math.random() * 60;
-                }
-            } else {
-                pet.state = "sit";
-            }
-        }
-
-        const dx = pet.targetX - pet.x;
-        const dy = pet.targetY - pet.y;
-        const dist = Math.hypot(dx, dy);
-        if (dist > 1.2) {
-            pet.x += (dx / dist) * 0.75;
-            pet.y += (dy / dist) * 0.75;
-            pet.facing = dx > 0 ? "right" : "left";
-        }
+    function toWorld(sx, sy) {
+        return { x: (sx - camera.x) / camera.zoom, y: (sy - camera.y) / camera.zoom };
     }
 
-    function drawPet() {
-        const px = Math.round(pet.x);
-        const py = Math.round(pet.y);
-
-        if (pet.state === "sleep") {
-            // Curled sleeping calico cat
-            pxRect(px + 1, py + 3, 11, 7, "#e67e22");
-            pxRect(px + 3, py + 2, 7, 2, "#d35400"); // stripe
-            pxRect(px + 8, py + 4, 5, 5, "#f39c12"); // head
-            pxRect(px + 10, py + 2, 2, 2, "#d35400"); // ear
-            // Floating 'z' sleeping particles
-            const zPhase = (frame % 60);
-            if (zPhase < 32) {
-                pxRect(px + 15, py - 4 - zPhase * 0.2, 3, 3, "rgba(223, 230, 233, 0.7)");
-            }
-        } else {
-            const walkBob = (pet.state === "walk" && (Math.floor(frame / 6) % 2)) ? 1 : 0;
-            pxRect(px + 2, py + 2 + walkBob, 11, 6, "#e67e22");
-            pxRect(px + 4, py + 1 + walkBob, 2, 2, "#d35400");
-            pxRect(px + 7, py + 1 + walkBob, 2, 2, "#d35400");
-            // Head
-            const hx = pet.facing === "right" ? px + 10 : px - 2;
-            pxRect(hx, py + walkBob, 5, 5, "#f39c12");
-            pxRect(hx + 1, py - 2 + walkBob, 2, 2, "#d35400");
-            pxRect(hx + 3, py - 2 + walkBob, 2, 2, "#d35400");
-            // Green Eyes
-            pxRect(hx + (pet.facing === "right" ? 3 : 1), py + 2 + walkBob, 1, 1, "#2ecc71");
-            // Legs
-            pxRect(px + 3, py + 8, 2, 3, "#d35400");
-            pxRect(px + 9, py + 8, 2, 3, "#d35400");
-            // Tail
-            const tx = pet.facing === "right" ? px : px + 12;
-            const tailWag = Math.sin(frame * 0.15) * 2;
-            pxRect(tx, py + 1 + tailWag, 2, 4, "#e67e22");
-        }
-
-        // Floating Heart Bubble if Petted
-        if (pet.heartTimer > 0) {
-            const hy = py - 14 - (60 - pet.heartTimer) * 0.25;
-            pxRect(px + 2, hy, 10, 8, "#ffffff");
-            pxRect(px + 4, hy + 2, 6, 4, "#e74c3c");
-        }
-    }
-
-    /* =========================================================================
-       WORLD / SCREEN COORD CONVERSION & INTERACTIVE CLICK DETECTION
-       ========================================================================= */
-    function toWorld(screenX, screenY) {
-        return {
-            x: (screenX - camera.x) / camera.zoom,
-            y: (screenY - camera.y) / camera.zoom
-        };
-    }
-
-    // Dynamic Cursor Hover
-    cv.addEventListener("mousemove", (e) => {
-        if (isDragging) return;
-        const wp = toWorld(e.clientX, e.clientY);
-        let isHovering = false;
-
-        // Check Mochi the cat
-        if (wp.x >= pet.x - 6 && wp.x <= pet.x + 20 && wp.y >= pet.y - 6 && wp.y <= pet.y + 18) isHovering = true;
-        // Check Espresso
-        else if (wp.x >= 75 && wp.x <= 118 && wp.y >= 410 && wp.y <= 445) isHovering = true;
-        // Check Arcade
-        else if (wp.x >= 150 && wp.x <= 190 && wp.y >= 390 && wp.y <= 448) isHovering = true;
-        // Check Whiteboard
-        else if (wp.x >= 505 && wp.x <= 645 && wp.y >= 24 && wp.y <= 60) isHovering = true;
-        // Check Server Vault
-        else if (wp.x >= 735 && wp.x <= 950 && wp.y >= 44 && wp.y <= 188) isHovering = true;
-        // Check Agents
-        else {
-            for (const [id, vis] of agentVisuals.entries()) {
-                if (wp.x >= vis.x - 8 && wp.x <= vis.x + 24 && wp.y >= vis.y - 12 && wp.y <= vis.y + 32) {
-                    isHovering = true;
-                    break;
-                }
-            }
-        }
-        cv.style.cursor = isHovering ? "pointer" : "grab";
-    });
-
-    function handleCanvasClick(screenX, screenY) {
-        const wp = toWorld(screenX, screenY);
-
-        // 1. Check Pet (Mochi the Cat)
-        if (wp.x >= pet.x - 6 && wp.x <= pet.x + 20 &&
-            wp.y >= pet.y - 6 && wp.y <= pet.y + 18) {
+    function handleStageClick(sx, sy) {
+        const wp = toWorld(sx, sy);
+        // Check Mochi
+        if (wp.x >= pet.x - 6 && wp.x <= pet.x + 20 && wp.y >= pet.y - 6 && wp.y <= pet.y + 18) {
             pet.heartTimer = 60;
             playSfx("cat");
             showToast("🐱 Mochi senang dielus! (+15 Team Morale)");
             return;
         }
-
-        // 2. Check Espresso Machine
+        // Check Espresso
         if (wp.x >= 75 && wp.x <= 118 && wp.y >= 410 && wp.y <= 445) {
             playSfx("coffee");
-            showToast("☕ Seduhan Espresso Panas Siap! Harum semerbak di coffee lounge.");
+            showToast("☕ Seduhan Espresso Panas Siap!");
             return;
         }
-
-        // 3. Check Arcade Machine "HERMES-88"
-        if (wp.x >= 150 && wp.x <= 190 && wp.y >= 390 && wp.y <= 448) {
-            playSfx("arcade");
-            showToast("🕹️ HERMES-88: 1-UP! High score 99,420 PTS tercatat!");
-            return;
-        }
-
-        // 4. Check Whiteboard (Open Architecture Modal)
-        if (wp.x >= 505 && wp.x <= 645 && wp.y >= 24 && wp.y <= 60) {
-            playSfx("blip");
-            document.getElementById("whiteboard-modal").classList.remove("hidden");
-            return;
-        }
-
-        // 5. Check Server Vault Racks
-        if (wp.x >= 735 && wp.x <= 950 && wp.y >= 44 && wp.y <= 188) {
-            playSfx("blip");
-            showToast("🗄️ SERVER VAULT: Status Prima | IPv6/IPv4 Dual-Stack | Latensi 1ms");
-            return;
-        }
-
-        // 6. Check Agents
-        let clicked = null;
+        // Check Agents
         for (const [id, vis] of agentVisuals.entries()) {
-            if (wp.x >= vis.x - 8 && wp.x <= vis.x + 24 &&
-                wp.y >= vis.y - 12 && wp.y <= vis.y + 32) {
-                clicked = agents.find(a => a.id === id);
-                break;
+            if (wp.x >= vis.x - 8 && wp.x <= vis.x + 24 && wp.y >= vis.y - 12 && wp.y <= vis.y + 32) {
+                const a = agents.find(ag => ag.id === id);
+                if (a) { openAgentModal(a); playSfx("blip"); return; }
             }
-        }
-
-        if (clicked) {
-            openAgentModal(clicked);
-            playSfx("blip");
         }
     }
 
     /* =========================================================================
-       RENDER PIPELINE: TILEMAP & ROOM SCENERY
+       RENDER STAGE: TILEMAP & CHARACTERS
        ========================================================================= */
-    function pxRect(x, y, w, h, color) {
-        ctx.fillStyle = color;
+    function pxRect(x, y, w, h, col) {
+        ctx.fillStyle = col;
         ctx.fillRect(Math.floor(x), Math.floor(y), Math.floor(w), Math.floor(h));
     }
 
-    function drawFloorAndRooms() {
-        // 1. Outside / Space backdrop
+    function drawStage() {
         pxRect(0, 0, WORLD_W, WORLD_H, "#090611");
 
-        // Subtle background starfield outside
-        for (let i = 0; i < 60; i++) {
-            const sx = (i * 137) % WORLD_W;
-            const sy = (i * 97) % WORLD_H;
-            const twinkle = (frame + i * 5) % 80 < 40 ? "#5a457a" : "#2a1c42";
-            pxRect(sx, sy, 2, 2, twinkle);
+        // Starfield
+        for (let i = 0; i < 40; i++) {
+            const sx = (i * 137) % WORLD_W, sy = (i * 97) % WORLD_H;
+            pxRect(sx, sy, 2, 2, (frame + i * 5) % 60 < 30 ? "#5a457a" : "#231638");
         }
 
-        // 2. Main Building Outer Foundation
+        // Outer Floor
         pxRect(20, 20, WORLD_W - 40, WORLD_H - 40, "#191124");
 
-        // 3. Zone 1: Dev Pods / Workstation Area (Top-Left)
-        // Parquet Wood Floor (Alternating planks)
+        // Dev Pods Parquet (Top-Left)
         for (let y = 32; y < 320; y += 16) {
             for (let x = 32; x < 440; x += 16) {
-                const isAlt = ((x / 16) + (y / 16)) % 2 === 0;
-                pxRect(x, y, 16, 16, isAlt ? "#241834" : "#1f142d");
-                // Subtle plank grain lines
+                pxRect(x, y, 16, 16, ((x/16)+(y/16)) % 2 === 0 ? "#241834" : "#1f142d");
                 pxRect(x, y + 15, 16, 1, "#170e23");
             }
         }
-        // Workstation Wall & Windows
         pxRect(32, 24, 408, 8, "#3c2a55");
-        for (let wx = 60; wx < 400; wx += 50) {
-            pxRect(wx, 26, 32, 5, "#253b6e");
-            pxRect(wx + 2, 27, 28, 3, "#3d5fa6");
-        }
 
-        // 4. Zone 2: Conference Boardroom (Top-Middle)
-        // Executive Navy Carpet with Gold Borders
+        // Conference Room (Top-Middle)
         pxRect(456, 32, 240, 220, "#192238");
-        // Carpet Gold Trim
         pxRect(460, 36, 232, 2, "#91712a");
         pxRect(460, 248, 232, 2, "#91712a");
-        pxRect(460, 36, 2, 214, "#91712a");
-        pxRect(690, 36, 2, 214, "#91712a");
-
-        // Boardroom Wall & Large Whiteboard
-        pxRect(456, 24, 240, 8, "#323753");
-        // Whiteboard with architecture diagrams
-        pxRect(510, 27, 130, 28, "#f1f2f6");
-        pxRect(508, 25, 134, 2, "#747d8c");
-        pxRect(508, 55, 134, 2, "#747d8c");
-        // Whiteboard flow diagrams (pixel sketches)
-        pxRect(518, 34, 18, 12, "#3742fa");
-        pxRect(538, 39, 12, 2, "#2ed573");
-        pxRect(552, 32, 22, 16, "#ffa502");
-        pxRect(576, 39, 12, 2, "#ff4757");
-        pxRect(590, 34, 20, 12, "#2f3542");
-
-        // Large Boardroom Oval Table
+        // Boardroom Table
         pxRect(490, 126, 170, 48, "#4b2a1a");
         pxRect(492, 128, 166, 44, "#633822");
-        // Leather Conference Chairs
-        [500, 560, 620].forEach(cx => {
-            // Top chairs
-            pxRect(cx, 108, 16, 14, "#222a3f");
-            pxRect(cx + 2, 106, 12, 4, "#3a4768");
-            // Bottom chairs
-            pxRect(cx, 178, 16, 14, "#222a3f");
-            pxRect(cx + 2, 190, 12, 4, "#3a4768");
-        });
 
-        // 5. Zone 3: Server Vault / Infrastructure (Top-Right)
+        // Server Vault (Top-Right)
         pxRect(712, 32, 280, 220, "#141a24");
-        // High-tech floor tiles
-        for (let y = 32; y < 252; y += 16) {
-            for (let x = 712; x < 992; x += 16) {
-                pxRect(x, y, 15, 15, "#18202d");
-                pxRect(x + 15, y, 1, 16, "#10151e");
-                pxRect(x, y + 15, 16, 1, "#10151e");
-            }
-        }
-        // Glass wall separator
-        pxRect(704, 24, 8, 228, "#2d446a");
-        pxRect(706, 120, 4, 40, "#5390d9"); // Glass door slider
-
-        // 4 High-Tech Server Racks
         [740, 795, 850, 905].forEach((rx, idx) => {
             pxRect(rx, 46, 38, 140, "#0b0e14");
             pxRect(rx + 2, 48, 34, 136, "#171c26");
-            // Rack shelves
             for (let sy = 54; sy < 180; sy += 18) {
                 pxRect(rx + 4, sy, 30, 14, "#0d1017");
-                // Blinking LED cluster
-                const blink1 = ((frame + idx * 7 + sy) % 30 < 15);
-                const blink2 = ((frame + idx * 11 + sy) % 40 < 20);
-                pxRect(rx + 6, sy + 4, 3, 3, blink1 ? "#2ecc71" : "#0d5c2a");
-                pxRect(rx + 11, sy + 4, 3, 3, blink2 ? "#3498db" : "#114773");
-                pxRect(rx + 16, sy + 4, 3, 3, ((frame + sy) % 50 < 25) ? "#f1c40f" : "#635004");
+                pxRect(rx + 6, sy + 4, 3, 3, (frame + idx * 7 + sy) % 30 < 15 ? "#2ecc71" : "#0d5c2a");
+                pxRect(rx + 12, sy + 4, 3, 3, (frame + idx * 11 + sy) % 40 < 20 ? "#3498db" : "#114773");
             }
         });
 
-        // 6. Zone 4: Coffee Lounge & Break Room (Bottom-Left)
-        // Checkered Cafe Tile Floor
+        // Break Room (Bottom-Left)
         for (let y = 336; y < 608; y += 16) {
             for (let x = 32; x < 380; x += 16) {
-                const isCheck = ((x / 16) + (y / 16)) % 2 === 0;
-                pxRect(x, y, 16, 16, isCheck ? "#2e213b" : "#251a31");
+                pxRect(x, y, 16, 16, ((x/16)+(y/16)) % 2 === 0 ? "#2e213b" : "#251a31");
             }
         }
-        // Room Dividing Half-Wall & Planter
-        pxRect(380, 336, 6, 272, "#412e56");
-        for (let py = 360; py < 580; py += 48) {
-            pxRect(376, py, 14, 16, "#27ae60");
-            pxRect(378, py + 12, 10, 8, "#8e44ad");
-        }
-
-        // Coffee Machine Counter
+        // Espresso counter & machine
         pxRect(48, 436, 80, 24, "#4a3424");
-        pxRect(50, 438, 76, 20, "#614430");
-        // Espresso Machine
         pxRect(82, 414, 28, 22, "#7f8c8d");
-        pxRect(84, 416, 24, 18, "#95a5a6");
-        pxRect(88, 426, 6, 8, "#2c3e50"); // dispenser
-        // Animated Rising Steam Pixels
-        const steamPhase = (frame % 30);
-        pxRect(91, 410 - steamPhase * 0.4, 2, 2, "rgba(236, 240, 241, 0.7)");
-        pxRect(93, 406 - steamPhase * 0.5, 2, 2, "rgba(236, 240, 241, 0.4)");
-
-        // Water Cooler
-        pxRect(54, 412, 16, 24, "#2980b9");
-        pxRect(56, 414, 12, 14, "#3498db");
-        // Water bubble
-        if ((frame % 60) < 30) pxRect(61, 418, 2, 2, "#ecf0f1");
-        pxRect(54, 428, 16, 8, "#bdc3c7");
-
-        // Retro Arcade Machine "HERMES-88"
-        pxRect(154, 396, 32, 48, "#2c3e50");
-        pxRect(156, 398, 28, 12, "#e74c3c"); // Marquee
-        pxRect(158, 412, 24, 18, (frame % 40 < 20) ? "#8e44ad" : "#2980b9"); // Screen
-        pxRect(156, 432, 28, 10, "#34495e"); // Controls with joysticks
-        pxRect(162, 434, 3, 3, "#f1c40f");
-        pxRect(174, 434, 3, 3, "#2ecc71");
-
-        // Cozy Purple Velvet Sofa & Coffee Table
+        const steam = (frame % 30);
+        pxRect(91, 410 - steam * 0.4, 2, 2, "rgba(236, 240, 241, 0.7)");
+        // Sofa
         pxRect(200, 474, 90, 36, "#4a235a");
         pxRect(204, 478, 82, 28, "#5b2c6f");
-        pxRect(200, 470, 90, 8, "#381845"); // sofa backrest
-        // Wooden Coffee Table
-        pxRect(220, 520, 50, 20, "#563821");
-        pxRect(222, 522, 46, 16, "#714a2c");
-        // Magazines & Mugs on table
-        pxRect(230, 525, 8, 6, "#e67e22");
-        pxRect(248, 526, 5, 5, "#ecf0f1");
 
-        // 7. Zone 5: Outdoor Terrace & Sakura Garden (Bottom-Right)
-        // Timber Decking
-        for (let y = 336; y < 608; y += 12) {
-            pxRect(390, y, 220, 10, "#34231b");
-            pxRect(390, y + 10, 220, 2, "#241812");
-        }
-        // Cobblestone Path to Garden
-        pxRect(610, 336, 382, 272, "#132317"); // Garden grass
-        for (let y = 350; y < 590; y += 18) {
-            for (let x = 620; x < 970; x += 22) {
-                if ((x + y) % 3 === 0) {
-                    pxRect(x, y, 14, 10, "#2c3e2f");
-                    pxRect(x + 2, y + 2, 10, 6, "#3a513e");
-                }
-            }
-        }
-
-        // Two Wooden Park Benches
-        // Bench 1 (Under Sakura)
-        pxRect(716, 480, 60, 16, "#5c381e");
-        pxRect(718, 482, 56, 12, "#7a4c28");
-        pxRect(716, 476, 60, 5, "#422815"); // Backrest
-        // Bench 2 (Skyline Terrace)
-        pxRect(856, 480, 60, 16, "#5c381e");
-        pxRect(858, 482, 56, 12, "#7a4c28");
-        pxRect(856, 476, 60, 5, "#422815");
-
-        // Grand Blooming Sakura (Cherry Blossom) Tree
-        // Trunk & branches
+        // Outdoor Terrace & Sakura Garden (Bottom-Right)
+        pxRect(610, 336, 382, 272, "#132317");
+        // Sakura Tree
         pxRect(760, 390, 24, 70, "#4a2b16");
-        pxRect(764, 386, 16, 74, "#5d371c");
-        pxRect(740, 410, 24, 8, "#4a2b16");
-        pxRect(780, 400, 28, 8, "#4a2b16");
-        // Lush Pink Blossoms Canopy
         pxRect(710, 340, 120, 60, "#f8a5c2");
         pxRect(720, 326, 100, 74, "#f78fb3");
-        pxRect(734, 314, 76, 88, "#ffb8b8");
-        // Blossom highlight puffs
-        pxRect(724, 350, 28, 20, "#ffffff99");
-        pxRect(770, 336, 32, 24, "#ffffff99");
+        // Benches
+        pxRect(716, 480, 60, 16, "#5c381e");
+        pxRect(856, 480, 60, 16, "#5c381e");
 
-        // Small Koi Pond with Ripple Effect
-        pxRect(880, 526, 76, 50, "#1b4965");
-        pxRect(884, 530, 68, 42, "#2b6cb0");
-        const ripple = (frame % 40) * 0.4;
-        ctx.strokeStyle = "rgba(190, 227, 248, 0.4)";
-        ctx.strokeRect(918 - ripple, 550 - ripple / 2, ripple * 2, ripple);
-
-        // Stone Lantern
-        pxRect(850, 536, 14, 24, "#718096");
-        pxRect(852, 540, 10, 8, "#f6e05e"); // warm yellow lantern glow
-
-        // 8. Draw Workstations (Dev Pods) Desks & Monitors
+        // Dev Desks
         POI.desks.forEach((desk, idx) => {
-            // Wooden Desk
             pxRect(desk.x - 24, desk.y, 48, 22, "#503823");
             pxRect(desk.x - 22, desk.y + 2, 44, 18, "#684a2f");
-            pxRect(desk.x - 24, desk.y + 22, 4, 10, "#332316"); // legs
-            pxRect(desk.x + 20, desk.y + 22, 4, 10, "#332316");
-
-            // Dual / Wide Monitors
-            pxRect(desk.x - 18, desk.y - 12, 16, 12, "#1a1626"); // Left Monitor
-            pxRect(desk.x + 2, desk.y - 12, 16, 12, "#1a1626");  // Right Monitor
-            pxRect(desk.x - 12, desk.y, 4, 2, "#3d3b4d");        // Stands
-            pxRect(desk.x + 8, desk.y, 4, 2, "#3d3b4d");
-
-            // Monitor Screen Colors (Dynamic based on agent working there)
-            const agentAtDesk = agents.find(a => {
-                const vis = agentVisuals.get(a.id);
-                return vis && vis.currentLocation === `Meja ${idx + 1}`;
-            });
-
-            let scrCol1 = "#0d1b13";
-            let scrCol2 = "#0e1828";
-            if (agentAtDesk && agentAtDesk.status === "working") {
-                if (agentAtDesk.activity === "typing") {
-                    scrCol1 = (frame % 16 < 8) ? "#2ecc71" : "#1b7943"; // fast terminal code
-                    scrCol2 = (frame % 20 < 10) ? "#f39c12" : "#995d03";
-                } else if (agentAtDesk.activity === "browsing") {
-                    scrCol1 = (frame % 24 < 12) ? "#3498db" : "#1c5b85";
-                    scrCol2 = "#2c3e50";
-                } else {
-                    scrCol1 = "#27ae60";
-                    scrCol2 = "#2980b9";
-                }
-            } else if (agentAtDesk && agentAtDesk.status === "waiting") {
-                scrCol1 = (frame % 20 < 10) ? "#e74c3c" : "#781e14"; // red alert
-                scrCol2 = "#e74c3c";
-            }
-
-            pxRect(desk.x - 16, desk.y - 10, 12, 8, scrCol1);
-            pxRect(desk.x + 4, desk.y - 10, 12, 8, scrCol2);
-
-            // Ergonomic Chair behind desk
-            pxRect(desk.x - 10, desk.y + 12, 20, 16, "#2d3436");
-            pxRect(desk.x - 8, desk.y + 14, 16, 12, "#404b4e");
+            pxRect(desk.x - 18, desk.y - 12, 16, 12, "#1a1626");
+            pxRect(desk.x + 2, desk.y - 12, 16, 12, "#1a1626");
+            const isTyping = (frame % 16 < 8);
+            pxRect(desk.x - 16, desk.y - 10, 12, 8, isTyping ? "#2ecc71" : "#1b7943");
+            pxRect(desk.x + 4, desk.y - 10, 12, 8, "#3498db");
         });
     }
 
-    /* =========================================================================
-       SAKURA FLOATING PETALS SYSTEM
-       ========================================================================= */
-    function drawSakuraPetals() {
-        sakuraPetals.forEach(p => {
-            p.x += p.speedX + Math.sin(p.sway + frame * 0.05) * 0.3;
-            p.y += p.speedY;
-            if (p.y > 620 || p.x > 980) {
-                p.x = 680 + Math.random() * 200;
-                p.y = 330 + Math.random() * 80;
-            }
-            pxRect(p.x, p.y, p.w, p.h, p.color);
-        });
+    function drawPet() {
+        const px = Math.round(pet.x), py = Math.round(pet.y);
+        if (pet.state === "sleep") {
+            pxRect(px + 1, py + 3, 11, 7, "#e67e22");
+            pxRect(px + 3, py + 2, 7, 2, "#d35400");
+            pxRect(px + 8, py + 4, 5, 5, "#f39c12");
+            if (frame % 60 < 30) pxRect(px + 15, py - 4, 3, 3, "rgba(223, 230, 233, 0.7)");
+        } else {
+            pxRect(px + 2, py + 2, 11, 6, "#e67e22");
+            pxRect(px + 10, py, 5, 5, "#f39c12");
+            pxRect(px + 3, py + 8, 2, 3, "#d35400");
+            pxRect(px + 9, py + 8, 2, 3, "#d35400");
+        }
+        if (pet.heartTimer > 0) {
+            pxRect(px + 2, py - 14, 10, 8, "#fff");
+            pxRect(px + 4, py - 12, 6, 4, "#e74c3c");
+        }
     }
 
-    /* =========================================================================
-       CHARACTER SPRITES & 4-WAY ANIMATION ENGINE
-       ========================================================================= */
-    // Agent Palette Configurations
-    const AGENT_SKINS = ["#f0c8a0", "#c68b59", "#ffdbac", "#f0c8a0", "#a1665e"];
-    const AGENT_HAIRS = ["#3e2723", "#dfe6e9", "#d35400", "#1dd1a1", "#2d3436"];
-    const AGENT_SHIRTS = ["#22325c", "#6c5ce7", "#d35400", "#00b894", "#0984e3"];
+    const SKINS = ["#f0c8a0", "#c68b59", "#ffdbac", "#f0c8a0", "#a1665e"];
+    const SHIRTS = ["#22325c", "#6c5ce7", "#d35400", "#00b894", "#0984e3"];
+    const HAIRS = ["#3e2723", "#dfe6e9", "#d35400", "#1dd1a1", "#2d3436"];
 
-    function drawPixelAgent(vis, agent, isSeated) {
-        const x = Math.round(vis.x);
-        const y = Math.round(vis.y);
-        const palIdx = (agent.avatar_idx || 0) % 5;
-        const skin = AGENT_SKINS[palIdx];
-        const hair = AGENT_HAIRS[palIdx];
-        const shirt = AGENT_SHIRTS[palIdx];
-
+    function drawAgent(vis, a, isSeated) {
+        const x = Math.round(vis.x), y = Math.round(vis.y);
+        const pIdx = (a.avatar_idx || 0) % 5;
+        const skin = SKINS[pIdx], shirt = SHIRTS[pIdx], hair = HAIRS[pIdx];
         const isWalking = vis.isMoving;
-        const walkFrame = Math.floor(frame / 6) % 4;
-        const bob = (isWalking && (walkFrame % 2 === 1)) ? -1 : 0;
+        const cy = y + ((isWalking && (Math.floor(frame / 6) % 2)) ? -1 : 0);
 
-        // Shadow under character
-        ctx.fillStyle = "rgba(0, 0, 0, 0.4)";
-        ctx.beginPath();
-        ctx.ellipse(x + 7, y + 21, 8, 3, 0, 0, Math.PI * 2);
-        ctx.fill();
+        // Shadow
+        ctx.fillStyle = "rgba(0,0,0,0.35)";
+        ctx.beginPath(); ctx.ellipse(x + 7, y + 21, 7, 3, 0, 0, Math.PI * 2); ctx.fill();
 
-        const cy = y + bob;
-
-        // 1. Hair & Head
+        // Hair & Head
         pxRect(x + 3, cy, 8, 4, hair);
-        if (palIdx === 0) {
-            // Hermes Prime: Golden laurel/antenna
-            pxRect(x + 10, cy - 2, 2, 3, "#f1c40f");
-        } else if (palIdx === 1) {
-            // Athena: Glasses
-            pxRect(x + 3, cy + 4, 3, 2, "#74b9ff");
-            pxRect(x + 8, cy + 4, 3, 2, "#74b9ff");
-        } else if (palIdx === 3) {
-            // Iris: DJ Headphones
-            pxRect(x + 1, cy + 2, 2, 5, "#fd79a8");
-            pxRect(x + 11, cy + 2, 2, 5, "#fd79a8");
-            pxRect(x + 3, cy - 1, 8, 2, "#fd79a8");
-        }
-
-        // Face
         pxRect(x + 4, cy + 3, 6, 5, skin);
-        // Eyes
-        if (vis.facing === "left") {
-            pxRect(x + 4, cy + 5, 2, 2, "#2d3436");
-        } else if (vis.facing === "right") {
-            pxRect(x + 8, cy + 5, 2, 2, "#2d3436");
-        } else {
-            pxRect(x + 5, cy + 5, 1, 2, "#2d3436");
-            pxRect(x + 8, cy + 5, 1, 2, "#2d3436");
-        }
+        pxRect(x + 5, cy + 5, 1, 2, "#2d3436"); pxRect(x + 8, cy + 5, 1, 2, "#2d3436");
 
-        // 2. Torso / Shirt
+        // Body & Arms
         pxRect(x + 3, cy + 8, 8, 7, shirt);
-        // Collar / Badge
-        pxRect(x + 6, cy + 8, 2, 3, "#f5f6fa");
-
-        // 3. Arms
-        if (isSeated && agent.activity === "typing") {
-            // Rapid typing hands on desk
-            const typeJitter = (frame % 4 < 2) ? 1 : 0;
-            pxRect(x + 1, cy + 10 + typeJitter, 2, 4, skin);
-            pxRect(x + 11, cy + 10 - typeJitter, 2, 4, skin);
-        } else if (vis.isDrinking) {
-            // Holding coffee mug to mouth
-            pxRect(x + 10, cy + 8, 3, 3, skin);
-            pxRect(x + 11, cy + 7, 4, 4, "#ecf0f1"); // White coffee mug
-            if (frame % 20 < 10) pxRect(x + 13, cy + 4, 1, 2, "#bdc3c7"); // mini steam
+        if (isSeated && a.activity === "typing") {
+            const j = (frame % 4 < 2) ? 1 : 0;
+            pxRect(x + 1, cy + 10 + j, 2, 4, skin); pxRect(x + 11, cy + 10 - j, 2, 4, skin);
         } else {
-            // Natural walking or standing arms
-            const armSwing = isWalking ? ((walkFrame % 2 === 0) ? 1 : -1) : 0;
-            pxRect(x + 1, cy + 9 + armSwing, 2, 5, shirt);
-            pxRect(x + 11, cy + 9 - armSwing, 2, 5, shirt);
-            pxRect(x + 1, cy + 14 + armSwing, 2, 2, skin);
-            pxRect(x + 11, cy + 14 - armSwing, 2, 2, skin);
+            pxRect(x + 1, cy + 9, 2, 6, shirt); pxRect(x + 11, cy + 9, 2, 6, shirt);
         }
 
-        // 4. Legs
-        if (isSeated) {
-            // Seated legs folded
-            pxRect(x + 4, cy + 15, 3, 4, "#2d3436");
-            pxRect(x + 7, cy + 15, 3, 4, "#2d3436");
-        } else if (isWalking) {
-            // 4-frame walk cycle
-            if (walkFrame === 0) {
-                pxRect(x + 4, cy + 15, 2, 6, "#2d3436");
-                pxRect(x + 8, cy + 15, 2, 4, "#2d3436");
-            } else if (walkFrame === 1) {
-                pxRect(x + 4, cy + 15, 2, 5, "#2d3436");
-                pxRect(x + 8, cy + 15, 2, 5, "#2d3436");
-            } else if (walkFrame === 2) {
-                pxRect(x + 4, cy + 15, 2, 4, "#2d3436");
-                pxRect(x + 8, cy + 15, 2, 6, "#2d3436");
-            } else {
-                pxRect(x + 4, cy + 15, 2, 5, "#2d3436");
-                pxRect(x + 8, cy + 15, 2, 5, "#2d3436");
-            }
-        } else {
-            // Standing still
-            pxRect(x + 4, cy + 15, 2, 6, "#2d3436");
-            pxRect(x + 8, cy + 15, 2, 6, "#2d3436");
+        // Legs
+        pxRect(x + 4, cy + 15, 2, 5, "#2d3436"); pxRect(x + 8, cy + 15, 2, 5, "#2d3436");
+
+        // Bubble
+        if (a.status === "working") {
+            pxRect(x + 2, cy - 14, 10, 8, "#fff");
+            ctx.font = "8px sans-serif"; ctx.textAlign = "center";
+            ctx.fillText(a.activity === "typing" ? "💻" : "⚡", x + 7, cy - 8);
         }
 
-        // 5. Thought & Speech Bubbles Above Head
-        drawAgentBubble(x, cy, agent, vis);
-
-        // 6. Name Label & Status Tag
-        ctx.font = "9px 'JetBrains Mono', monospace";
-        ctx.textAlign = "center";
-
-        // Background pill for label
-        const nameText = agent.label || agent.id;
-        const textW = ctx.measureText(nameText).width;
-        ctx.fillStyle = "rgba(17, 13, 26, 0.85)";
-        ctx.fillRect(x + 7 - textW / 2 - 4, cy + 24, textW + 8, 12);
-        ctx.strokeStyle = "#412e5e";
-        ctx.lineWidth = 1;
-        ctx.strokeRect(x + 7 - textW / 2 - 4, cy + 24, textW + 8, 12);
-
-        ctx.fillStyle = (agent.id === (selectedAgent ? selectedAgent.id : null)) ? "#f3c44c" : "#e2dcf2";
-        ctx.fillText(nameText, x + 7, cy + 33);
+        // Label
+        ctx.font = "9px 'JetBrains Mono', monospace"; ctx.textAlign = "center";
+        ctx.fillStyle = "rgba(11, 13, 20, 0.85)";
+        ctx.fillRect(x - 12, cy + 23, 38, 12);
+        ctx.fillStyle = (a.id === (selectedAgent ? selectedAgent.id : null)) ? "#f3c44c" : "#e2dcf2";
+        ctx.fillText((a.label || a.id).slice(0, 10), x + 7, cy + 32);
     }
 
-    function drawAgentBubble(x, y, agent, vis) {
-        let icon = null;
-        let bubbleBg = "#f5f6fa";
-        let bubbleBorder = "#2d3436";
-
-        if (agent.status === "waiting") {
-            icon = "⚠️";
-            bubbleBg = "#ff7675";
-        } else if (vis.isDrinking || agent.behavior === "drinking") {
-            icon = "☕";
-        } else if (agent.behavior === "bench") {
-            icon = "🌸";
-        } else if (agent.behavior === "meeting") {
-            icon = "📢";
-        } else if (agent.status === "working") {
-            if (agent.activity === "typing") icon = "💻";
-            else if (agent.activity === "browsing") icon = "🔍";
-            else if (agent.activity === "running") icon = "⚡";
-            else icon = "⚙️";
-        } else if (agent.status === "thinking") {
-            icon = "💡";
-        }
-
-        if (icon) {
-            const by = y - 16 + Math.sin(frame * 0.1) * 2;
-            pxRect(x + 1, by, 12, 10, bubbleBg);
-            pxRect(x + 5, by + 10, 3, 2, bubbleBg); // pointer
-            ctx.font = "8px sans-serif";
-            ctx.textAlign = "center";
-            ctx.fillText(icon, x + 7, by + 8);
-        }
-    }
-
-    /* =========================================================================
-       AGENT LIFE SIMULATION: PATHFINDING & DESTINATIONS
-       ========================================================================= */
-    const WALK_SPEED = 1.1;
-
-    function updateAgentPositions() {
-        agents.forEach((agent, idx) => {
-            let vis = agentVisuals.get(agent.id);
-            if (!vis) {
-                // Initial placement
-                const initialDesk = POI.desks[idx % POI.desks.length];
-                vis = {
-                    x: initialDesk.x,
-                    y: initialDesk.y + 14,
-                    targetX: initialDesk.x,
-                    targetY: initialDesk.y + 14,
-                    facing: "down",
-                    isMoving: false,
-                    isSeated: true,
-                    isDrinking: false,
-                    currentLocation: `Meja ${idx + 1}`
-                };
-                agentVisuals.set(agent.id, vis);
-            }
-
-            // Decide target coordinate based on behavior and assigned status
-            let dest = null;
-            let destLocation = "";
-            let shouldSeat = false;
-            let shouldDrink = false;
-
-            if (agent.behavior === "meeting") {
-                dest = POI.meeting[idx % POI.meeting.length];
-                destLocation = "Ruang Rapat All-Hands";
-                shouldSeat = true;
-            } else if (agent.behavior === "bench") {
-                dest = POI.benches[idx % POI.benches.length];
-                destLocation = "Bangku Taman Sakura";
-                shouldSeat = true;
-            } else if (agent.behavior === "drinking") {
-                dest = POI.lounge.coffee;
-                destLocation = "Coffee Lounge";
-                shouldDrink = true;
-            } else if (agent.behavior === "walking") {
-                dest = POI.roam[(idx + Math.floor(frame / 300)) % POI.roam.length];
-                destLocation = "Jalan-jalan di Teras";
-            } else {
-                // Default: Workstation Desk
-                const desk = POI.desks[idx % POI.desks.length];
-                dest = { x: desk.x, y: desk.y + 14 };
-                destLocation = `Meja ${idx + 1}`;
-                shouldSeat = true;
-            }
-
-            if (dest) {
-                vis.targetX = dest.x;
-                vis.targetY = dest.y;
-            }
-
-            // Smooth Movement Interpolation
-            const dx = vis.targetX - vis.x;
-            const dy = vis.targetY - vis.y;
-            const dist = Math.hypot(dx, dy);
-
-            if (dist > 1.5) {
-                vis.isMoving = true;
-                vis.isSeated = false;
-                vis.isDrinking = false;
-                vis.x += (dx / dist) * WALK_SPEED;
-                vis.y += (dy / dist) * WALK_SPEED;
-
-                // Set facing direction
-                if (Math.abs(dx) > Math.abs(dy)) {
-                    vis.facing = dx > 0 ? "right" : "left";
-                } else {
-                    vis.facing = dy > 0 ? "down" : "up";
-                }
-            } else {
-                vis.x = vis.targetX;
-                vis.y = vis.targetY;
-                vis.isMoving = false;
-                vis.isSeated = shouldSeat;
-                vis.isDrinking = shouldDrink;
-                vis.currentLocation = destLocation;
-            }
-        });
-    }
-
-    /* =========================================================================
-       MAIN RENDER LOOP
-       ========================================================================= */
     function renderLoop() {
         frame++;
-
         ctx.save();
-        // Clear full screen
         ctx.clearRect(0, 0, cv.width, cv.height);
-
-        // Apply Camera Transform
         ctx.translate(Math.round(camera.x), Math.round(camera.y));
         ctx.scale(camera.zoom, camera.zoom);
 
-        // 1. Draw Tilemap & Rooms
-        drawFloorAndRooms();
+        drawStage();
 
-        // 2. Draw Floating Sakura Petals
-        drawSakuraPetals();
+        // Sakura Petals
+        sakuraPetals.forEach(p => {
+            p.x += p.speedX + Math.sin(p.sway + frame * 0.05) * 0.3; p.y += p.speedY;
+            if (p.y > 610) { p.x = 660 + Math.random() * 200; p.y = 330; }
+            pxRect(p.x, p.y, 2, 2, p.color);
+        });
 
-        // 3. Update & Draw Mochi the Office Cat
-        updatePet();
+        // Pet
+        pet.actionTimer--;
+        if (pet.heartTimer > 0) pet.heartTimer--;
+        if (pet.actionTimer <= 0) {
+            pet.actionTimer = 200 + Math.random() * 200;
+            pet.state = Math.random() < 0.5 ? "sleep" : "walk";
+            pet.targetX = 660 + Math.random() * 220;
+            pet.targetY = 460 + Math.random() * 80;
+        }
+        const pdx = pet.targetX - pet.x, pdy = pet.targetY - pet.y, pdist = Math.hypot(pdx, pdy);
+        if (pdist > 1.5) { pet.x += (pdx/pdist)*0.7; pet.y += (pdy/pdist)*0.7; }
         drawPet();
 
-        // 4. Update & Draw Animated Agents
-        updateAgentPositions();
-
-        // Sort agents by Y coordinate for correct depth layering
-        const sortedAgents = [...agents].sort((a, b) => {
-            const va = agentVisuals.get(a.id);
-            const vb = agentVisuals.get(b.id);
-            return (va ? va.y : 0) - (vb ? vb.y : 0);
-        });
-
-        sortedAgents.forEach(agent => {
-            const vis = agentVisuals.get(agent.id);
-            if (vis) {
-                drawPixelAgent(vis, agent, vis.isSeated);
+        // Update & Draw Agents
+        agents.forEach((ag, idx) => {
+            let vis = agentVisuals.get(ag.id);
+            if (!vis) {
+                const d = POI.desks[idx % POI.desks.length];
+                vis = { x: d.x, y: d.y + 14, targetX: d.x, targetY: d.y + 14, isMoving: false, isSeated: true };
+                agentVisuals.set(ag.id, vis);
             }
+
+            let dest = POI.desks[idx % POI.desks.length];
+            let shouldSeat = true;
+            if (ag.behavior === "bench") { dest = POI.benches[idx % POI.benches.length]; }
+            else if (ag.behavior === "drinking") { dest = POI.coffee; shouldSeat = false; }
+            else if (ag.behavior === "meeting") { dest = POI.meeting[idx % POI.meeting.length]; }
+            else if (ag.behavior === "walking") { dest = POI.roam[idx % POI.roam.length]; shouldSeat = false; }
+
+            vis.targetX = dest.x; vis.targetY = dest.y;
+            const dx = vis.targetX - vis.x, dy = vis.targetY - vis.y, dist = Math.hypot(dx, dy);
+            if (dist > 1.5) {
+                vis.isMoving = true; vis.isSeated = false;
+                vis.x += (dx/dist) * 1.1; vis.y += (dy/dist) * 1.1;
+            } else {
+                vis.x = vis.targetX; vis.y = vis.targetY;
+                vis.isMoving = false; vis.isSeated = shouldSeat;
+            }
+            drawAgent(vis, ag, vis.isSeated);
         });
 
-        // 5. Atmospheric Ambient Lighting
+        // Atmosphere Tint
         if (currentTheme === "twilight") {
-            ctx.fillStyle = "rgba(230, 126, 34, 0.09)";
-            ctx.fillRect(0, 0, WORLD_W, WORLD_H);
+            ctx.fillStyle = "rgba(230, 126, 34, 0.08)"; ctx.fillRect(0, 0, WORLD_W, WORLD_H);
         } else if (currentTheme === "day") {
-            ctx.fillStyle = "rgba(255, 255, 255, 0.07)";
-            ctx.fillRect(0, 0, WORLD_W, WORLD_H);
+            ctx.fillStyle = "rgba(255, 255, 255, 0.06)"; ctx.fillRect(0, 0, WORLD_W, WORLD_H);
         }
 
         ctx.restore();
-
         requestAnimationFrame(renderLoop);
     }
     requestAnimationFrame(renderLoop);
 
     /* =========================================================================
-       BRIDGE POLLING & SYNC ENGINE (/state & /api/worksheets)
+       HERMES INTEGRATION: SESSIONS, MESSAGES & WHAT'S NEXT
        ========================================================================= */
     const BRIDGE_HOST = window.location.origin;
 
-    async function pollState() {
+    async function fetchSessions() {
         try {
-            const res = await fetch(`${BRIDGE_HOST}/state`, { cache: "no-store" });
-            if (!res.ok) throw new Error("HTTP " + res.status);
-            const data = await res.json();
-
-            isConnected = true;
-            updateBridgeBadge(true);
-
-            if (data.agents && Array.isArray(data.agents)) {
-                // Check if any agent leveled up or status changed for SFX
-                data.agents.forEach(newA => {
-                    const oldA = agents.find(a => a.id === newA.id);
-                    if (oldA && newA.level > oldA.level) {
-                        playSfx("levelup");
-                        showToast(`🌟 LEVEL UP! ${newA.label} naik ke Level ${newA.level}!`);
-                    } else if (oldA && newA.status === "waiting" && oldA.status !== "waiting") {
-                        playSfx("meeting");
-                    }
-                });
-
-                agents = data.agents;
-                if (data.active_worksheet) activeWorksheetId = data.active_worksheet;
-
-                // Update bottom telemetry ticker
-                const activeA = agents.find(a => a.status === "working") || agents[0];
-                if (activeA) {
-                    document.getElementById("ticker-text").textContent = `[${activeA.label}] ${activeA.detail || activeA.activity || 'Siaga di workspace'}`;
-                }
-
-                // If modal is currently open, refresh its data
-                if (selectedAgent) {
-                    const fresh = agents.find(a => a.id === selectedAgent.id);
-                    if (fresh) renderAgentModal(fresh);
-                }
-            }
-        } catch(err) {
-            isConnected = false;
-            updateBridgeBadge(false);
-        }
-    }
-
-    async function fetchWorksheets() {
-        try {
-            const res = await fetch(`${BRIDGE_HOST}/api/worksheets`, { cache: "no-store" });
+            const res = await fetch(`${BRIDGE_HOST}/api/hermes/sessions`);
             if (!res.ok) return;
             const data = await res.json();
-            if (data.worksheets) {
-                worksheets = data.worksheets;
-                activeWorksheetId = data.activeId || activeWorksheetId;
-                renderWorksheetsDock();
-                renderActiveWorksheetDrawer();
-            }
+            hermesSessions = data.sessions || [];
+            renderSidebarSessions();
         } catch(e) {}
     }
 
-    async function fetchTelemetryLogs() {
-        try {
-            const res = await fetch(`${BRIDGE_HOST}/api/history`, { cache: "no-store" });
-            if (!res.ok) return;
-            const data = await res.json();
-            if (data.logs) {
-                renderTelemetryList(data.logs);
-            }
-        } catch(e) {}
-    }
+    function renderSidebarSessions() {
+        const pinnedContainer = document.getElementById("pinned-sessions");
+        const recentContainer = document.getElementById("recent-sessions");
+        pinnedContainer.innerHTML = "";
+        recentContainer.innerHTML = "";
 
-    function updateBridgeBadge(online) {
-        const badge = document.getElementById("bridge-badge");
-        const text = document.getElementById("bridge-text");
-        if (online) {
-            badge.className = "flex items-center space-x-1.5 px-2 py-0.5 rounded bg-emerald-950/80 border border-emerald-600/50 text-[10px] text-emerald-300 font-mono";
-            text.textContent = "DUAL-STACK ONLINE";
-        } else {
-            badge.className = "flex items-center space-x-1.5 px-2 py-0.5 rounded bg-rose-950/80 border border-rose-600/50 text-[10px] text-rose-300 font-mono";
-            text.textContent = "OFFLINE (RECONNECTING...)";
-        }
-    }
+        hermesSessions.forEach(s => {
+            const el = document.createElement("div");
+            const isCur = s.id === currentSessionId;
+            el.className = `p-2 rounded text-xs cursor-pointer flex items-center justify-between ${isCur ? 'bg-[#181d2e] border border-amber-500/40 text-amber-200' : 'hover:bg-[#131722] text-slate-300'}`;
+            el.innerHTML = `
+                <span class="truncate max-w-[170px]">${s.title}</span>
+                <span class="text-[9px] text-slate-500">${s.pinned ? '📌' : ''}</span>
+            `;
+            el.addEventListener("click", () => switchHermesSession(s.id, s.title));
 
-    /* =========================================================================
-       WORKSHEETS DOCK & DRAWER SYNC
-       ========================================================================= */
-    function renderWorksheetsDock() {
-        const dock = document.getElementById("worksheets-dock");
-        dock.innerHTML = "";
-
-        worksheets.forEach(ws => {
-            const btn = document.createElement("button");
-            btn.className = `pixel-btn px-2.5 py-1 text-[11px] whitespace-nowrap ${ws.id === activeWorksheetId ? "active" : ""}`;
-            btn.innerHTML = `<span class="text-amber-400 font-bold mr-1">[${ws.code}]</span> ${ws.title.slice(0, 18)}…`;
-            btn.addEventListener("click", () => switchWorksheet(ws.id));
-            dock.appendChild(btn);
+            if (s.pinned) pinnedContainer.appendChild(el);
+            else recentContainer.appendChild(el);
         });
-
-        // Add '+ Baru' button
-        const addBtn = document.createElement("button");
-        addBtn.className = "pixel-btn px-2 py-1 text-[10px] text-amber-300 ml-1";
-        addBtn.title = "Buat Lembar Kerja Baru";
-        addBtn.innerHTML = '<i class="fa-solid fa-plus"></i>';
-        addBtn.addEventListener("click", createNewWorksheet);
-        dock.appendChild(addBtn);
     }
 
-    async function switchWorksheet(wsId) {
+    async function switchHermesSession(sid, title) {
+        currentSessionId = sid;
+        document.getElementById("header-active-session").textContent = title;
+        document.getElementById("active-session-title").textContent = title;
+        renderSidebarSessions();
         playSfx("blip");
+        await loadSessionMessages(sid);
+    }
+
+    async function loadSessionMessages(sid) {
         try {
-            const res = await fetch(`${BRIDGE_HOST}/api/worksheets/switch`, {
+            const res = await fetch(`${BRIDGE_HOST}/api/hermes/messages?session_id=${encodeURIComponent(sid)}`);
+            if (!res.ok) return;
+            const data = await res.json();
+            renderChatMessages(data.messages || []);
+        } catch(e) {}
+    }
+
+    function renderChatMessages(msgs) {
+        const container = document.getElementById("chat-messages-stream");
+        container.innerHTML = "";
+        document.getElementById("session-msg-count").textContent = `${msgs.length} Peristiwa Tercatat`;
+
+        msgs.forEach(m => {
+            const isUser = m.role === "user";
+            const row = document.createElement("div");
+            row.className = "flex items-start space-x-2.5";
+            const timeStr = m.timestamp ? new Date(m.timestamp * 1000).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit', second:'2-digit'}) : "";
+
+            if (isUser) {
+                row.innerHTML = `
+                    <div class="w-6 h-6 rounded bg-sky-500/20 border border-sky-500/40 text-sky-400 flex items-center justify-center font-bold text-[9px] shrink-0">U</div>
+                    <div class="flex-1 space-y-1">
+                        <div class="text-[10px] text-slate-400 flex items-center space-x-2">
+                            <span class="text-sky-300 font-bold">User (ZENNITH)</span>
+                            <span>•</span>
+                            <span class="text-slate-500 text-[9px]">${timeStr}</span>
+                        </div>
+                        <div class="p-2.5 rounded bg-[#131929] border border-[#232d47] text-slate-100 leading-relaxed">${escapeHtml(m.content)}</div>
+                    </div>
+                `;
+            } else {
+                row.innerHTML = `
+                    <div class="w-6 h-6 rounded bg-amber-500/20 border border-amber-500/40 text-amber-400 flex items-center justify-center font-pixel text-[8px] shrink-0">H</div>
+                    <div class="flex-1 space-y-1">
+                        <div class="text-[10px] text-slate-400 flex items-center space-x-2">
+                            <span class="text-amber-300 font-bold">Hermes Agent</span>
+                            ${m.tool_name ? `<span class="px-1.5 py-0.2 rounded bg-emerald-950 text-emerald-400 border border-emerald-700/50 text-[9px]">tool: ${m.tool_name}</span>` : ''}
+                            <span>•</span>
+                            <span class="text-slate-500 text-[9px]">${timeStr}</span>
+                        </div>
+                        ${m.reasoning ? `<div class="p-2 rounded bg-[#0a0c13] border-l-2 border-purple-400 text-purple-300 text-[11px] mb-1 italic">Thinking: ${escapeHtml(m.reasoning)}</div>` : ''}
+                        <div class="p-2.5 rounded bg-[#141824] border border-[#262c3f] text-slate-200 leading-relaxed whitespace-pre-wrap">${formatContent(m.content)}</div>
+                    </div>
+                `;
+            }
+            container.appendChild(row);
+        });
+        container.scrollTop = container.scrollHeight;
+    }
+
+    function escapeHtml(str) {
+        return (str || "").replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    }
+
+    function formatContent(str) {
+        let s = escapeHtml(str || "");
+        s = s.replace(/\*\*(.*?)\*\*/g, '<strong class="text-amber-300">$1</strong>');
+        s = s.replace(/\*(.*?)\*/g, '<em class="text-slate-300">$1</em>');
+        s = s.replace(/`([^`]+)`/g, '<code class="px-1 py-0.5 rounded bg-[#0b0e17] text-emerald-300 border border-slate-800 font-mono text-[11px]">$1</code>');
+        return s;
+    }
+
+    // "What's next?" Send Handler
+    async function sendWhatsNext() {
+        const inp = document.getElementById("whats-next-input");
+        const val = inp.value.trim();
+        if (!val) return;
+        inp.value = "";
+        playSfx("blip");
+
+        try {
+            const res = await fetch(`${BRIDGE_HOST}/api/hermes/chat`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ id: wsId })
+                body: JSON.stringify({
+                    session_id: currentSessionId,
+                    message: val,
+                    agent_id: "sess-hermes-prime"
+                })
             });
             if (res.ok) {
-                activeWorksheetId = wsId;
-                renderWorksheetsDock();
-                renderActiveWorksheetDrawer();
+                await loadSessionMessages(currentSessionId);
                 pollState();
             }
         } catch(e) {}
     }
 
-    async function createNewWorksheet() {
-        const title = prompt("Masukkan Judul Lembar Kerja Baru:", "Arsitektur & Optimasi Baru");
-        if (!title) return;
-        const goal = prompt("Tujuan pembahasan ini:", "Deskripsi tugas dan KPI");
-        playSfx("blip");
-        try {
-            const res = await fetch(`${BRIDGE_HOST}/api/worksheets/create`, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ title, goal, assigned: ["hermes", "iris"] })
-            });
-            if (res.ok) {
-                fetchWorksheets();
-            }
-        } catch(e) {}
-    }
-
-    function renderActiveWorksheetDrawer() {
-        const ws = worksheets.find(w => w.id === activeWorksheetId) || worksheets[0];
-        if (!ws) return;
-
-        document.getElementById("ws-code-badge").textContent = `TOPIK ${ws.code}`;
-        document.getElementById("ws-title").textContent = ws.title;
-        document.getElementById("ws-goal").textContent = ws.goal || "Tidak ada rincian tujuan.";
-        document.getElementById("ws-assigned").textContent = (ws.assigned || []).map(a => a.toUpperCase()).join(", ");
-        document.getElementById("ws-content-editor").value = ws.deliverable || "";
-    }
-
-    // Save Worksheet Notes
-    document.getElementById("btn-save-notes").addEventListener("click", async () => {
-        const content = document.getElementById("ws-content-editor").value;
-        playSfx("click");
-        try {
-            const res = await fetch(`${BRIDGE_HOST}/api/worksheets/save`, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ id: activeWorksheetId, deliverable: content })
-            });
-            if (res.ok) {
-                const badge = document.getElementById("save-status");
-                badge.classList.remove("hidden");
-                setTimeout(() => badge.classList.add("hidden"), 2000);
-            }
-        } catch(e) {}
-    });
-
-    // Export to Artifact File
-    document.getElementById("btn-export-artifact").addEventListener("click", async () => {
-        const ws = worksheets.find(w => w.id === activeWorksheetId);
-        const content = document.getElementById("ws-content-editor").value;
-        playSfx("blip");
-        try {
-            const res = await fetch(`${BRIDGE_HOST}/api/save_artifact`, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    title: ws ? ws.title : "Lembar_Kerja_Hermes",
-                    content: content
-                })
-            });
-            const data = await res.json();
-            if (data.success) {
-                alert(`📦 Artefak Berhasil Dibuat!\nTersimpan ke: ${data.filename}`);
-            }
-        } catch(e) {}
+    document.getElementById("btn-send-whats-next").addEventListener("click", sendWhatsNext);
+    document.getElementById("whats-next-input").addEventListener("keydown", (e) => {
+        if (e.key === "Enter") sendWhatsNext();
     });
 
     /* =========================================================================
-       MACRO OFFICE CONTROLS (Rapat, Rehat, Sprint, Bebas)
+       STATE POLLING & SQUAD ROSTER
        ========================================================================= */
-    async function sendMacro(action) {
-        if (action === "meeting") playSfx("meeting");
-        else if (action === "break") playSfx("coffee");
-        else playSfx("blip");
+    async function pollState() {
+        try {
+            const res = await fetch(`${BRIDGE_HOST}/state`);
+            if (!res.ok) return;
+            const data = await res.json();
+            if (data.agents) {
+                agents = data.agents;
+                renderSquadRoster();
+                const activeA = agents.find(a => a.status === "working") || agents[0];
+                if (activeA) {
+                    document.getElementById("stage-ticker").textContent = `${activeA.label}: ${activeA.detail || activeA.activity || 'Siaga di workstation'}`;
+                }
+            }
+        } catch(e) {}
+    }
 
+    function renderSquadRoster() {
+        const list = document.getElementById("squad-list");
+        list.innerHTML = "";
+        document.getElementById("active-squad-count").textContent = `${agents.length} ONLINE`;
+
+        agents.forEach(a => {
+            const card = document.createElement("div");
+            card.className = "p-2 rounded bg-[#131622] border border-[#212638] hover:border-amber-400 cursor-pointer text-xs";
+            const isWorking = a.status === "working";
+            card.innerHTML = `
+                <div class="flex items-center justify-between mb-1">
+                    <span class="font-bold ${isWorking ? 'text-amber-300' : 'text-slate-200'}">${a.label}</span>
+                    <span class="px-1.5 py-0.5 rounded text-[9px] ${isWorking ? 'bg-emerald-950 text-emerald-400 border border-emerald-600' : 'bg-slate-800 text-slate-400'}">${(a.status || 'idle').toUpperCase()}</span>
+                </div>
+                <div class="text-[10px] text-slate-400 truncate mb-1">${a.detail || a.activity || 'Siaga'}</div>
+                <div class="flex items-center justify-between text-[9px] text-slate-500 font-mono">
+                    <span>Lv.${a.level || 1}</span>
+                    <span>${a.xp || 50}/${a.max_xp || 200} XP</span>
+                </div>
+            `;
+            card.addEventListener("click", () => openAgentModal(a));
+            list.appendChild(card);
+        });
+    }
+
+    /* =========================================================================
+       LAYOUT SWITCHER (Split / Full Office / Full Hermes)
+       ========================================================================= */
+    const stage = document.getElementById("star-office-stage");
+    const chatPane = document.getElementById("hermes-chat-pane");
+    const lowerPanels = document.getElementById("lower-panels-container");
+
+    document.getElementById("layout-split").addEventListener("click", function() {
+        this.classList.add("active");
+        document.getElementById("layout-office").classList.remove("active");
+        document.getElementById("layout-hermes").classList.remove("active");
+        stage.style.display = "block";
+        stage.style.height = "54%";
+        lowerPanels.style.display = "flex";
+        chatPane.style.display = "flex";
+        resizeCanvas(); centerCamera();
+        playSfx("blip");
+    });
+
+    document.getElementById("layout-office").addEventListener("click", function() {
+        this.classList.add("active");
+        document.getElementById("layout-split").classList.remove("active");
+        document.getElementById("layout-hermes").classList.remove("active");
+        stage.style.display = "block";
+        stage.style.height = "100%";
+        lowerPanels.style.display = "none";
+        resizeCanvas(); centerCamera();
+        playSfx("blip");
+    });
+
+    document.getElementById("layout-hermes").addEventListener("click", function() {
+        this.classList.add("active");
+        document.getElementById("layout-split").classList.remove("active");
+        document.getElementById("layout-office").classList.remove("active");
+        stage.style.display = "none";
+        lowerPanels.style.display = "flex";
+        chatPane.style.display = "flex";
+        playSfx("blip");
+    });
+
+    // Sidebar Toggle
+    document.getElementById("btn-toggle-sidebar").addEventListener("click", () => {
+        const sb = document.getElementById("hermes-sidebar");
+        sb.classList.toggle("-ml-64");
+        playSfx("blip");
+    });
+
+    // Star Office Control Buttons
+    async function sendMacro(action) {
+        playSfx("blip");
         try {
             await fetch(`${BRIDGE_HOST}/api/office/macro`, {
                 method: "POST",
@@ -1857,99 +1131,58 @@
             pollState();
         } catch(e) {}
     }
+    document.getElementById("btn-state-idle").addEventListener("click", () => sendMacro("break"));
+    document.getElementById("btn-state-writing").addEventListener("click", () => sendMacro("sprint"));
+    document.getElementById("btn-state-meeting").addEventListener("click", () => sendMacro("meeting"));
+    document.getElementById("btn-state-sprint").addEventListener("click", () => sendMacro("sprint"));
+    document.getElementById("btn-state-syncing").addEventListener("click", () => {
+        showToast("🔄 Memori SQLite FTS5 Disinkronisasi");
+        playSfx("blip");
+    });
+    document.getElementById("btn-pet-mochi").addEventListener("click", () => {
+        pet.heartTimer = 60;
+        playSfx("cat");
+        showToast("🐱 Mochi senang dielus! (+15 Team Morale)");
+    });
 
-    document.getElementById("macro-meeting").addEventListener("click", () => sendMacro("meeting"));
-    document.getElementById("macro-break").addEventListener("click", () => sendMacro("break"));
-    document.getElementById("macro-sprint").addEventListener("click", () => sendMacro("sprint"));
-    document.getElementById("macro-roam").addEventListener("click", () => sendMacro("roam"));
+    // Atmosphere Toggle
+    document.getElementById("btn-theme").addEventListener("click", () => {
+        const icon = document.getElementById("theme-icon");
+        const text = document.getElementById("theme-text");
+        if (currentTheme === "night") { currentTheme = "twilight"; icon.className = "fa-solid fa-sun text-amber-400"; text.textContent = "Senja"; showToast("🌅 Mode Senja Keemasan"); }
+        else if (currentTheme === "twilight") { currentTheme = "day"; icon.className = "fa-solid fa-cloud-sun text-sky-400"; text.textContent = "Siang"; showToast("☀️ Mode Siang Studio"); }
+        else { currentTheme = "night"; icon.className = "fa-solid fa-moon text-indigo-400"; text.textContent = "Malam"; showToast("🌙 Mode Malam Cyberpunk"); }
+        playSfx("blip");
+    });
 
-    /* =========================================================================
-       AGENT DOSSIER MODAL & MICRO-INTERACTION
-       ========================================================================= */
-    function openAgentModal(agent) {
-        selectedAgent = agent;
-        renderAgentModal(agent);
-        document.getElementById("agent-modal").classList.remove("hidden");
-    }
+    // Agent Modal
+    function openAgentModal(a) {
+        selectedAgent = a;
+        document.getElementById("modal-agent-name").textContent = a.label;
+        document.getElementById("modal-agent-role").textContent = a.role || "Autonomous Worker";
+        document.getElementById("modal-level-text").textContent = `Level ${a.level || 1}`;
+        document.getElementById("modal-xp-text").textContent = `${a.xp || 50} / ${a.max_xp || 200} XP`;
+        const pct = Math.min(Math.round(((a.xp || 50) / (a.max_xp || 200)) * 100), 100);
+        document.getElementById("modal-xp-bar").style.width = pct + "%";
+        document.getElementById("modal-status-label").textContent = `${(a.status || 'idle').toUpperCase()}`;
+        document.getElementById("modal-detail-text").textContent = a.detail || a.activity || "Menunggu tugas aktif.";
 
-    function renderAgentModal(agent) {
-        document.getElementById("modal-agent-name").textContent = (agent.label || agent.id).toUpperCase();
-        document.getElementById("modal-agent-role").textContent = agent.role || "Autonomous Worker";
-        document.getElementById("modal-agent-model").textContent = `Model: ${agent.model || 'Hermes-3-70B'}`;
-
-        const level = agent.level || 1;
-        const xp = agent.xp || 50;
-        const max_xp = agent.max_xp || 200;
-        const pct = Math.min(Math.round((xp / max_xp) * 100), 100);
-
-        document.getElementById("modal-agent-badge").textContent = `LVL ${level}`;
-        document.getElementById("modal-level-text").textContent = `Level ${level} Specialist`;
-        document.getElementById("modal-xp-text").textContent = `${xp} / ${max_xp} XP`;
-        document.getElementById("modal-xp-bar").style.width = `${pct}%`;
-
-        const vis = agentVisuals.get(agent.id);
-        document.getElementById("modal-location").textContent = vis ? vis.currentLocation : "Workspace";
-        document.getElementById("modal-detail-text").textContent = agent.detail || agent.activity || "Menunggu tugas aktif.";
-
-        const statusLabel = document.getElementById("modal-status-label");
-        const statusDot = document.getElementById("modal-status-dot");
-        statusLabel.textContent = (agent.status || "IDLE").toUpperCase();
-        if (agent.status === "working") {
-            statusDot.className = "w-2 h-2 rounded-full bg-emerald-400";
-            statusLabel.className = "uppercase text-emerald-400 font-bold";
-        } else if (agent.status === "waiting") {
-            statusDot.className = "w-2 h-2 rounded-full bg-rose-400 pixel-blink";
-            statusLabel.className = "uppercase text-rose-400 font-bold";
-        } else {
-            statusDot.className = "w-2 h-2 rounded-full bg-slate-400";
-            statusLabel.className = "uppercase text-slate-400 font-bold";
-        }
-
-        // Draw portrait canvas (enlarged 4x)
-        drawAvatarPortrait(agent);
-    }
-
-    function drawAvatarPortrait(agent) {
+        // Draw portrait
         const pc = document.getElementById("avatar-portrait-canvas");
         const pctx = pc.getContext("2d");
-        pctx.imageSmoothingEnabled = false;
         pctx.clearRect(0, 0, pc.width, pc.height);
+        const pIdx = (a.avatar_idx || 0) % 5;
+        pctx.fillStyle = SKINS[pIdx]; pctx.fillRect(20, 20, 24, 24);
+        pctx.fillStyle = HAIRS[pIdx]; pctx.fillRect(16, 12, 32, 16);
+        pctx.fillStyle = SHIRTS[pIdx]; pctx.fillRect(12, 44, 40, 36);
 
-        const palIdx = (agent.avatar_idx || 0) % 5;
-        const skin = AGENT_SKINS[palIdx];
-        const hair = AGENT_HAIRS[palIdx];
-        const shirt = AGENT_SHIRTS[palIdx];
-
-        // 4x scale pixel art portrait
-        const S = 3.5;
-        const ox = 12;
-        const oy = 6;
-
-        function r(x, y, w, h, col) {
-            pctx.fillStyle = col;
-            pctx.fillRect(Math.round(ox + x * S), Math.round(oy + y * S), Math.round(w * S), Math.round(h * S));
-        }
-
-        // Hair
-        r(2, 0, 8, 4, hair);
-        if (palIdx === 0) r(9, -2, 2, 3, "#f1c40f"); // golden laurel
-        // Face
-        r(3, 3, 6, 6, skin);
-        // Eyes
-        r(4, 5, 1, 2, "#111");
-        r(7, 5, 1, 2, "#111");
-        // Clothes / Jacket
-        r(1, 9, 10, 9, shirt);
-        r(4, 9, 4, 9, "#f5f6fa"); // collar
+        document.getElementById("agent-modal").classList.remove("hidden");
     }
-
     document.getElementById("btn-close-modal").addEventListener("click", () => {
         document.getElementById("agent-modal").classList.add("hidden");
         selectedAgent = null;
-        playSfx("click");
     });
 
-    // Send Micro-Actions to Agent
     async function sendAgentAction(action) {
         if (!selectedAgent) return;
         playSfx("blip");
@@ -1962,103 +1195,51 @@
             pollState();
         } catch(e) {}
     }
-
     document.getElementById("cmd-work").addEventListener("click", () => sendAgentAction("work"));
     document.getElementById("cmd-bench").addEventListener("click", () => sendAgentAction("bench"));
     document.getElementById("cmd-coffee").addEventListener("click", () => sendAgentAction("coffee"));
     document.getElementById("cmd-meeting").addEventListener("click", () => sendAgentAction("meeting"));
 
-    // Send Custom User Instruction
-    document.getElementById("btn-send-instruction").addEventListener("click", async () => {
-        const inp = document.getElementById("agent-instruction-input");
-        const val = inp.value.trim();
-        if (!val || !selectedAgent) return;
-        playSfx("click");
-        try {
-            await fetch(`${BRIDGE_HOST}/api/agent/command`, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ id: selectedAgent.id, command: val })
-            });
-            inp.value = "";
-            showToast(`Instruksi terkirim ke ${selectedAgent.label}!`);
-            pollState();
-        } catch(e) {}
-    });
+    // Toast
+    function showToast(msg) {
+        const t = document.createElement("div");
+        t.className = "fixed bottom-10 left-1/2 -translate-x-1/2 z-50 star-box px-4 py-2 text-xs text-amber-300 font-mono shadow-2xl bg-[#141724]";
+        t.textContent = msg;
+        document.body.appendChild(t);
+        setTimeout(() => t.remove(), 3000);
+    }
 
-    /* =========================================================================
-       DRAWER TABS & TELEMETRY LIST
-       ========================================================================= */
-    const drawer = document.getElementById("side-drawer");
-    const tabWs = document.getElementById("tab-btn-ws");
-    const tabTelem = document.getElementById("tab-btn-telemetry");
-    const viewWs = document.getElementById("drawer-tab-ws");
-    const viewTelem = document.getElementById("drawer-tab-telemetry");
+    // Corner Pet drawing
+    function drawCornerPet() {
+        const cc = document.getElementById("corner-pet-canvas");
+        const cctx = cc.getContext("2d");
+        cctx.clearRect(0, 0, cc.width, cc.height);
+        // Box
+        cctx.fillStyle = "#8a582e"; cctx.fillRect(3, 10, 22, 14);
+        cctx.fillStyle = "#a87140"; cctx.fillRect(4, 11, 20, 12);
+        // Corgi / Cat head
+        cctx.fillStyle = "#f39c12"; cctx.fillRect(6, 3, 16, 10);
+        cctx.fillStyle = "#e67e22"; cctx.fillRect(4, 1, 4, 4); cctx.fillRect(20, 1, 4, 4); // ears
+        cctx.fillStyle = "#fff"; cctx.fillRect(10, 8, 8, 5); // muzzle
+        cctx.fillStyle = "#2c3e50"; cctx.fillRect(9, 6, 2, 2); cctx.fillRect(17, 6, 2, 2); // eyes
+        cctx.fillRect(13, 9, 2, 2); // nose
+    }
+    drawCornerPet();
 
-    document.getElementById("btn-toggle-drawer").addEventListener("click", () => {
-        drawer.classList.toggle("translate-x-full");
-        playSfx("click");
-        if (!drawer.classList.contains("translate-x-full")) {
-            fetchWorksheets();
-            fetchTelemetryLogs();
+    // Clock
+    setInterval(() => {
+        const d = new Date();
+        document.getElementById("footer-clock").textContent = d.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+    }, 1000);
+
+    // Initial Load
+    fetchSessions().then(() => {
+        if (hermesSessions.length > 0) {
+            switchHermesSession(hermesSessions[0].id, hermesSessions[0].title);
         }
     });
-
-    document.getElementById("btn-close-drawer").addEventListener("click", () => {
-        drawer.classList.add("translate-x-full");
-        playSfx("click");
-    });
-
-    tabWs.addEventListener("click", () => {
-        tabWs.classList.add("active");
-        tabTelem.classList.remove("active");
-        viewWs.classList.remove("hidden");
-        viewTelem.classList.add("hidden");
-        playSfx("click");
-    });
-
-    tabTelem.addEventListener("click", () => {
-        tabTelem.classList.add("active");
-        tabWs.classList.remove("active");
-        viewTelem.classList.remove("hidden");
-        viewWs.classList.add("hidden");
-        fetchTelemetryLogs();
-        playSfx("click");
-    });
-
-    function renderTelemetryList(logs) {
-        const container = document.getElementById("telemetry-items");
-        container.innerHTML = "";
-        logs.slice(-30).reverse().forEach(log => {
-            const div = document.createElement("div");
-            div.className = "p-2 rounded bg-[#0d0916] border border-[#2d1f45] text-[10px]";
-            const timeStr = log.saved_at ? log.saved_at.slice(11, 19) : "";
-            div.innerHTML = `
-                <div class="flex items-center justify-between text-slate-400 mb-0.5">
-                    <span class="text-amber-400 font-bold">${log.agent || log.role || 'SISTEM'}</span>
-                    <span class="text-[9px] text-slate-500">${timeStr}</span>
-                </div>
-                <div class="text-slate-300 font-mono">${log.detail || log.message || log.preview || 'Menjalankan eksekusi'}</div>
-            `;
-            container.appendChild(div);
-        });
-    }
-
-    function showToast(msg) {
-        const toast = document.createElement("div");
-        toast.className = "fixed bottom-14 left-1/2 transform -translate-x-1/2 z-50 pixel-box px-4 py-2 text-xs text-amber-300 font-mono shadow-2xl bg-[#1b1429]";
-        toast.textContent = msg;
-        document.body.appendChild(toast);
-        setTimeout(() => toast.remove(), 3200);
-    }
-
-    /* =========================================================================
-       INITIALIZATION & INTERVALS
-       ========================================================================= */
     pollState();
-    fetchWorksheets();
     setInterval(pollState, 1500);
-    setInterval(fetchWorksheets, 5000);
 
     </script>
 </body>

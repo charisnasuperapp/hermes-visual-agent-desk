@@ -53,6 +53,107 @@ _agent_overrides = {}
 _active_worksheet_id = "ws-topic-a"
 _in_memory_agents = {}
 
+AGENT_ID_MAP = {
+    "hermes": "sess-hermes-prime",
+    "athena": "sess-athena-core",
+    "hephaestus": "sess-hephaestus",
+    "iris": "sess-iris-ui",
+    "zephyr": "sess-zephyr",
+}
+
+AGENT_PROFILES = {
+    "sess-hermes-prime": {
+        "id": "sess-hermes-prime",
+        "label": "Hermes Prime",
+        "codename": "HERMES-01",
+        "role": "Lead Architect & Orchestrator",
+        "model": "Hermes-3-70B / Claude-3.5-Sonnet",
+        "level": 5,
+        "xp": 840,
+        "max_xp": 1000,
+        "avatar_idx": 0,
+        "desk_idx": 0,
+        "bench_idx": 0,
+        "platform": "hermes",
+        "status": "working",
+        "behavior": "desk",
+        "activity": "typing",
+        "detail": "Mengorkestrasi sistem hybrid storage & visual workspace"
+    },
+    "sess-athena-core": {
+        "id": "sess-athena-core",
+        "label": "Athena Owl",
+        "codename": "ATHENA-02",
+        "role": "Knowledge & Intelligence Specialist",
+        "model": "Gemini-1.5-Pro / GPT-4o",
+        "level": 4,
+        "xp": 620,
+        "max_xp": 800,
+        "avatar_idx": 1,
+        "desk_idx": 1,
+        "bench_idx": 1,
+        "platform": "athena",
+        "status": "working",
+        "behavior": "desk",
+        "activity": "reading",
+        "detail": "Menelusuri indeks semantik FTS5 & review queue"
+    },
+    "sess-hephaestus": {
+        "id": "sess-hephaestus",
+        "label": "Hephaestus Forge",
+        "codename": "FORGE-03",
+        "role": "DevOps & Infrastructure Engineer",
+        "model": "DeepSeek-Coder-V2 / Claude-3.5-Sonnet",
+        "level": 4,
+        "xp": 530,
+        "max_xp": 800,
+        "avatar_idx": 2,
+        "desk_idx": 2,
+        "bench_idx": 0,
+        "platform": "forge",
+        "status": "idle",
+        "behavior": "bench",
+        "activity": "resting",
+        "detail": "Santai di bangku taman menikmati sakura 🌸"
+    },
+    "sess-iris-ui": {
+        "id": "sess-iris-ui",
+        "label": "Iris Prism",
+        "codename": "PRISM-04",
+        "role": "UI/UX & Creative Synthesizer",
+        "model": "Claude-3.5-Sonnet / Gemini-Flash",
+        "level": 3,
+        "xp": 410,
+        "max_xp": 600,
+        "avatar_idx": 3,
+        "desk_idx": 3,
+        "bench_idx": 1,
+        "platform": "prism",
+        "status": "working",
+        "behavior": "desk",
+        "activity": "typing",
+        "detail": "Mendesain tilemap Pixel Office & 2D canvas controls"
+    },
+    "sess-zephyr": {
+        "id": "sess-zephyr",
+        "label": "Zephyr Runner",
+        "codename": "ZEPHYR-05",
+        "role": "Telemetry & Performance Profiler",
+        "model": "Mistral-Large-2 / Qwen-2.5",
+        "level": 3,
+        "xp": 310,
+        "max_xp": 600,
+        "avatar_idx": 4,
+        "desk_idx": 4,
+        "bench_idx": 1,
+        "platform": "zephyr",
+        "status": "idle",
+        "behavior": "drinking",
+        "activity": "resting",
+        "detail": "Menyeduh matcha hangat di break room 🍵"
+    }
+}
+
 DEFAULT_WORKSHEETS = [
     {
         "id": "ws-topic-a",
@@ -164,19 +265,29 @@ def _process_event_into_state(ev: dict):
 
     a = _in_memory_agents.get(key)
     if a is None:
-        a = {
-            "id": key,
-            "label": f"agent {key[-6:]}",
-            "kind": "main",
-            "status": "idle",
-            "tool": "",
-            "activity": "resting",
-            "detail": "",
-            "behavior": "bench",  # desk, bench, walking, drinking, meeting
-            "platform": ev.get("platform") or "hermes",
-            "first_seen": ev.get("ts", now),
-            "updated_at": ev.get("ts", now),
-        }
+        if key in AGENT_PROFILES:
+            a = dict(AGENT_PROFILES[key])
+        else:
+            a = {
+                "id": key,
+                "label": f"agent {key[-6:]}",
+                "codename": f"AGT-{key[-4:]}",
+                "role": "Autonomous Worker",
+                "model": "Hermes-3-70B",
+                "level": 1,
+                "xp": 50,
+                "max_xp": 200,
+                "avatar_idx": len(_in_memory_agents) % 5,
+                "kind": "main",
+                "status": "idle",
+                "tool": "",
+                "activity": "resting",
+                "detail": "",
+                "behavior": "bench",  # desk, bench, walking, drinking, meeting
+                "platform": ev.get("platform") or "hermes",
+                "first_seen": ev.get("ts", now),
+                "updated_at": ev.get("ts", now),
+            }
         _in_memory_agents[key] = a
     a["updated_at"] = ev.get("ts", now)
 
@@ -184,8 +295,9 @@ def _process_event_into_state(ev: dict):
         a["status"] = "idle"
         a["behavior"] = "bench"
         plat = ev.get("platform") or ""
-        a["label"] = f"{plat or 'hermes'} {key[-6:]}"
-        a["detail"] = "online di taman"
+        if key not in AGENT_PROFILES:
+            a["label"] = f"{plat or 'hermes'} {key[-6:]}"
+        a["detail"] = "Online di Pixel Office"
     elif kind == "session_end":
         a["status"] = "gone"
         a["behavior"] = "walking"
@@ -198,6 +310,12 @@ def _process_event_into_state(ev: dict):
                 sub = {
                     "id": ck,
                     "kind": "subagent",
+                    "role": "Specialized Subagent Task",
+                    "model": "Hermes-Subagent",
+                    "level": 1,
+                    "xp": 20,
+                    "max_xp": 100,
+                    "avatar_idx": (len(_in_memory_agents) + 1) % 5,
                     "first_seen": ev.get("ts", now),
                 }
                 _in_memory_agents[ck] = sub
@@ -237,10 +355,19 @@ def _process_event_into_state(ev: dict):
     elif kind == "tool_end":
         a["status"] = "thinking"
         a["tool"] = ""
-        if ev.get("status") == "error":
-            a["detail"] = f"⚠ {_short(ev.get('error_message'), 40)}"
+        if ev.get("status") != "error":
+            gained = random.randint(25, 45)
+            a["xp"] = a.get("xp", 0) + gained
+            max_xp = a.get("max_xp", 200)
+            if a["xp"] >= max_xp:
+                a["level"] = a.get("level", 1) + 1
+                a["xp"] -= max_xp
+                a["max_xp"] = a["level"] * 200
+                a["detail"] = f"🌟 LEVEL UP! Rank {a['level']}"
+            else:
+                a["detail"] = f"+{gained} XP selesai eksekusi"
         else:
-            a["detail"] = ""
+            a["detail"] = f"⚠ {_short(ev.get('error_message'), 40)}"
     elif kind == "approval_request":
         a["status"] = "waiting"
         a["behavior"] = "desk"
@@ -290,7 +417,13 @@ def maybe_trim_events() -> None:
         print(f"[!] Error trimming events: {e}")
 
 def init_in_memory_state():
-    """Load latest events at startup to warm up in-memory cache rapidly."""
+    """Seed agents from AGENT_PROFILES and warm up with recent events."""
+    now = time.time()
+    for sid, prof in AGENT_PROFILES.items():
+        _in_memory_agents[sid] = dict(prof)
+        _in_memory_agents[sid]["first_seen"] = now
+        _in_memory_agents[sid]["updated_at"] = now
+    
     if not os.path.exists(EVENTS_FILE):
         return
     try:
@@ -320,6 +453,8 @@ def build_office_state() -> dict:
 
     visible = []
     for a in agents.values():
+        if a.get("id") == "sess-iris":
+            continue
         age = now - float(a.get("updated_at") or 0)
         if a["status"] == "gone" and age > 25:
             continue
@@ -327,12 +462,9 @@ def build_office_state() -> dict:
             continue
         if age > _STALE_SECONDS:
             continue
-        if a["status"] in ("working", "thinking") and age > 240:
-            a["status"] = "idle"
-            a["behavior"] = "bench"
         visible.append(a)
 
-    visible.sort(key=lambda a: (a["kind"] != "main", a.get("first_seen", 0)))
+    visible.sort(key=lambda a: (a.get("kind") != "main", a.get("first_seen", 0)))
     return {"agents": visible, "ts": now, "active_worksheet": _active_worksheet_id}
 
 
@@ -350,45 +482,36 @@ DEMO_TOOLS = [
 
 def demo_worker():
     global _demo_running
-    publish_event({"event": "session_start", "session_id": "sess-hermes-prime", "platform": "hermes"})
-    publish_event({"event": "session_start", "session_id": "sess-athena-core", "platform": "athena"})
-    publish_event({"event": "session_start", "session_id": "sess-hephaestus", "platform": "forge"})
-    publish_event({"event": "session_start", "session_id": "sess-iris-ui", "platform": "prism"})
-    
-    counter = 0
+    sids = ["sess-hermes-prime", "sess-athena-core", "sess-hephaestus", "sess-iris-ui", "sess-zephyr"]
+    for sid in sids:
+        publish_event({"event": "session_start", "session_id": sid, "platform": AGENT_PROFILES.get(sid, {}).get("platform", "hermes")})
 
     while _demo_running:
-        counter += 1
-        sids = ["sess-hermes-prime", "sess-athena-core", "sess-hephaestus", "sess-iris-ui"]
-
-        # Autonomous Garden Cycle: Sitting on benches, walking, or working
         for sid in sids:
             if not _demo_running:
                 break
             
             rnd = random.random()
-            if rnd < 0.45:
-                # Rest on Park Bench or Walk along Garden Path
-                behavior = random.choice(["bench", "walking", "drinking"])
+            if rnd < 0.40:
+                # Rest on Park Bench or Coffee Lounge
+                behavior = random.choice(["bench", "drinking", "walking"])
                 if behavior == "bench":
                     detail = "Duduk santai di bangku taman dekat bunga sakura 🌸"
                 elif behavior == "drinking":
-                    detail = "Menikmati seduhan matcha hangat di gazebo 🍵"
+                    detail = "Menikmati seduhan kopi di break room ☕"
                 else:
-                    detail = "Jalan-jalan santai di sekitar kolam taman 🚶"
+                    detail = "Jalan-jalan santai melihat panorama kota 🚶"
                 publish_event({"event": "agent_behavior", "session_id": sid, "behavior": behavior, "activity": "resting", "detail": detail})
-                time.sleep(random.uniform(4.0, 7.0))
+                time.sleep(random.uniform(5.0, 9.0))
             else:
-                # Assigned to active task -> Go to workstation desk and work!
+                # Work at desk
                 tool, act, args = random.choice(DEMO_TOOLS)
-                publish_event({"event": "agent_behavior", "session_id": sid, "behavior": "desk", "activity": act, "detail": f"Kembali ke meja kerja: {tool}"})
+                publish_event({"event": "agent_behavior", "session_id": sid, "behavior": "desk", "activity": act, "detail": f"Workstation: {tool}"})
                 publish_event({"event": "tool_start", "session_id": sid, "tool_name": tool, "activity": act, "preview": str(args)})
-                time.sleep(random.uniform(4.0, 8.0))
+                time.sleep(random.uniform(5.0, 9.0))
                 publish_event({"event": "tool_end", "session_id": sid, "tool_name": tool, "status": "ok"})
-                # After finishing work, return to bench or walk
-                publish_event({"event": "agent_behavior", "session_id": sid, "behavior": "bench", "activity": "resting", "detail": "Tugas selesai, kembali rileks di bangku taman"})
 
-        time.sleep(2.0)
+        time.sleep(3.0)
 
 def toggle_demo_mode():
     global _demo_running, _demo_thread
@@ -521,8 +644,8 @@ class DeskBridgeHandler(SimpleHTTPRequestHandler):
                 if active_ws:
                     assigned = active_ws.get("assigned", [])
                     # Move assigned agents to workstations, unassigned to park benches
-                    for aid in ["hermes", "athena", "hephaestus", "iris"]:
-                        sid = f"sess-{aid}-core" if aid == "athena" else f"sess-{aid}-prime" if aid == "hermes" else f"sess-{aid}"
+                    for aid in ["hermes", "athena", "hephaestus", "iris", "zephyr"]:
+                        sid = AGENT_ID_MAP.get(aid, f"sess-{aid}")
                         if aid in assigned:
                             publish_event({
                                 "event": "agent_behavior",
@@ -578,6 +701,28 @@ class DeskBridgeHandler(SimpleHTTPRequestHandler):
             self._send_json_response({"success": True, "worksheet": new_ws})
             return
 
+        # Direct agent command instruction
+        if parsed.path == "/api/agent/command":
+            aid = payload.get("id")
+            cmd = payload.get("command") or payload.get("message") or ""
+            if aid and cmd:
+                publish_event({
+                    "event": "agent_behavior",
+                    "session_id": aid,
+                    "behavior": "desk",
+                    "activity": "typing",
+                    "detail": f"Instruksi User: {cmd[:42]}"
+                })
+                publish_event({
+                    "event": "tool_start",
+                    "session_id": aid,
+                    "tool_name": "user_command",
+                    "activity": "typing",
+                    "preview": cmd
+                })
+                self._send_json_response({"success": True, "agent": aid, "message": "Instruksi diproses"})
+                return
+
         # Micro-Interactivity: direct agent action
         if parsed.path == "/api/agent/action":
             aid = payload.get("id")
@@ -591,6 +736,8 @@ class DeskBridgeHandler(SimpleHTTPRequestHandler):
                     publish_event({"event": "agent_behavior", "session_id": aid, "behavior": "drinking", "activity": "resting", "detail": "Menikmati matcha latte hangat 🍵"})
                 elif action == "work":
                     publish_event({"event": "agent_behavior", "session_id": aid, "behavior": "desk", "activity": "typing", "detail": "Kembali fokus coding di workstation ⚡"})
+                elif action == "meeting":
+                    publish_event({"event": "agent_behavior", "session_id": aid, "behavior": "meeting", "activity": "delegating", "detail": "Bergabung ke ruang rapat all-hands 📢"})
                 elif action == "chat":
                     msg = payload.get("message", "Mengerjakan instruksi!")
                     publish_event({"event": "agent_behavior", "session_id": aid, "behavior": "desk", "activity": "delegating", "detail": f"Instruksi: {msg}"})
@@ -600,7 +747,7 @@ class DeskBridgeHandler(SimpleHTTPRequestHandler):
         # Macro-Interactivity: global actions
         if parsed.path == "/api/office/macro":
             macro_action = payload.get("action")
-            sids = ["sess-hermes-prime", "sess-athena-core", "sess-hephaestus", "sess-iris-ui"]
+            sids = ["sess-hermes-prime", "sess-athena-core", "sess-hephaestus", "sess-iris-ui", "sess-zephyr"]
             if macro_action == "meeting":
                 for sid in sids:
                     publish_event({"event": "agent_behavior", "session_id": sid, "behavior": "meeting", "activity": "delegating", "detail": "Rapat All-Hands di Meja Bundar"})
@@ -615,6 +762,12 @@ class DeskBridgeHandler(SimpleHTTPRequestHandler):
                 for sid in sids:
                     publish_event({"event": "agent_behavior", "session_id": sid, "behavior": "desk", "activity": "typing", "detail": "Turbo Sprint: Overclock coding di workstation"})
                 self._send_json_response({"success": True, "macro": "sprint", "message": "Semua agen kembali sprint coding"})
+                return
+            elif macro_action == "roam":
+                for sid in sids:
+                    b = random.choice(["bench", "drinking", "walking"])
+                    publish_event({"event": "agent_behavior", "session_id": sid, "behavior": b, "activity": "resting", "detail": "Bebas berkeliling kantor & taman"})
+                self._send_json_response({"success": True, "macro": "roam", "message": "Agen bebas berkeliling"})
                 return
 
         if parsed.path == "/api/event":

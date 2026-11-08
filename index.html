@@ -3,37 +3,37 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hermes Visual Agent Desk & Modern Campus</title>
-    <!-- Tailwind CSS -->
+    <title>Hermes Pixel Office — Virtual Agent Floor</title>
+    <!-- Tailwind CSS for UI controls -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Three.js r128 -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <!-- Modern Developer Fonts: Inter & JetBrains Mono -->
+    <!-- Pixel & Developer Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=JetBrains+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
     <style>
         :root {
-            --bg-base: #090d16;
-            --bg-surface: rgba(15, 23, 42, 0.85);
-            --bg-panel: rgba(15, 23, 42, 0.94);
-            --border-subtle: rgba(255, 255, 255, 0.08);
-            --border-glow: rgba(245, 158, 11, 0.4);
-            --accent-amber: #f59e0b;
-            --accent-emerald: #10b981;
-            --accent-sky: #38bdf8;
-            --accent-purple: #a855f7;
-            --accent-rose: #f43f5e;
-            --text-main: #f8fafc;
-            --text-dim: #94a3b8;
+            --pixel-bg: #110d1a;
+            --pixel-panel: #1b1429;
+            --pixel-panel-border: #3b2a59;
+            --pixel-gold: #f3c44c;
+            --pixel-amber: #e58e26;
+            --pixel-green: #2ecc71;
+            --pixel-blue: #3498db;
+            --pixel-cyan: #00d2d3;
+            --pixel-purple: #9b59b6;
+            --pixel-pink: #fd79a8;
+            --pixel-red: #e74c3c;
+            --pixel-text: #f5f6fa;
+            --pixel-text-dim: #8b80a6;
         }
 
         * {
             box-sizing: border-box;
             user-select: none;
+            -webkit-user-drag: none;
         }
 
         body, html {
@@ -42,2184 +42,1746 @@
             width: 100%;
             height: 100%;
             overflow: hidden;
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background-color: var(--bg-base);
-            color: var(--text-main);
+            background-color: var(--pixel-bg);
+            color: var(--pixel-text);
+            font-family: 'JetBrains Mono', monospace;
         }
 
-        .font-mono-code {
-            font-family: 'JetBrains Mono', ui-monospace, monospace;
+        .font-pixel {
+            font-family: 'Press Start 2P', monospace;
         }
 
-        /* Modern Glassmorphic Container */
-        .glass-panel {
-            background: var(--bg-surface);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid var(--border-subtle);
-            box-shadow: 0 12px 36px rgba(0, 0, 0, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.06);
-            border-radius: 12px;
-        }
-
-        /* Sleek Button */
-        .btn-modern {
-            background: rgba(30, 41, 59, 0.85);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            color: #f1f5f9;
-            font-size: 12px;
-            font-weight: 500;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .btn-modern:hover {
-            background: rgba(51, 65, 85, 0.95);
-            border-color: rgba(255, 255, 255, 0.22);
-            transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
-        }
-
-        .btn-modern:active {
-            transform: translateY(0.5px);
-        }
-
-        /* 3D Canvas Container */
-        #canvas-container {
-            position: absolute;
-            inset: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 1;
-            background: #090d16;
-        }
-
-        /* 2D Canvas Container with Pan & Zoom */
-        #office-2d-container {
-            position: absolute;
-            inset: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 2;
-            background: #0b0f1a;
-            overflow: hidden;
+        /* Crisp 2D Pixel Canvas */
+        #office-canvas {
+            image-rendering: -moz-crisp-edges;
+            image-rendering: -webkit-crisp-edges;
+            image-rendering: pixelated;
+            image-rendering: crisp-edges;
+            display: block;
             cursor: grab;
         }
 
-        #office-2d-container:active {
+        #office-canvas:active {
             cursor: grabbing;
         }
 
-        canvas {
-            display: block;
-            width: 100%;
-            height: 100%;
+        /* Retro Pixel Borders & Buttons */
+        .pixel-box {
+            background: var(--pixel-panel);
+            border: 2px solid var(--pixel-panel-border);
+            box-shadow: inset -2px -2px 0px rgba(0,0,0,0.4), inset 2px 2px 0px rgba(255,255,255,0.1), 0 4px 16px rgba(0,0,0,0.6);
         }
 
-        /* Floating 3D HTML Labels */
-        .world-label {
-            position: absolute;
-            transform: translate(-50%, -100%);
-            pointer-events: auto;
+        .pixel-btn {
+            background: #281d3d;
+            border: 2px solid #4a3473;
+            color: #dcd6f7;
+            box-shadow: inset -2px -2px 0px rgba(0,0,0,0.5), inset 2px 2px 0px rgba(255,255,255,0.15);
+            transition: all 0.1s ease;
             cursor: pointer;
-            transition: transform 0.12s ease;
-            z-index: 20;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            font-weight: 600;
         }
 
-        .world-label:hover {
-            transform: translate(-50%, -105%) scale(1.05);
-            z-index: 30;
+        .pixel-btn:hover {
+            background: #392857;
+            border-color: var(--pixel-gold);
+            color: #fff;
+            transform: translateY(-1px);
         }
 
-        .speech-bubble {
-            background: rgba(15, 23, 42, 0.92);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            color: #f8fafc;
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.6);
-            border-radius: 10px;
-            animation: floatSlow 3s ease-in-out infinite;
+        .pixel-btn:active {
+            transform: translateY(1px);
+            box-shadow: inset 2px 2px 0px rgba(0,0,0,0.6);
         }
 
-        @keyframes floatSlow {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-4px); }
+        .pixel-btn.active {
+            background: #493372;
+            border-color: var(--pixel-gold);
+            color: var(--pixel-gold);
         }
 
-        /* Custom Scrollbar */
+        .pixel-btn-gold {
+            background: #8e681b;
+            border-color: #f3c44c;
+            color: #fff;
+        }
+        .pixel-btn-gold:hover {
+            background: #b58522;
+        }
+
+        .pixel-btn-green {
+            background: #1e6b37;
+            border-color: #2ecc71;
+            color: #fff;
+        }
+        .pixel-btn-green:hover {
+            background: #278d49;
+        }
+
+        .pixel-btn-blue {
+            background: #1c527e;
+            border-color: #3498db;
+            color: #fff;
+        }
+        .pixel-btn-blue:hover {
+            background: #246ba4;
+        }
+
+        /* Custom Scrollbar for Drawer */
         ::-webkit-scrollbar {
-            width: 5px;
-            height: 5px;
+            width: 6px;
+            height: 6px;
         }
         ::-webkit-scrollbar-track {
-            background: rgba(15, 23, 42, 0.5);
+            background: #161022;
         }
         ::-webkit-scrollbar-thumb {
-            background: rgba(100, 116, 139, 0.5);
-            border-radius: 4px;
+            background: #423063;
+            border-radius: 3px;
         }
         ::-webkit-scrollbar-thumb:hover {
-            background: rgba(148, 163, 184, 0.7);
+            background: #5d448c;
         }
 
-        .no-scrollbar::-webkit-scrollbar {
-            display: none;
+        /* CRT Scanline effect (subtle) */
+        .crt-scanlines {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            background: linear-gradient(rgba(18, 16, 26, 0) 50%, rgba(0, 0, 0, 0.25) 50%);
+            background-size: 100% 4px;
+            z-index: 20;
+            opacity: 0.35;
         }
-        .no-scrollbar {
-            -ms-overflow-style: none;
-            scrollbar-width: none;
+
+        /* Pulsing animations */
+        @keyframes pixelBlink {
+            0%, 49% { opacity: 1; }
+            50%, 100% { opacity: 0; }
+        }
+        .pixel-blink {
+            animation: pixelBlink 1s infinite;
+        }
+
+        @keyframes steamFloat {
+            0% { transform: translateY(0px) scale(0.8); opacity: 0.8; }
+            50% { transform: translateY(-8px) scale(1.1); opacity: 0.5; }
+            100% { transform: translateY(-16px) scale(1.3); opacity: 0; }
         }
     </style>
 </head>
-<body>
+<body class="w-screen h-screen relative select-none">
 
-    <!-- 3D Three.js Modern Campus Container -->
-    <div id="canvas-container"></div>
+    <!-- CRT Scanline Overlay -->
+    <div class="crt-scanlines"></div>
 
-    <!-- 2D Interactive Architectural Office Container (Pan & Zoom) -->
-    <div id="office-2d-container" class="hidden">
-        <canvas id="office-canvas"></canvas>
-    </div>
+    <!-- MAIN CANVAS VIEWPORT -->
+    <canvas id="office-canvas" class="w-full h-full absolute inset-0 z-0"></canvas>
 
-    <!-- Floating 3D HTML World Labels -->
-    <div id="labels-container" class="fixed inset-0 pointer-events-none z-20 overflow-hidden"></div>
-
-    <!-- ================= TOP HUD: BRAND, WORKSHEETS & GLOBAL CONTROLS ================= -->
-    <header class="fixed top-3 left-3 right-3 z-30 flex flex-wrap items-center justify-between gap-2.5 pointer-events-none">
-        
-        <!-- Left: Brand & Studio Mode -->
-        <div class="glass-panel px-3.5 py-2 flex items-center gap-3 pointer-events-auto">
-            <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-amber-500/20 to-orange-500/20 border border-amber-500/40 flex items-center justify-center relative shadow-sm">
-                <i class="fa-solid fa-sparkles text-amber-400 text-sm"></i>
-                <span class="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 bg-emerald-400 rounded-full animate-pulse"></span>
+    <!-- TOP HEADER / RETRO NAVIGATION DOCK -->
+    <header class="absolute top-0 left-0 right-0 z-30 px-3 py-2 flex items-center justify-between pointer-events-auto bg-[#130f1df2] border-b-2 border-[#33244d] shadow-lg backdrop-blur-sm">
+        <!-- Brand & Connection Status -->
+        <div class="flex items-center space-x-3">
+            <div class="flex items-center space-x-2">
+                <span class="text-amber-400 text-lg font-bold">☤</span>
+                <span class="font-pixel text-[11px] text-amber-300 tracking-wider">HERMES PIXEL OFFICE</span>
             </div>
-            <div>
-                <div class="flex items-center gap-2">
-                    <h1 class="text-xs font-bold tracking-wider text-slate-100 uppercase">HERMES DESK</h1>
-                    <span class="bg-amber-500/15 text-amber-400 border border-amber-500/30 text-[10px] font-semibold px-2 py-0.2 rounded">CAMPUS v5.0</span>
-                </div>
-                <p class="text-[11px] text-slate-400 font-medium flex items-center gap-2 mt-0.5">
-                    <span><i class="fa-solid fa-tree text-emerald-400 mr-1 text-[9px]"></i>Modern Zen Campus</span>
-                    <span class="text-slate-600">•</span>
-                    <span id="hud-clock" class="font-mono-code text-[11px] text-slate-300 font-semibold">ONLINE</span>
-                </p>
+            <div id="bridge-badge" class="flex items-center space-x-1.5 px-2 py-0.5 rounded bg-emerald-950/80 border border-emerald-600/50 text-[10px] text-emerald-300 font-mono">
+                <span class="w-2 h-2 rounded-full bg-emerald-400 pixel-blink"></span>
+                <span id="bridge-text">DUAL-STACK ONLINE</span>
             </div>
         </div>
 
-        <!-- Center: LEMBAR KERJA HERMES (Worksheet & Discussion Switcher) -->
-        <div class="glass-panel p-1.5 flex items-center gap-1.5 pointer-events-auto max-w-2xl overflow-x-auto no-scrollbar" id="worksheets-dock">
-            <div class="flex items-center gap-1 text-slate-400 text-xs px-2 font-medium">
-                <i class="fa-solid fa-layer-group text-amber-400 mr-1"></i>
-                <span class="hidden md:inline">Lembar Kerja:</span>
-            </div>
-            <!-- Worksheets Tabs inserted dynamically via JS -->
-            <div id="worksheet-tabs-container" class="flex items-center gap-1.5"></div>
-            <!-- Add New Worksheet Button -->
-            <button onclick="openNewWorksheetModal()" class="btn-modern px-2 py-1 text-xs text-amber-300 hover:text-amber-200 flex items-center gap-1 border border-amber-500/30" title="Buka Pembahasan / Lembar Kerja Baru">
-                <i class="fa-solid fa-plus text-[10px]"></i>
-                <span class="hidden sm:inline">Baru</span>
+        <!-- Hermes Worksheets Tabs (Topic Switcher) -->
+        <div class="flex items-center space-x-1 overflow-x-auto max-w-[48%] py-0.5 px-2 bg-[#1b1429] rounded border border-[#3b2a59]" id="worksheets-dock">
+            <!-- Rendered dynamically -->
+            <button class="pixel-btn active px-2.5 py-1 text-[11px]">
+                <span class="text-amber-400 font-bold mr-1">[A]</span> Intelligence Memory
+            </button>
+            <button class="pixel-btn px-2.5 py-1 text-[11px]">
+                <span class="text-amber-400 font-bold mr-1">[B]</span> AI Office Bridge
+            </button>
+            <button class="pixel-btn px-2.5 py-1 text-[11px]">
+                <span class="text-amber-400 font-bold mr-1">[C]</span> Pixel Campus
+            </button>
+            <button id="btn-new-ws" class="pixel-btn px-2 py-1 text-[10px] text-amber-300" title="Buat Lembar Kerja Baru">
+                <i class="fa-solid fa-plus"></i>
             </button>
         </div>
 
-        <!-- Right: View Switcher, Macro Team Actions & Status -->
-        <div class="glass-panel p-1.5 flex items-center gap-2 pointer-events-auto">
-            <!-- 3D / 2D View Switcher -->
-            <div class="flex items-center bg-slate-900/80 p-0.5 rounded-lg border border-slate-700/60">
-                <button onclick="switchViewMode('3d')" id="btn-view-3d" class="px-2.5 py-1.5 rounded-md text-xs font-semibold bg-amber-500 text-slate-950 transition flex items-center gap-1.5 shadow-sm" title="Taman 3D Modern Campus">
-                    <i class="fa-solid fa-cube text-xs"></i><span class="hidden sm:inline">3D Campus</span>
-                </button>
-                <button onclick="switchViewMode('2d')" id="btn-view-2d" class="px-2.5 py-1.5 rounded-md text-xs font-semibold text-slate-400 hover:text-slate-200 transition flex items-center gap-1.5" title="Kantor 2D Plan (Pan & Zoom)">
-                    <i class="fa-solid fa-map text-xs"></i><span class="hidden sm:inline">2D Plan</span>
-                </button>
-            </div>
-
-            <!-- Macro Commands -->
-            <div class="hidden lg:flex items-center gap-1 pl-1.5 border-l border-slate-700/60">
-                <button onclick="triggerMacroAction('meeting')" class="btn-modern px-2.5 py-1.5 text-xs text-amber-300 flex items-center gap-1" title="Kumpulkan semua agen di meja bundar">
-                    <i class="fa-solid fa-users text-xs"></i><span>Rapat</span>
-                </button>
-                <button onclick="triggerMacroAction('break')" class="btn-modern px-2.5 py-1.5 text-xs text-purple-300 flex items-center gap-1" title="Semua agen istirahat santai di bangku taman">
-                    <i class="fa-solid fa-couch text-xs"></i><span>Rehat Taman</span>
-                </button>
-                <button onclick="triggerMacroAction('sprint')" class="btn-modern px-2.5 py-1.5 text-xs text-cyan-300 flex items-center gap-1" title="Semua agen kembali ke meja kerja sprint coding">
-                    <i class="fa-solid fa-bolt text-xs"></i><span>Sprint</span>
-                </button>
-            </div>
-
-            <!-- Audio Toggle -->
-            <button onclick="toggleAudio()" id="btn-audio" class="btn-modern w-8 h-8 flex items-center justify-center text-xs text-amber-400" title="Sound Effects">
-                <i id="icon-audio" class="fa-solid fa-volume-high"></i>
+        <!-- Macro Controls & Actions -->
+        <div class="flex items-center space-x-1.5">
+            <!-- Macro Action Buttons -->
+            <button id="macro-meeting" class="pixel-btn px-2.5 py-1 text-[10px] text-amber-200" title="Panggil semua agen berkumpul rapat di Conference Room">
+                <i class="fa-solid fa-users mr-1 text-amber-400"></i> Rapat
+            </button>
+            <button id="macro-break" class="pixel-btn px-2.5 py-1 text-[10px] text-emerald-200" title="Suruh semua agen rehat ke Coffee Lounge & Taman Sakura">
+                <i class="fa-solid fa-mug-hot mr-1 text-emerald-400"></i> Rehat
+            </button>
+            <button id="macro-sprint" class="pixel-btn px-2.5 py-1 text-[10px] text-sky-200" title="Semua agen kembali ke meja kerja sprint coding">
+                <i class="fa-solid fa-bolt mr-1 text-sky-400"></i> Sprint
+            </button>
+            <button id="macro-roam" class="pixel-btn px-2.5 py-1 text-[10px] text-purple-200" title="Bebas santai berkeliling kantor & taman">
+                <i class="fa-solid fa-person-walking mr-1 text-purple-400"></i> Bebas
             </button>
 
-            <!-- Bridge Status Dot -->
-            <div id="bridge-status-pill" class="px-2.5 py-1 rounded-lg bg-slate-900/80 border border-slate-800 flex items-center gap-1.5 text-xs cursor-pointer" onclick="checkBridgeStatus(true)" title="Status Koneksi Local Bridge">
-                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" id="bridge-dot"></span>
-                <span id="bridge-label" class="hidden xl:inline text-[11px] text-emerald-400 font-mono-code font-semibold">Online</span>
-            </div>
+            <div class="h-4 w-[1px] bg-[#3b2a59] mx-1"></div>
+
+            <!-- 8-Bit Audio Toggle -->
+            <button id="btn-sound" class="pixel-btn px-2 py-1 text-[10px]" title="Toggle 8-bit Sound Effects">
+                <i class="fa-solid fa-volume-high text-amber-400" id="sound-icon"></i>
+            </button>
+
+            <!-- Worksheets Drawer Toggle -->
+            <button id="btn-toggle-drawer" class="pixel-btn px-2 py-1 text-[10px] text-amber-300" title="Buka Lembar Kerja & Log">
+                <i class="fa-solid fa-file-lines mr-1"></i> Catatan
+            </button>
         </div>
     </header>
 
-    <!-- ================= LEFT SIDEBAR: AGENT SQUAD ROSTER & CONTROLS ================= -->
-    <aside class="fixed left-3 top-20 bottom-24 z-30 w-72 sm:w-80 flex flex-col gap-3 pointer-events-none transition-transform duration-300" id="left-panel">
-        
-        <!-- Squad List -->
-        <div class="glass-panel p-3.5 flex flex-col gap-2.5 pointer-events-auto max-h-[50%] overflow-y-auto">
-            <div class="flex items-center justify-between border-b border-slate-800/80 pb-2">
-                <div class="flex items-center gap-2">
-                    <i class="fa-solid fa-users-gear text-amber-400 text-xs"></i>
-                    <h2 class="font-mono-code font-bold text-xs text-slate-200 tracking-wide uppercase">HERMES SQUAD</h2>
-                </div>
-                <span class="text-[10px] font-semibold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/30 font-mono-code">Live</span>
-            </div>
-            <div id="agent-roster-list" class="flex flex-col gap-1.5"></div>
+    <!-- FLOATING ZOOM & CAMERA CONTROLS (BOTTOM-LEFT) -->
+    <div class="absolute bottom-3 left-3 z-30 flex items-center space-x-1 pixel-box p-1.5 rounded-lg bg-[#140f22f0]">
+        <button id="btn-zoom-in" class="pixel-btn w-7 h-7 text-xs" title="Zoom In (+)">
+            <i class="fa-solid fa-plus"></i>
+        </button>
+        <button id="btn-zoom-out" class="pixel-btn w-7 h-7 text-xs" title="Zoom Out (-)">
+            <i class="fa-solid fa-minus"></i>
+        </button>
+        <button id="btn-zoom-reset" class="pixel-btn px-2 h-7 text-[10px]" title="Reset View (200%)">
+            <i class="fa-solid fa-compress mr-1"></i> <span id="zoom-text">200%</span>
+        </button>
+        <button id="btn-focus-office" class="pixel-btn px-2 h-7 text-[10px] text-amber-300" title="Pusatkan Kamera ke Area Kerja">
+            <i class="fa-solid fa-crosshairs mr-1"></i> Kantor
+        </button>
+        <div class="h-4 w-[1px] bg-[#3b2a59] mx-0.5"></div>
+        <div class="text-[9px] text-slate-400 px-1 hidden md:block">
+            🖱️ Scroll: Zoom | Drag: Geser | Klik: Info Agen
         </div>
+    </div>
 
-        <!-- Selected Agent Detail Inspector -->
-        <div id="agent-inspector" class="glass-panel p-3.5 flex-1 flex flex-col justify-between pointer-events-auto overflow-y-auto">
-            <!-- Rendered dynamically -->
-        </div>
-    </aside>
+    <!-- LIVE TELEMETRY TICKER (BOTTOM-RIGHT) -->
+    <div class="absolute bottom-3 right-3 z-30 max-w-sm hidden sm:flex items-center space-x-2 pixel-box px-3 py-1.5 rounded-lg bg-[#140f22f0] border border-[#3b2a59] text-[10px]">
+        <span class="w-2 h-2 rounded-full bg-amber-400 pixel-blink"></span>
+        <span class="text-amber-400 font-bold">LOG:</span>
+        <span id="ticker-text" class="text-slate-300 truncate font-mono">Memuat stream telemetri agen...</span>
+    </div>
 
-    <!-- ================= RIGHT SIDEBAR: ACTIVE WORKSHEET & LIVE SCRATCHPAD ================= -->
-    <aside class="fixed right-3 top-20 bottom-24 z-30 w-84 sm:w-96 hidden md:flex flex-col gap-3 pointer-events-none" id="right-panel">
-        
-        <div class="glass-panel p-3.5 flex-1 flex flex-col gap-2.5 pointer-events-auto overflow-hidden">
-            <!-- Header Tabs: Worksheet vs Telemetry -->
-            <div class="flex items-center justify-between border-b border-slate-800/80 pb-2">
-                <div class="flex items-center gap-2">
-                    <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping"></span>
-                    <h2 class="font-mono-code font-bold text-xs text-slate-200 tracking-wide" id="right-panel-title">LEMBAR KERJA AKTIF</h2>
+    <!-- AGENT DOSSIER / INSPECTOR MODAL (CLICKED ON AGENT) -->
+    <div id="agent-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm hidden">
+        <div class="pixel-box w-full max-w-md p-5 rounded-xl bg-[#181126] border-2 border-[#543b82] relative text-[#e2dcf2] shadow-2xl">
+            <!-- Close Button -->
+            <button id="btn-close-modal" class="absolute top-3 right-3 pixel-btn w-7 h-7 text-xs text-rose-400 hover:text-white">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+            <!-- Header Info -->
+            <div class="flex items-start space-x-4">
+                <!-- 4x Animated Pixel Avatar Canvas -->
+                <div class="w-20 h-24 bg-[#0e0a16] border-2 border-[#4b3573] rounded flex items-center justify-center p-1 relative overflow-hidden">
+                    <canvas id="avatar-portrait-canvas" width="64" height="80" class="image-rendering-pixelated"></canvas>
+                    <span id="modal-agent-badge" class="absolute bottom-0 inset-x-0 bg-amber-500/90 text-black font-pixel text-[7px] text-center py-0.5">LVL 5</span>
                 </div>
-                <div class="flex items-center gap-1 bg-slate-900/80 p-0.5 rounded-lg border border-slate-800">
-                    <button onclick="switchRightTab('worksheet')" id="tab-btn-worksheet" class="text-[11px] font-semibold px-2.5 py-1 rounded bg-amber-500 text-slate-950 transition">Pembahasan</button>
-                    <button onclick="switchRightTab('stream')" id="tab-btn-stream" class="text-[11px] font-semibold px-2.5 py-1 rounded text-slate-400 hover:text-slate-200 transition">Log Alur</button>
-                </div>
-            </div>
 
-            <!-- Tab 1: Active Worksheet Detail & Scratchpad -->
-            <div id="tab-content-worksheet" class="flex-1 flex flex-col gap-2.5 overflow-hidden">
-                <div class="bg-slate-900/90 border border-slate-800 rounded-lg p-2.5 flex flex-col gap-1">
+                <!-- Identity Details -->
+                <div class="flex-1">
                     <div class="flex items-center justify-between">
-                        <span class="text-[10px] font-mono-code font-bold text-amber-400 uppercase tracking-wider" id="ws-badge">TOPIK A</span>
-                        <span class="text-[10px] text-slate-400" id="ws-category">Architecture</span>
+                        <h3 id="modal-agent-name" class="font-pixel text-[13px] text-amber-300">HERMES PRIME</h3>
                     </div>
-                    <h3 class="text-xs font-bold text-slate-100" id="ws-title">CHARISNA Intelligence System</h3>
-                    <p class="text-[11px] text-slate-400 leading-snug line-clamp-2" id="ws-goal">Tujuan lembar kerja...</p>
-                </div>
+                    <p id="modal-agent-role" class="text-xs text-purple-300 font-medium mt-0.5">Lead Architect & Orchestrator</p>
+                    <p id="modal-agent-model" class="text-[10px] text-slate-400 font-mono mt-0.5">Model: Hermes-3-70B</p>
 
-                <!-- Live Deliverable / Scratchpad Editor -->
-                <div class="flex-1 flex flex-col min-h-0 bg-slate-900/90 border border-slate-800 rounded-lg overflow-hidden">
-                    <div class="px-2.5 py-1.5 border-b border-slate-800/80 flex items-center justify-between bg-slate-950/40">
-                        <span class="text-[10px] font-mono-code text-slate-400 flex items-center gap-1">
-                            <i class="fa-solid fa-file-code text-amber-400"></i> scratchpad.md
-                        </span>
-                        <button onclick="saveActiveWorksheet()" class="btn-modern px-2 py-0.5 text-[10px] text-emerald-300 hover:text-emerald-200 flex items-center gap-1" title="Simpan ke data/worksheets.json">
-                            <i class="fa-solid fa-floppy-disk text-[9px]"></i> Simpan
-                        </button>
-                    </div>
-                    <textarea id="ws-scratchpad" class="w-full flex-1 p-2.5 bg-transparent font-mono-code text-xs text-slate-200 resize-none focus:outline-none leading-relaxed" spellcheck="false" placeholder="Catatan atau draft kode aktif..."></textarea>
-                </div>
-
-                <!-- Assigned Agents on this worksheet -->
-                <div class="bg-slate-900/90 border border-slate-800 rounded-lg p-2 flex items-center justify-between text-xs">
-                    <span class="text-slate-400 text-[11px] font-medium">Agen Bertugas:</span>
-                    <div id="ws-assigned-chips" class="flex items-center gap-1"></div>
-                </div>
-            </div>
-
-            <!-- Tab 2: Live Event Stream -->
-            <div id="tab-content-stream" class="hidden flex-1 overflow-y-auto flex flex-col gap-2 font-mono-code text-xs pr-1"></div>
-
-        </div>
-    </aside>
-
-    <!-- ================= 2D VIEW FLOATING PAN & ZOOM CONTROLS ================= -->
-    <div id="zoom-controls-2d" class="hidden fixed bottom-24 right-4 z-40 glass-panel p-1.5 flex flex-col gap-1.5 pointer-events-auto shadow-2xl">
-        <button onclick="zoom2D(1.2)" class="w-8 h-8 btn-modern flex items-center justify-center text-xs text-slate-200" title="Zoom In">
-            <i class="fa-solid fa-magnifying-glass-plus"></i>
-        </button>
-        <button onclick="zoom2D(0.833)" class="w-8 h-8 btn-modern flex items-center justify-center text-xs text-slate-200" title="Zoom Out">
-            <i class="fa-solid fa-magnifying-glass-minus"></i>
-        </button>
-        <button onclick="reset2DView()" class="w-8 h-8 btn-modern flex items-center justify-center text-[10px] text-amber-300 font-mono-code font-bold" title="Reset View">
-            100%
-        </button>
-    </div>
-
-    <!-- ================= BOTTOM DISPATCH BAR ================= -->
-    <footer class="fixed bottom-3 left-3 right-3 z-30 flex flex-col items-center pointer-events-none">
-        
-        <!-- Quick Discussion / Preset Mission Chips -->
-        <div class="flex items-center gap-1.5 mb-2 overflow-x-auto max-w-full px-2 pointer-events-auto no-scrollbar">
-            <span class="glass-panel px-2.5 py-1 text-[11px] font-medium text-slate-400 flex items-center gap-1 shrink-0">
-                <i class="fa-solid fa-bolt text-amber-400"></i> Cepat:
-            </span>
-            <button onclick="dispatchQuickTopic('Refactor Arsitektur Multi-Service')" class="btn-modern px-3 py-1 text-xs text-slate-200 hover:text-white shrink-0">
-                🏛️ Arsitektur Core
-            </button>
-            <button onclick="dispatchQuickTopic('Audit Keamanan API & Database')" class="btn-modern px-3 py-1 text-xs text-slate-200 hover:text-white shrink-0">
-                🛡️ Audit Keamanan
-            </button>
-            <button onclick="dispatchQuickTopic('Benchmark Performa Token & Latensi')" class="btn-modern px-3 py-1 text-xs text-slate-200 hover:text-white shrink-0">
-                ⚡ Benchmark Performa
-            </button>
-            <button onclick="dispatchQuickTopic('Desain Komponen UI & Dashboard')" class="btn-modern px-3 py-1 text-xs text-slate-200 hover:text-white shrink-0">
-                🎨 Desain Komponen
-            </button>
-        </div>
-
-        <!-- Main Prompt Bar -->
-        <div class="glass-panel w-full max-w-3xl p-1.5 flex items-center gap-2 pointer-events-auto border border-slate-700/80 focus-within:border-amber-500/60 transition-all shadow-2xl">
-            <div class="w-8 h-8 rounded-lg bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400 shrink-0">
-                <i class="fa-solid fa-terminal text-xs"></i>
-            </div>
-            <input 
-                id="mission-input" 
-                type="text" 
-                placeholder="Perintahkan Hermes pada pembahasan aktif... (contoh: Analisis performa FTS5 index)"
-                class="w-full bg-transparent text-slate-100 placeholder-slate-500 font-medium text-xs sm:text-sm focus:outline-none px-1"
-                onkeydown="if(event.key === 'Enter') dispatchMainPrompt()"
-            >
-            <button onclick="dispatchMainPrompt()" class="btn-modern bg-amber-500 text-slate-950 hover:bg-amber-400 font-semibold px-3.5 py-1.5 text-xs sm:text-sm shrink-0 flex items-center gap-1.5 border border-amber-400">
-                <i class="fa-solid fa-paper-plane text-xs"></i>
-                <span>Kirim</span>
-            </button>
-        </div>
-    </footer>
-
-    <!-- ================= MICRO-INTERACTIVITY MODAL (INDIVIDUAL AGENT ACTIONS) ================= -->
-    <div id="micro-action-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm pointer-events-auto" onclick="if(event.target === this) closeMicroModal()">
-        <div class="glass-panel w-full max-w-sm p-4 flex flex-col gap-3 shadow-2xl border border-amber-500/30 animate-in fade-in zoom-in-95 duration-150">
-            <div class="flex items-center justify-between pb-2 border-b border-slate-800">
-                <div class="flex items-center gap-2">
-                    <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse" id="modal-agent-dot"></span>
-                    <h3 class="font-bold text-sm text-slate-100 font-mono-code" id="modal-agent-name">Hermes Prime</h3>
-                    <span class="text-[10px] px-1.5 py-0.2 rounded bg-slate-800 text-slate-300 border border-slate-700 font-mono-code" id="modal-agent-role">Coordinator</span>
-                </div>
-                <button onclick="closeMicroModal()" class="text-slate-400 hover:text-white px-2 py-1 text-xs">
-                    <i class="fa-solid fa-xmark"></i>
-                </button>
-            </div>
-            <div class="bg-slate-900/80 p-2.5 rounded-lg border border-slate-800">
-                <div class="text-[10px] text-slate-400 uppercase font-semibold">Status & Lokasi Terkini:</div>
-                <p class="text-xs text-slate-200 mt-0.5 leading-relaxed font-mono-code" id="modal-agent-status">Santai di bangku taman dekat bunga sakura...</p>
-            </div>
-            
-            <!-- Real Action Grid -->
-            <div class="grid grid-cols-2 gap-2 pt-1">
-                <button onclick="sendAgentAction('bench')" class="btn-modern py-2 px-3 text-xs flex items-center justify-center gap-1.5 text-purple-300">
-                    <i class="fa-solid fa-couch"></i> Duduk di Bangku
-                </button>
-                <button onclick="sendAgentAction('walk')" class="btn-modern py-2 px-3 text-xs flex items-center justify-center gap-1.5 text-sky-300">
-                    <i class="fa-solid fa-person-walking"></i> Jalan-jalan
-                </button>
-                <button onclick="sendAgentAction('work')" class="btn-modern py-2 px-3 text-xs flex items-center justify-center gap-1.5 text-emerald-300">
-                    <i class="fa-solid fa-laptop-code"></i> Meja Kerja
-                </button>
-                <button onclick="sendAgentAction('coffee')" class="btn-modern py-2 px-3 text-xs flex items-center justify-center gap-1.5 text-amber-300">
-                    <i class="fa-solid fa-mug-hot"></i> Seduh Kopi
-                </button>
-            </div>
-
-            <!-- Custom Direct Prompt -->
-            <div class="pt-2 border-t border-slate-800 flex gap-1.5">
-                <input type="text" id="modal-prompt-input" placeholder="Instruksi spesifik ke agen ini..." class="flex-1 bg-slate-900 border border-slate-700 text-xs text-slate-100 px-2.5 py-1.5 rounded-md focus:outline-none focus:border-amber-500/60" onkeydown="if(event.key === 'Enter') sendAgentCustomPrompt()">
-                <button onclick="sendAgentCustomPrompt()" class="btn-modern bg-amber-500 text-slate-950 font-bold px-3 text-xs border border-amber-400">Kirim</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- ================= MODAL: CREATE NEW WORKSHEET ================= -->
-    <div id="new-worksheet-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm pointer-events-auto" onclick="if(event.target === this) closeNewWorksheetModal()">
-        <div class="glass-panel w-full max-w-md p-4 flex flex-col gap-3 shadow-2xl border border-amber-500/30 animate-in fade-in zoom-in-95 duration-150">
-            <div class="flex items-center justify-between pb-2 border-b border-slate-800">
-                <div class="flex items-center gap-2">
-                    <i class="fa-solid fa-plus-circle text-amber-400"></i>
-                    <h3 class="font-bold text-sm text-slate-100">Buat Pembahasan / Lembar Kerja Baru</h3>
-                </div>
-                <button onclick="closeNewWorksheetModal()" class="text-slate-400 hover:text-white px-2 py-1 text-xs">
-                    <i class="fa-solid fa-xmark"></i>
-                </button>
-            </div>
-            <div class="flex flex-col gap-2.5 text-xs">
-                <div>
-                    <label class="text-slate-400 block mb-1 font-medium">Judul Topik Pembahasan:</label>
-                    <input type="text" id="new-ws-title" placeholder="contoh: Optimasi Query SQLite & Injeksi Konteks" class="w-full bg-slate-900 border border-slate-700 text-slate-100 px-2.5 py-1.5 rounded-md focus:outline-none focus:border-amber-500/60">
-                </div>
-                <div>
-                    <label class="text-slate-400 block mb-1 font-medium">Tujuan / Goal:</label>
-                    <textarea id="new-ws-goal" rows="2" placeholder="contoh: Menurunkan waktu baca memory index di bawah 10ms dan sinkron ke Drive" class="w-full bg-slate-900 border border-slate-700 text-slate-100 px-2.5 py-1.5 rounded-md focus:outline-none focus:border-amber-500/60 resize-none"></textarea>
-                </div>
-                <div>
-                    <label class="text-slate-400 block mb-1 font-medium">Tugaskan Agen:</label>
-                    <div class="flex items-center gap-2 text-slate-300">
-                        <label class="flex items-center gap-1 cursor-pointer"><input type="checkbox" id="check-hermes" checked class="accent-amber-500"> Hermes</label>
-                        <label class="flex items-center gap-1 cursor-pointer"><input type="checkbox" id="check-athena" checked class="accent-amber-500"> Athena</label>
-                        <label class="flex items-center gap-1 cursor-pointer"><input type="checkbox" id="check-hephaestus" class="accent-amber-500"> Hephaestus</label>
-                        <label class="flex items-center gap-1 cursor-pointer"><input type="checkbox" id="check-iris" class="accent-amber-500"> Iris</label>
+                    <!-- RPG XP Bar -->
+                    <div class="mt-2.5">
+                        <div class="flex justify-between text-[9px] font-mono text-slate-300 mb-0.5">
+                            <span id="modal-level-text">Level 5 Architect</span>
+                            <span id="modal-xp-text">840 / 1000 XP</span>
+                        </div>
+                        <div class="w-full h-2.5 bg-[#0e0a16] border border-[#4b3573] rounded overflow-hidden p-0.5">
+                            <div id="modal-xp-bar" class="h-full bg-gradient-to-r from-amber-500 to-emerald-400 rounded-sm" style="width: 84%;"></div>
+                        </div>
                     </div>
                 </div>
             </div>
-            <div class="pt-2 border-t border-slate-800 flex justify-end gap-2">
-                <button onclick="closeNewWorksheetModal()" class="btn-modern px-3 py-1.5 text-xs text-slate-400">Batal</button>
-                <button onclick="submitNewWorksheet()" class="btn-modern bg-amber-500 text-slate-950 font-bold px-4 py-1.5 text-xs border border-amber-400">Buat Pembahasan</button>
+
+            <!-- Current Status Box -->
+            <div class="mt-4 p-2.5 rounded bg-[#0f0b18] border border-[#3b2a59] text-[11px] font-mono">
+                <div class="flex items-center space-x-2 text-slate-400 text-[10px] mb-1">
+                    <span id="modal-status-dot" class="w-2 h-2 rounded-full bg-emerald-400"></span>
+                    <span id="modal-status-label" class="uppercase text-emerald-400 font-bold">WORKING</span>
+                    <span>•</span>
+                    <span id="modal-location">Workstation 01 (Bay A)</span>
+                </div>
+                <p id="modal-detail-text" class="text-slate-200">Sedang menulis modul orkestrasi hybrid storage...</p>
+            </div>
+
+            <!-- Quick Action Micro-Commands -->
+            <div class="mt-4">
+                <div class="text-[10px] text-slate-400 font-bold uppercase tracking-wider mb-1.5">Kirim Tindakan Cepat (Micro-Command):</div>
+                <div class="grid grid-cols-2 gap-1.5">
+                    <button id="cmd-work" class="pixel-btn py-1.5 px-2 text-[10px] text-amber-200 justify-start">
+                        <i class="fa-solid fa-laptop-code mr-1.5 text-amber-400"></i> Ke Meja Kerja
+                    </button>
+                    <button id="cmd-bench" class="pixel-btn py-1.5 px-2 text-[10px] text-emerald-200 justify-start">
+                        <i class="fa-solid fa-tree mr-1.5 text-emerald-400"></i> Duduk di Taman
+                    </button>
+                    <button id="cmd-coffee" class="pixel-btn py-1.5 px-2 text-[10px] text-rose-200 justify-start">
+                        <i class="fa-solid fa-mug-saucer mr-1.5 text-rose-400"></i> Ambil Kopi
+                    </button>
+                    <button id="cmd-meeting" class="pixel-btn py-1.5 px-2 text-[10px] text-sky-200 justify-start">
+                        <i class="fa-solid fa-comments mr-1.5 text-sky-400"></i> Ruang Rapat
+                    </button>
+                </div>
+            </div>
+
+            <!-- Direct User Instruction Prompt -->
+            <div class="mt-3.5">
+                <div class="text-[10px] text-slate-400 font-bold uppercase tracking-wider mb-1">Beri Instruksi Khusus:</div>
+                <div class="flex items-center space-x-1.5">
+                    <input type="text" id="agent-instruction-input" placeholder="Tulis instruksi untuk agen ini..." class="flex-1 bg-[#0d0916] border border-[#4b3573] rounded px-2.5 py-1.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-amber-400 font-mono">
+                    <button id="btn-send-instruction" class="pixel-btn pixel-btn-gold px-3 py-1.5 text-xs">
+                        <i class="fa-solid fa-paper-plane mr-1"></i> Kirim
+                    </button>
+                </div>
             </div>
         </div>
     </div>
 
-    <!-- Toast Notification Banner -->
-    <div id="toast-banner" class="fixed top-20 left-1/2 -translate-x-1/2 z-50 pointer-events-none opacity-0 transition-all duration-300 transform -translate-y-3">
-        <div class="glass-panel bg-slate-900/95 border border-amber-500/40 px-4 py-2 flex items-center gap-2.5 text-slate-100 font-medium text-xs shadow-2xl backdrop-blur-md rounded-xl">
-            <i class="fa-solid fa-bell text-amber-400"></i>
-            <span id="toast-message" class="font-mono-code text-xs">Pesan sistem</span>
+    <!-- WORKSHEETS & TELEMETRY SLIDE-OUT DRAWER (RIGHT) -->
+    <div id="side-drawer" class="fixed top-0 bottom-0 right-0 w-full max-w-md z-40 bg-[#161024f8] border-l-2 border-[#412e63] shadow-2xl backdrop-blur-md transform translate-x-full transition-transform duration-200 ease-in-out flex flex-col">
+        <!-- Drawer Header -->
+        <div class="p-3 bg-[#110c1c] border-b border-[#362654] flex items-center justify-between">
+            <div class="flex items-center space-x-2">
+                <button id="tab-btn-ws" class="pixel-btn active px-3 py-1 text-xs">
+                    <i class="fa-solid fa-file-pen mr-1 text-amber-400"></i> Lembar Kerja
+                </button>
+                <button id="tab-btn-telemetry" class="pixel-btn px-3 py-1 text-xs">
+                    <i class="fa-solid fa-terminal mr-1 text-emerald-400"></i> Telemetri Log
+                </button>
+            </div>
+            <button id="btn-close-drawer" class="pixel-btn w-7 h-7 text-xs text-slate-400 hover:text-white">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+
+        <!-- Drawer Content 1: Active Worksheet Editor -->
+        <div id="drawer-tab-ws" class="flex-1 flex flex-col p-4 overflow-y-auto">
+            <div class="flex items-center justify-between mb-2">
+                <div>
+                    <span id="ws-code-badge" class="px-2 py-0.5 rounded bg-amber-500/20 text-amber-400 border border-amber-500/40 font-bold text-xs">TOPIK A</span>
+                    <h2 id="ws-title" class="text-sm font-bold text-white mt-1">CHARISNA Intelligence System & Holographic Memory</h2>
+                </div>
+            </div>
+
+            <div class="text-[11px] text-slate-400 mb-3 font-mono bg-[#0e0a17] p-2 rounded border border-[#2d1f45]">
+                <div class="text-amber-300 font-semibold mb-0.5">Tujuan & Target:</div>
+                <div id="ws-goal">Implementasi hybrid storage: aktif = lokal, arsip = Drive I:/My Drive/Charisna SuperApp. SQLite FTS5.</div>
+                <div class="mt-2 text-slate-300">
+                    <span class="text-purple-300">Agen Ditugaskan:</span> <span id="ws-assigned" class="font-bold text-amber-200">Hermes Prime, Athena Owl</span>
+                </div>
+            </div>
+
+            <!-- Markdown Deliverable Scratchpad -->
+            <div class="flex-1 flex flex-col">
+                <div class="flex items-center justify-between text-[11px] text-slate-400 mb-1">
+                    <span class="font-bold text-amber-300"><i class="fa-solid fa-feather mr-1"></i> Catatan & Deliverable:</span>
+                    <span id="save-status" class="text-emerald-400 text-[10px] hidden"><i class="fa-solid fa-check mr-0.5"></i> Tersimpan</span>
+                </div>
+                <textarea id="ws-content-editor" class="flex-1 w-full p-2.5 bg-[#0d0916] border border-[#3b2a59] rounded-lg text-xs font-mono text-slate-200 placeholder-slate-600 focus:outline-none focus:border-amber-400 resize-none leading-relaxed" placeholder="Catatan kerja agen..."></textarea>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="mt-3 flex items-center justify-between pt-2 border-t border-[#31224d]">
+                <button id="btn-save-notes" class="pixel-btn pixel-btn-green px-3 py-1.5 text-xs">
+                    <i class="fa-solid fa-floppy-disk mr-1"></i> Simpan Catatan
+                </button>
+                <button id="btn-export-artifact" class="pixel-btn pixel-btn-blue px-3 py-1.5 text-xs">
+                    <i class="fa-solid fa-box-archive mr-1"></i> Export ke Artefak
+                </button>
+            </div>
+        </div>
+
+        <!-- Drawer Content 2: Telemetry Log Stream -->
+        <div id="drawer-tab-telemetry" class="flex-1 p-3 overflow-y-auto hidden flex flex-col space-y-2 font-mono text-xs" id="telemetry-log-list">
+            <div class="text-[11px] text-slate-400 mb-1 flex items-center justify-between">
+                <span>Riwayat Aktivitas & Peristiwa Agen</span>
+                <span class="text-[10px] text-amber-400">Live Auto-Scroll</span>
+            </div>
+            <div id="telemetry-items" class="space-y-1.5 overflow-y-auto max-h-full">
+                <!-- Items populated dynamically -->
+            </div>
         </div>
     </div>
 
-    <!-- ================= JAVASCRIPT APPLICATION LOGIC ================= -->
+    <!-- MAIN JAVASCRIPT: ENGINE & LOGIC -->
     <script>
-        /******************************************************************
-         * 1. SYNTHESIZER SOUND CHIMES (WEB AUDIO API)
-         ******************************************************************/
-        let audioCtx = null;
-        let soundEnabled = true;
+    "use strict";
 
-        function initAudio() {
-            if (!audioCtx) {
-                const AudioContextClass = window.AudioContext || window.webkitAudioContext;
-                if (AudioContextClass) audioCtx = new AudioContextClass();
-            }
-            if (audioCtx && audioCtx.state === 'suspended') {
-                audioCtx.resume();
-            }
+    /* =========================================================================
+       HERMES PIXEL OFFICE — 2D RETRO CANVAS ENGINE
+       Reverse-engineered & inspired by Pixel Office & Hermes Agent Architecture
+       ========================================================================= */
+
+    const cv = document.getElementById("office-canvas");
+    const ctx = cv.getContext("2d");
+
+    // Map Dimensions (in tiles)
+    const TILE = 16;
+    const COLS = 64; // 1024 px world width
+    const ROWS = 40; // 640 px world height
+    const WORLD_W = COLS * TILE;
+    const WORLD_H = ROWS * TILE;
+
+    // Camera & Pan/Zoom State
+    const camera = {
+        x: 0,
+        y: 0,
+        zoom: 2.0,
+        minZoom: 0.9,
+        maxZoom: 4.5
+    };
+
+    let isDragging = false;
+    let dragStartX = 0;
+    let dragStartY = 0;
+    let frame = 0;
+
+    // Live Server State
+    let agents = [];
+    let worksheets = [];
+    let activeWorksheetId = "ws-topic-a";
+    let isConnected = false;
+    let lastEventTs = 0;
+
+    // Selected Agent for Dossier Modal
+    let selectedAgent = null;
+
+    // Sakura Tree Petal Particle System
+    const sakuraPetals = [];
+    for (let i = 0; i < 45; i++) {
+        sakuraPetals.push({
+            x: 650 + Math.random() * 260,
+            y: 350 + Math.random() * 200,
+            speedX: 0.3 + Math.random() * 0.7,
+            speedY: 0.4 + Math.random() * 0.8,
+            w: 2 + Math.floor(Math.random() * 2),
+            h: 2 + Math.floor(Math.random() * 2),
+            color: Math.random() > 0.4 ? "#f8a5c2" : "#f78fb3",
+            sway: Math.random() * Math.PI * 2
+        });
+    }
+
+    // Agent Visual State Representation
+    // Mapping agent ID -> internal positional & animation data
+    const agentVisuals = new Map();
+
+    // Defined Room Points of Interest (World Pixel Coordinates)
+    const POI = {
+        // Workstation Desks (Bay 1)
+        desks: [
+            { x: 120, y: 130, dir: "down", label: "Meja 1 (Hermes)" },
+            { x: 230, y: 130, dir: "down", label: "Meja 2 (Athena)" },
+            { x: 340, y: 130, dir: "down", label: "Meja 3 (Hephaestus)" },
+            { x: 170, y: 240, dir: "down", label: "Meja 4 (Iris)" },
+            { x: 290, y: 240, dir: "down", label: "Meja 5 (Zephyr)" },
+        ],
+        // Park Benches (Outdoor Sakura Terrace)
+        benches: [
+            { x: 740, y: 490, dir: "up", label: "Bangku Sakura #1" },
+            { x: 880, y: 490, dir: "up", label: "Bangku Teras #2" },
+            { x: 680, y: 530, dir: "right", label: "Gazebo Taman" },
+        ],
+        // Break Room & Coffee Lounge
+        lounge: {
+            coffee: { x: 90, y: 450, dir: "up", label: "Mesin Espresso" },
+            cooler: { x: 60, y: 450, dir: "up", label: "Water Cooler" },
+            sofa: { x: 220, y: 490, dir: "down", label: "Sofa Lounge" },
+            arcade: { x: 170, y: 430, dir: "up", label: "Arcade HERMES-88" }
+        },
+        // Boardroom Meeting Table
+        meeting: [
+            { x: 500, y: 110, dir: "down", label: "Rapat Kursi 1" },
+            { x: 560, y: 110, dir: "down", label: "Rapat Kursi 2" },
+            { x: 620, y: 110, dir: "down", label: "Rapat Kursi 3" },
+            { x: 500, y: 175, dir: "up", label: "Rapat Kursi 4" },
+            { x: 560, y: 175, dir: "up", label: "Rapat Kursi 5" },
+            { x: 620, y: 175, dir: "up", label: "Rapat Kursi 6" },
+        ],
+        // Outdoor Garden Strolling Waypoints
+        roam: [
+            { x: 720, y: 420 },
+            { x: 840, y: 400 },
+            { x: 910, y: 480 },
+            { x: 790, y: 550 },
+            { x: 440, y: 320 }
+        ]
+    };
+
+    /* =========================================================================
+       8-BIT AUDIO SYNTHESIS (Zero External Audio File Dependency)
+       ========================================================================= */
+    let audioCtx = null;
+    let soundEnabled = true;
+    try {
+        const stored = localStorage.getItem("pixelOfficeSound");
+        if (stored !== null) soundEnabled = stored === "1";
+    } catch(e) {}
+
+    function updateSoundBtn() {
+        const icon = document.getElementById("sound-icon");
+        const btn = document.getElementById("btn-sound");
+        if (soundEnabled) {
+            icon.className = "fa-solid fa-volume-high text-amber-400";
+            btn.classList.add("active");
+            btn.title = "8-Bit Sound ON (Klik untuk Mute)";
+        } else {
+            icon.className = "fa-solid fa-volume-xmark text-slate-500";
+            btn.classList.remove("active");
+            btn.title = "8-Bit Sound MUTED (Klik untuk Aktifkan)";
         }
+    }
+    updateSoundBtn();
 
-        function playTone(freq = 520, type = 'sine', duration = 0.08, vol = 0.05) {
-            if (!soundEnabled) return;
-            initAudio();
-            if (!audioCtx) return;
-            try {
+    document.getElementById("btn-sound").addEventListener("click", () => {
+        soundEnabled = !soundEnabled;
+        try { localStorage.setItem("pixelOfficeSound", soundEnabled ? "1" : "0"); } catch(e) {}
+        updateSoundBtn();
+        if (soundEnabled) playSfx("blip");
+    });
+
+    function playSfx(type) {
+        if (!soundEnabled) return;
+        try {
+            audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
+            if (audioCtx.state === "suspended") audioCtx.resume();
+            const now = audioCtx.currentTime;
+
+            if (type === "blip") {
                 const osc = audioCtx.createOscillator();
                 const gain = audioCtx.createGain();
-                osc.type = type;
-                osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
-                gain.gain.setValueAtTime(vol, audioCtx.currentTime);
-                gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
+                osc.type = "square";
+                osc.frequency.setValueAtTime(580, now);
+                osc.frequency.exponentialRampToValueAtTime(880, now + 0.08);
+                gain.gain.setValueAtTime(0.08, now);
+                gain.gain.exponentialRampToValueAtTime(0.001, now + 0.08);
                 osc.connect(gain);
                 gain.connect(audioCtx.destination);
-                osc.start();
-                osc.stop(audioCtx.currentTime + duration);
-            } catch (e) {}
-        }
-
-        function playChime(kind = 'select') {
-            if (kind === 'select') playTone(640, 'sine', 0.06, 0.04);
-            else if (kind === 'dispatch') {
-                playTone(480, 'sine', 0.06, 0.04);
-                setTimeout(() => playTone(720, 'sine', 0.08, 0.04), 70);
-            } else if (kind === 'switch') {
-                playTone(520, 'triangle', 0.08, 0.04);
-                setTimeout(() => playTone(659, 'triangle', 0.1, 0.04), 90);
-            }
-        }
-
-        function toggleAudio() {
-            soundEnabled = !soundEnabled;
-            const icon = document.getElementById('icon-audio');
-            icon.className = soundEnabled ? 'fa-solid fa-volume-high' : 'fa-solid fa-volume-xmark text-slate-500';
-            showToast(soundEnabled ? '🔊 Audio Chimes Aktif' : '🔇 Audio Dinonaktifkan');
-        }
-
-        function showToast(msg) {
-            const toast = document.getElementById('toast-banner');
-            const toastMsg = document.getElementById('toast-message');
-            toastMsg.textContent = msg;
-            toast.classList.remove('opacity-0', '-translate-y-3');
-            toast.classList.add('opacity-100', 'translate-y-0');
-            clearTimeout(window._toastTimeout);
-            window._toastTimeout = setTimeout(() => {
-                toast.classList.remove('opacity-100', 'translate-y-0');
-                toast.classList.add('opacity-0', '-translate-y-3');
-            }, 3000);
-        }
-
-        /******************************************************************
-         * 2. HERMES WORKSHEETS & TOPIC SWITCHER ENGINE
-         ******************************************************************/
-        const BRIDGE_ORIGIN = (window.location.protocol.startsWith('http') && (window.location.port === '8765' || window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'))
-            ? window.location.origin
-            : 'http://localhost:8765';
-        const BRIDGE_API = `${BRIDGE_ORIGIN}/api`;
-
-        let activeWorksheetId = 'ws-topic-a';
-        let worksheetsList = [];
-        let isBridgeOnline = false;
-
-        async function fetchWorksheets() {
-            try {
-                const res = await fetch(`${BRIDGE_API}/worksheets`);
-                if (res.ok) {
-                    const data = await res.json();
-                    activeWorksheetId = data.activeId || activeWorksheetId;
-                    worksheetsList = data.worksheets || [];
-                    renderWorksheetsDock();
-                    renderActiveWorksheetDetail();
-                }
-            } catch (e) {
-                // Fallback default
-                if (worksheetsList.length === 0) {
-                    worksheetsList = [
-                        {
-                            id: 'ws-topic-a',
-                            code: 'A',
-                            title: 'CHARISNA Intelligence System & Holographic Memory',
-                            category: 'Architecture & Long-Term Memory',
-                            status: 'active',
-                            assigned: ['hermes', 'athena'],
-                            goal: 'Implementasi hybrid storage: aktif = lokal (AppData/Local/hermes), arsip = Drive I:/My Drive/Charisna SuperApp. Holographic memory SQLite FTS5.',
-                            deliverable: '# Lembar Kerja A: CHARISNA Intelligence System & Long-Term Memory\n**Status**: Sedang Berlangsung (Hermes Prime & Athena Owl)\n**Arsip**: Reports/2026-11-08-intelligence-system-implementation.md\n\n## 1. Komponen Utama\n- Hybrid Storage: Aktif lokal di AppData/Local/hermes, sinkronisasi ke Google Drive.\n- Holographic Provider: SQLite FTS5 incremental indexing (charisna_indexer.py).\n- Seed Pengetahuan: DEC-0001 (multi-business decoupled: POS, Homestay, MoniFlow).'
-                        },
-                        {
-                            id: 'ws-topic-b',
-                            code: 'B',
-                            title: 'CHARISNA AI Office Installation & Multi-Business Hub',
-                            category: 'Infrastructure & Deployment',
-                            status: 'ready',
-                            assigned: ['hephaestus'],
-                            goal: 'Integrasi CLI Hermes lokal (hermes.exe), kanban sync, dual-stack HTTP bridge (anti-crash), dan desktop UI.',
-                            deliverable: '# Lembar Kerja B: AI Office Installation & Local Bridge\n**Status**: Siap Ditinjau (Hephaestus Forge)\n\n## 1. Spesifikasi Teknis\n- Port: http://localhost:8765 & http://127.0.0.1:8765 (Dual-Stack IPv6/IPv4).\n- CLI Hermes: AppData/Local/hermes/bin/hermes.exe (hermes kanban list --json).'
-                        },
-                        {
-                            id: 'ws-topic-c',
-                            code: 'C',
-                            title: 'Modern Smooth 3D Campus & Interactive Visualizer',
-                            category: 'UI / UX Redesign',
-                            status: 'active',
-                            assigned: ['iris', 'hermes'],
-                            goal: 'Rombak total desain kuno/kotak-kotak menjadi smooth 3D campus, bangku taman interaktif, zoom in/out 2D, dan worksheet switcher.',
-                            deliverable: '# Lembar Kerja C: Modern Smooth Visual Campus & Dynamic Life\n**Status**: Sprint Aktif (Iris Prism & Hermes Core)\n\n## 1. Poin Transformasi Desain\n- Buang Voxel Kotak-kotak: Ganti dengan smooth 3D geometry & soft lighting.\n- Bangku Taman Interaktif: Agen santai dan duduk di bangku taman saat idle/break.\n- Kontrol 2D Pan & Zoom: Kanvas 2D kini mendukung zoom in/out halus (mouse wheel) dan drag geser bebas.'
-                        }
-                    ];
-                    renderWorksheetsDock();
-                    renderActiveWorksheetDetail();
-                }
-            }
-        }
-
-        function renderWorksheetsDock() {
-            const container = document.getElementById('worksheet-tabs-container');
-            if (!container) return;
-
-            container.innerHTML = worksheetsList.map(ws => {
-                const isActive = ws.id === activeWorksheetId;
-                return `
-                    <button onclick="switchWorksheet('${ws.id}')" 
-                            class="px-2.5 py-1 rounded-md text-xs font-semibold flex items-center gap-1.5 transition whitespace-nowrap ${isActive ? 'bg-amber-500 text-slate-950 shadow-sm border border-amber-400' : 'bg-slate-900/80 hover:bg-slate-800 text-slate-300 border border-slate-700/80'}">
-                        <span class="w-4 h-4 rounded-full flex items-center justify-center text-[10px] font-mono-code font-bold ${isActive ? 'bg-slate-950 text-amber-300' : 'bg-slate-800 text-slate-400'}">${ws.code}</span>
-                        <span class="max-w-[130px] truncate">${ws.title.split('&')[0].trim()}</span>
-                    </button>
-                `;
-            }).join('');
-        }
-
-        function renderActiveWorksheetDetail() {
-            const ws = worksheetsList.find(w => w.id === activeWorksheetId) || worksheetsList[0];
-            if (!ws) return;
-
-            const badgeEl = document.getElementById('ws-badge');
-            const catEl = document.getElementById('ws-category');
-            const titleEl = document.getElementById('ws-title');
-            const goalEl = document.getElementById('ws-goal');
-            const scratchpadEl = document.getElementById('ws-scratchpad');
-            const chipsEl = document.getElementById('ws-assigned-chips');
-
-            if (badgeEl) badgeEl.textContent = `PEMBAHASAN ${ws.code}`;
-            if (catEl) catEl.textContent = ws.category || 'General';
-            if (titleEl) titleEl.textContent = ws.title;
-            if (goalEl) goalEl.textContent = ws.goal || 'Tidak ada deskripsi tujuan.';
-            if (scratchpadEl) scratchpadEl.value = ws.deliverable || '';
-
-            if (chipsEl) {
-                chipsEl.innerHTML = (ws.assigned || ['hermes']).map(aid => {
-                    const agent = AGENTS.find(a => a.id === aid);
-                    const color = agent ? agent.color : '#f59e0b';
-                    const name = agent ? agent.name.split(' ')[0] : aid;
-                    return `
-                        <span class="text-[10px] font-mono-code px-1.5 py-0.2 rounded border flex items-center gap-1" style="background-color: ${color}22; border-color: ${color}66; color: ${color}">
-                            <span class="w-1.5 h-1.5 rounded-full" style="background-color: ${color}"></span>
-                            ${name}
-                        </span>
-                    `;
-                }).join('');
-            }
-
-            // Sync 3D agent behavior: Assigned agents go to workstations, unassigned relax on park benches!
-            updateAgentsForWorksheet(ws);
-        }
-
-        async function switchWorksheet(wsId) {
-            playChime('switch');
-            activeWorksheetId = wsId;
-            renderWorksheetsDock();
-            renderActiveWorksheetDetail();
-
-            const ws = worksheetsList.find(w => w.id === wsId);
-            showToast(`📑 Beralih ke Pembahasan [${ws ? ws.code : ''}]: ${ws ? ws.title : wsId}`);
-            addTelemetryLog('WORKSHEET', '#f59e0b', `Beralih fokus ke Pembahasan [${ws ? ws.code : ''}]: ${ws ? ws.title : wsId}`);
-
-            try {
-                await fetch(`${BRIDGE_API}/worksheets/switch`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ id: wsId })
+                osc.start(now);
+                osc.stop(now + 0.09);
+            } else if (type === "click") {
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.type = "triangle";
+                osc.frequency.setValueAtTime(320, now);
+                gain.gain.setValueAtTime(0.05, now);
+                gain.gain.exponentialRampToValueAtTime(0.001, now + 0.04);
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.start(now);
+                osc.stop(now + 0.05);
+            } else if (type === "coffee") {
+                [520, 650, 780].forEach((freq, idx) => {
+                    const osc = audioCtx.createOscillator();
+                    const gain = audioCtx.createGain();
+                    osc.type = "sine";
+                    osc.frequency.setValueAtTime(freq, now + idx * 0.06);
+                    gain.gain.setValueAtTime(0.06, now + idx * 0.06);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.06 + 0.1);
+                    osc.connect(gain);
+                    gain.connect(audioCtx.destination);
+                    osc.start(now + idx * 0.06);
+                    osc.stop(now + idx * 0.06 + 0.11);
                 });
-            } catch (e) {}
-        }
-
-        async function saveActiveWorksheet() {
-            const scratchpadEl = document.getElementById('ws-scratchpad');
-            const text = scratchpadEl ? scratchpadEl.value : '';
-            const ws = worksheetsList.find(w => w.id === activeWorksheetId);
-            if (ws) ws.deliverable = text;
-
-            playChime('dispatch');
-            showToast('💾 Lembar kerja berhasil disimpan!');
-            addTelemetryLog('WORKSHEET', '#10b981', `Perubahan pada Pembahasan [${ws ? ws.code : ''}] berhasil disimpan.`);
-
-            try {
-                await fetch(`${BRIDGE_API}/worksheets/save`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ id: activeWorksheetId, deliverable: text })
+            } else if (type === "meeting") {
+                [440, 554, 659, 880].forEach((freq, idx) => {
+                    const osc = audioCtx.createOscillator();
+                    const gain = audioCtx.createGain();
+                    osc.type = "triangle";
+                    osc.frequency.setValueAtTime(freq, now + idx * 0.08);
+                    gain.gain.setValueAtTime(0.08, now + idx * 0.08);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.08 + 0.16);
+                    osc.connect(gain);
+                    gain.connect(audioCtx.destination);
+                    osc.start(now + idx * 0.08);
+                    osc.stop(now + idx * 0.08 + 0.18);
                 });
-            } catch (e) {}
+            } else if (type === "levelup") {
+                [523, 659, 784, 1046].forEach((freq, idx) => {
+                    const osc = audioCtx.createOscillator();
+                    const gain = audioCtx.createGain();
+                    osc.type = "square";
+                    osc.frequency.setValueAtTime(freq, now + idx * 0.09);
+                    gain.gain.setValueAtTime(0.09, now + idx * 0.09);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.09 + 0.2);
+                    osc.connect(gain);
+                    gain.connect(audioCtx.destination);
+                    osc.start(now + idx * 0.09);
+                    osc.stop(now + idx * 0.09 + 0.22);
+                });
+            }
+        } catch(e) {}
+    }
+
+    /* =========================================================================
+       CANVAS RESIZING & PROJECTION
+       ========================================================================= */
+    function resizeCanvas() {
+        const dpr = window.devicePixelRatio || 1;
+        cv.width = window.innerWidth * dpr;
+        cv.height = window.innerHeight * dpr;
+        cv.style.width = window.innerWidth + "px";
+        cv.style.height = window.innerHeight + "px";
+        ctx.scale(dpr, dpr);
+        ctx.imageSmoothingEnabled = false;
+    }
+    window.addEventListener("resize", resizeCanvas);
+    resizeCanvas();
+
+    function centerCameraOnOffice() {
+        const viewW = window.innerWidth;
+        const viewH = window.innerHeight;
+        camera.zoom = 2.0;
+        camera.x = Math.round((viewW - WORLD_W * camera.zoom) / 2);
+        camera.y = Math.round((viewH - WORLD_H * camera.zoom) / 2) + 20;
+        updateZoomUI();
+    }
+    centerCameraOnOffice();
+
+    function updateZoomUI() {
+        document.getElementById("zoom-text").textContent = Math.round(camera.zoom * 100) + "%";
+    }
+
+    /* =========================================================================
+       PAN & ZOOM MOUSE / TOUCH EVENTS
+       ========================================================================= */
+    cv.addEventListener("wheel", (e) => {
+        e.preventDefault();
+        const mouseX = e.clientX;
+        const mouseY = e.clientY;
+        const oldZoom = camera.zoom;
+        const zoomDelta = e.deltaY < 0 ? 1.15 : 0.87;
+        const newZoom = Math.min(Math.max(camera.zoom * zoomDelta, camera.minZoom), camera.maxZoom);
+
+        // Zoom centered at mouse position
+        camera.x = mouseX - (mouseX - camera.x) * (newZoom / oldZoom);
+        camera.y = mouseY - (mouseY - camera.y) * (newZoom / oldZoom);
+        camera.zoom = newZoom;
+        updateZoomUI();
+    }, { passive: false });
+
+    let dragMoved = 0;
+    cv.addEventListener("mousedown", (e) => {
+        if (e.button === 0) {
+            isDragging = true;
+            dragStartX = e.clientX - camera.x;
+            dragStartY = e.clientY - camera.y;
+            dragMoved = 0;
+        }
+    });
+
+    window.addEventListener("mousemove", (e) => {
+        if (isDragging) {
+            dragMoved += Math.hypot(e.movementX, e.movementY);
+            camera.x = e.clientX - dragStartX;
+            camera.y = e.clientY - dragStartY;
+        }
+    });
+
+    window.addEventListener("mouseup", (e) => {
+        if (isDragging) {
+            isDragging = false;
+            // If mouse didn't drag far, treat as click to inspect agent
+            if (dragMoved < 6) {
+                handleCanvasClick(e.clientX, e.clientY);
+            }
+        }
+    });
+
+    // Touch Support for Mobile / Tablet
+    let initialTouchDist = null;
+    cv.addEventListener("touchstart", (e) => {
+        if (e.touches.length === 1) {
+            isDragging = true;
+            dragStartX = e.touches[0].clientX - camera.x;
+            dragStartY = e.touches[0].clientY - camera.y;
+            dragMoved = 0;
+        } else if (e.touches.length === 2) {
+            isDragging = false;
+            initialTouchDist = Math.hypot(
+                e.touches[0].clientX - e.touches[1].clientX,
+                e.touches[0].clientY - e.touches[1].clientY
+            );
+        }
+    }, { passive: true });
+
+    cv.addEventListener("touchmove", (e) => {
+        if (e.touches.length === 1 && isDragging) {
+            camera.x = e.touches[0].clientX - dragStartX;
+            camera.y = e.touches[0].clientY - dragStartY;
+            dragMoved += 5;
+        } else if (e.touches.length === 2 && initialTouchDist) {
+            const dist = Math.hypot(
+                e.touches[0].clientX - e.touches[1].clientX,
+                e.touches[0].clientY - e.touches[1].clientY
+            );
+            const factor = dist / initialTouchDist;
+            camera.zoom = Math.min(Math.max(camera.zoom * factor, camera.minZoom), camera.maxZoom);
+            initialTouchDist = dist;
+            updateZoomUI();
+        }
+    }, { passive: true });
+
+    cv.addEventListener("touchend", (e) => {
+        isDragging = false;
+        initialTouchDist = null;
+        if (dragMoved < 6 && e.changedTouches.length === 1) {
+            handleCanvasClick(e.changedTouches[0].clientX, e.changedTouches[0].clientY);
+        }
+    });
+
+    // Zoom Buttons
+    document.getElementById("btn-zoom-in").addEventListener("click", () => {
+        const viewW = window.innerWidth / 2;
+        const viewH = window.innerHeight / 2;
+        const oldZoom = camera.zoom;
+        const newZoom = Math.min(camera.zoom * 1.25, camera.maxZoom);
+        camera.x = viewW - (viewW - camera.x) * (newZoom / oldZoom);
+        camera.y = viewH - (viewH - camera.y) * (newZoom / oldZoom);
+        camera.zoom = newZoom;
+        updateZoomUI();
+        playSfx("click");
+    });
+
+    document.getElementById("btn-zoom-out").addEventListener("click", () => {
+        const viewW = window.innerWidth / 2;
+        const viewH = window.innerHeight / 2;
+        const oldZoom = camera.zoom;
+        const newZoom = Math.max(camera.zoom / 1.25, camera.minZoom);
+        camera.x = viewW - (viewW - camera.x) * (newZoom / oldZoom);
+        camera.y = viewH - (viewH - camera.y) * (newZoom / oldZoom);
+        camera.zoom = newZoom;
+        updateZoomUI();
+        playSfx("click");
+    });
+
+    document.getElementById("btn-zoom-reset").addEventListener("click", () => {
+        camera.zoom = 2.0;
+        updateZoomUI();
+        playSfx("click");
+    });
+
+    document.getElementById("btn-focus-office").addEventListener("click", () => {
+        centerCameraOnOffice();
+        playSfx("blip");
+    });
+
+    /* =========================================================================
+       WORLD / SCREEN COORD CONVERSION & CLICK DETECTION
+       ========================================================================= */
+    function toWorld(screenX, screenY) {
+        return {
+            x: (screenX - camera.x) / camera.zoom,
+            y: (screenY - camera.y) / camera.zoom
+        };
+    }
+
+    function handleCanvasClick(screenX, screenY) {
+        const wp = toWorld(screenX, screenY);
+        // Find if clicked on any agent
+        let clicked = null;
+        for (const [id, vis] of agentVisuals.entries()) {
+            // Hitbox around agent: ~24x30 pixels
+            if (wp.x >= vis.x - 8 && wp.x <= vis.x + 24 &&
+                wp.y >= vis.y - 12 && wp.y <= vis.y + 32) {
+                clicked = agents.find(a => a.id === id);
+                break;
+            }
         }
 
-        function openNewWorksheetModal() {
-            initAudio();
-            playChime('select');
-            document.getElementById('new-worksheet-modal').classList.remove('hidden');
+        if (clicked) {
+            openAgentModal(clicked);
+            playSfx("blip");
+        }
+    }
+
+    /* =========================================================================
+       RENDER PIPELINE: TILEMAP & ROOM SCENERY
+       ========================================================================= */
+    function pxRect(x, y, w, h, color) {
+        ctx.fillStyle = color;
+        ctx.fillRect(Math.floor(x), Math.floor(y), Math.floor(w), Math.floor(h));
+    }
+
+    function drawFloorAndRooms() {
+        // 1. Outside / Space backdrop
+        pxRect(0, 0, WORLD_W, WORLD_H, "#090611");
+
+        // Subtle background starfield outside
+        for (let i = 0; i < 60; i++) {
+            const sx = (i * 137) % WORLD_W;
+            const sy = (i * 97) % WORLD_H;
+            const twinkle = (frame + i * 5) % 80 < 40 ? "#5a457a" : "#2a1c42";
+            pxRect(sx, sy, 2, 2, twinkle);
         }
 
-        function closeNewWorksheetModal() {
-            document.getElementById('new-worksheet-modal').classList.add('hidden');
+        // 2. Main Building Outer Foundation
+        pxRect(20, 20, WORLD_W - 40, WORLD_H - 40, "#191124");
+
+        // 3. Zone 1: Dev Pods / Workstation Area (Top-Left)
+        // Parquet Wood Floor (Alternating planks)
+        for (let y = 32; y < 320; y += 16) {
+            for (let x = 32; x < 440; x += 16) {
+                const isAlt = ((x / 16) + (y / 16)) % 2 === 0;
+                pxRect(x, y, 16, 16, isAlt ? "#241834" : "#1f142d");
+                // Subtle plank grain lines
+                pxRect(x, y + 15, 16, 1, "#170e23");
+            }
+        }
+        // Workstation Wall & Windows
+        pxRect(32, 24, 408, 8, "#3c2a55");
+        for (let wx = 60; wx < 400; wx += 50) {
+            pxRect(wx, 26, 32, 5, "#253b6e");
+            pxRect(wx + 2, 27, 28, 3, "#3d5fa6");
         }
 
-        async function submitNewWorksheet() {
-            const title = document.getElementById('new-ws-title').value.trim();
-            const goal = document.getElementById('new-ws-goal').value.trim();
-            if (!title) {
-                alert('Judul pembahasan tidak boleh kosong.');
-                return;
+        // 4. Zone 2: Conference Boardroom (Top-Middle)
+        // Executive Navy Carpet with Gold Borders
+        pxRect(456, 32, 240, 220, "#192238");
+        // Carpet Gold Trim
+        pxRect(460, 36, 232, 2, "#91712a");
+        pxRect(460, 248, 232, 2, "#91712a");
+        pxRect(460, 36, 2, 214, "#91712a");
+        pxRect(690, 36, 2, 214, "#91712a");
+
+        // Boardroom Wall & Large Whiteboard
+        pxRect(456, 24, 240, 8, "#323753");
+        // Whiteboard with architecture diagrams
+        pxRect(510, 27, 130, 28, "#f1f2f6");
+        pxRect(508, 25, 134, 2, "#747d8c");
+        pxRect(508, 55, 134, 2, "#747d8c");
+        // Whiteboard flow diagrams (pixel sketches)
+        pxRect(518, 34, 18, 12, "#3742fa");
+        pxRect(538, 39, 12, 2, "#2ed573");
+        pxRect(552, 32, 22, 16, "#ffa502");
+        pxRect(576, 39, 12, 2, "#ff4757");
+        pxRect(590, 34, 20, 12, "#2f3542");
+
+        // Large Boardroom Oval Table
+        pxRect(490, 126, 170, 48, "#4b2a1a");
+        pxRect(492, 128, 166, 44, "#633822");
+        // Leather Conference Chairs
+        [500, 560, 620].forEach(cx => {
+            // Top chairs
+            pxRect(cx, 108, 16, 14, "#222a3f");
+            pxRect(cx + 2, 106, 12, 4, "#3a4768");
+            // Bottom chairs
+            pxRect(cx, 178, 16, 14, "#222a3f");
+            pxRect(cx + 2, 190, 12, 4, "#3a4768");
+        });
+
+        // 5. Zone 3: Server Vault / Infrastructure (Top-Right)
+        pxRect(712, 32, 280, 220, "#141a24");
+        // High-tech floor tiles
+        for (let y = 32; y < 252; y += 16) {
+            for (let x = 712; x < 992; x += 16) {
+                pxRect(x, y, 15, 15, "#18202d");
+                pxRect(x + 15, y, 1, 16, "#10151e");
+                pxRect(x, y + 15, 16, 1, "#10151e");
+            }
+        }
+        // Glass wall separator
+        pxRect(704, 24, 8, 228, "#2d446a");
+        pxRect(706, 120, 4, 40, "#5390d9"); // Glass door slider
+
+        // 4 High-Tech Server Racks
+        [740, 795, 850, 905].forEach((rx, idx) => {
+            pxRect(rx, 46, 38, 140, "#0b0e14");
+            pxRect(rx + 2, 48, 34, 136, "#171c26");
+            // Rack shelves
+            for (let sy = 54; sy < 180; sy += 18) {
+                pxRect(rx + 4, sy, 30, 14, "#0d1017");
+                // Blinking LED cluster
+                const blink1 = ((frame + idx * 7 + sy) % 30 < 15);
+                const blink2 = ((frame + idx * 11 + sy) % 40 < 20);
+                pxRect(rx + 6, sy + 4, 3, 3, blink1 ? "#2ecc71" : "#0d5c2a");
+                pxRect(rx + 11, sy + 4, 3, 3, blink2 ? "#3498db" : "#114773");
+                pxRect(rx + 16, sy + 4, 3, 3, ((frame + sy) % 50 < 25) ? "#f1c40f" : "#635004");
+            }
+        });
+
+        // 6. Zone 4: Coffee Lounge & Break Room (Bottom-Left)
+        // Checkered Cafe Tile Floor
+        for (let y = 336; y < 608; y += 16) {
+            for (let x = 32; x < 380; x += 16) {
+                const isCheck = ((x / 16) + (y / 16)) % 2 === 0;
+                pxRect(x, y, 16, 16, isCheck ? "#2e213b" : "#251a31");
+            }
+        }
+        // Room Dividing Half-Wall & Planter
+        pxRect(380, 336, 6, 272, "#412e56");
+        for (let py = 360; py < 580; py += 48) {
+            pxRect(376, py, 14, 16, "#27ae60");
+            pxRect(378, py + 12, 10, 8, "#8e44ad");
+        }
+
+        // Coffee Machine Counter
+        pxRect(48, 436, 80, 24, "#4a3424");
+        pxRect(50, 438, 76, 20, "#614430");
+        // Espresso Machine
+        pxRect(82, 414, 28, 22, "#7f8c8d");
+        pxRect(84, 416, 24, 18, "#95a5a6");
+        pxRect(88, 426, 6, 8, "#2c3e50"); // dispenser
+        // Animated Rising Steam Pixels
+        const steamPhase = (frame % 30);
+        pxRect(91, 410 - steamPhase * 0.4, 2, 2, "rgba(236, 240, 241, 0.7)");
+        pxRect(93, 406 - steamPhase * 0.5, 2, 2, "rgba(236, 240, 241, 0.4)");
+
+        // Water Cooler
+        pxRect(54, 412, 16, 24, "#2980b9");
+        pxRect(56, 414, 12, 14, "#3498db");
+        // Water bubble
+        if ((frame % 60) < 30) pxRect(61, 418, 2, 2, "#ecf0f1");
+        pxRect(54, 428, 16, 8, "#bdc3c7");
+
+        // Retro Arcade Machine "HERMES-88"
+        pxRect(154, 396, 32, 48, "#2c3e50");
+        pxRect(156, 398, 28, 12, "#e74c3c"); // Marquee
+        pxRect(158, 412, 24, 18, (frame % 40 < 20) ? "#8e44ad" : "#2980b9"); // Screen
+        pxRect(156, 432, 28, 10, "#34495e"); // Controls with joysticks
+        pxRect(162, 434, 3, 3, "#f1c40f");
+        pxRect(174, 434, 3, 3, "#2ecc71");
+
+        // Cozy Purple Velvet Sofa & Coffee Table
+        pxRect(200, 474, 90, 36, "#4a235a");
+        pxRect(204, 478, 82, 28, "#5b2c6f");
+        pxRect(200, 470, 90, 8, "#381845"); // sofa backrest
+        // Wooden Coffee Table
+        pxRect(220, 520, 50, 20, "#563821");
+        pxRect(222, 522, 46, 16, "#714a2c");
+        // Magazines & Mugs on table
+        pxRect(230, 525, 8, 6, "#e67e22");
+        pxRect(248, 526, 5, 5, "#ecf0f1");
+
+        // 7. Zone 5: Outdoor Terrace & Sakura Garden (Bottom-Right)
+        // Timber Decking
+        for (let y = 336; y < 608; y += 12) {
+            pxRect(390, y, 220, 10, "#34231b");
+            pxRect(390, y + 10, 220, 2, "#241812");
+        }
+        // Cobblestone Path to Garden
+        pxRect(610, 336, 382, 272, "#132317"); // Garden grass
+        for (let y = 350; y < 590; y += 18) {
+            for (let x = 620; x < 970; x += 22) {
+                if ((x + y) % 3 === 0) {
+                    pxRect(x, y, 14, 10, "#2c3e2f");
+                    pxRect(x + 2, y + 2, 10, 6, "#3a513e");
+                }
+            }
+        }
+
+        // Two Wooden Park Benches
+        // Bench 1 (Under Sakura)
+        pxRect(716, 480, 60, 16, "#5c381e");
+        pxRect(718, 482, 56, 12, "#7a4c28");
+        pxRect(716, 476, 60, 5, "#422815"); // Backrest
+        // Bench 2 (Skyline Terrace)
+        pxRect(856, 480, 60, 16, "#5c381e");
+        pxRect(858, 482, 56, 12, "#7a4c28");
+        pxRect(856, 476, 60, 5, "#422815");
+
+        // Grand Blooming Sakura (Cherry Blossom) Tree
+        // Trunk & branches
+        pxRect(760, 390, 24, 70, "#4a2b16");
+        pxRect(764, 386, 16, 74, "#5d371c");
+        pxRect(740, 410, 24, 8, "#4a2b16");
+        pxRect(780, 400, 28, 8, "#4a2b16");
+        // Lush Pink Blossoms Canopy
+        pxRect(710, 340, 120, 60, "#f8a5c2");
+        pxRect(720, 326, 100, 74, "#f78fb3");
+        pxRect(734, 314, 76, 88, "#ffb8b8");
+        // Blossom highlight puffs
+        pxRect(724, 350, 28, 20, "#ffffff99");
+        pxRect(770, 336, 32, 24, "#ffffff99");
+
+        // Small Koi Pond with Ripple Effect
+        pxRect(880, 526, 76, 50, "#1b4965");
+        pxRect(884, 530, 68, 42, "#2b6cb0");
+        const ripple = (frame % 40) * 0.4;
+        ctx.strokeStyle = "rgba(190, 227, 248, 0.4)";
+        ctx.strokeRect(918 - ripple, 550 - ripple / 2, ripple * 2, ripple);
+
+        // Stone Lantern
+        pxRect(850, 536, 14, 24, "#718096");
+        pxRect(852, 540, 10, 8, "#f6e05e"); // warm yellow lantern glow
+
+        // 8. Draw Workstations (Dev Pods) Desks & Monitors
+        POI.desks.forEach((desk, idx) => {
+            // Wooden Desk
+            pxRect(desk.x - 24, desk.y, 48, 22, "#503823");
+            pxRect(desk.x - 22, desk.y + 2, 44, 18, "#684a2f");
+            pxRect(desk.x - 24, desk.y + 22, 4, 10, "#332316"); // legs
+            pxRect(desk.x + 20, desk.y + 22, 4, 10, "#332316");
+
+            // Dual / Wide Monitors
+            pxRect(desk.x - 18, desk.y - 12, 16, 12, "#1a1626"); // Left Monitor
+            pxRect(desk.x + 2, desk.y - 12, 16, 12, "#1a1626");  // Right Monitor
+            pxRect(desk.x - 12, desk.y, 4, 2, "#3d3b4d");        // Stands
+            pxRect(desk.x + 8, desk.y, 4, 2, "#3d3b4d");
+
+            // Monitor Screen Colors (Dynamic based on agent working there)
+            const agentAtDesk = agents.find(a => {
+                const vis = agentVisuals.get(a.id);
+                return vis && vis.currentLocation === `Meja ${idx + 1}`;
+            });
+
+            let scrCol1 = "#0d1b13";
+            let scrCol2 = "#0e1828";
+            if (agentAtDesk && agentAtDesk.status === "working") {
+                if (agentAtDesk.activity === "typing") {
+                    scrCol1 = (frame % 16 < 8) ? "#2ecc71" : "#1b7943"; // fast terminal code
+                    scrCol2 = (frame % 20 < 10) ? "#f39c12" : "#995d03";
+                } else if (agentAtDesk.activity === "browsing") {
+                    scrCol1 = (frame % 24 < 12) ? "#3498db" : "#1c5b85";
+                    scrCol2 = "#2c3e50";
+                } else {
+                    scrCol1 = "#27ae60";
+                    scrCol2 = "#2980b9";
+                }
+            } else if (agentAtDesk && agentAtDesk.status === "waiting") {
+                scrCol1 = (frame % 20 < 10) ? "#e74c3c" : "#781e14"; // red alert
+                scrCol2 = "#e74c3c";
             }
 
-            const assigned = [];
-            if (document.getElementById('check-hermes').checked) assigned.push('hermes');
-            if (document.getElementById('check-athena').checked) assigned.push('athena');
-            if (document.getElementById('check-hephaestus').checked) assigned.push('hephaestus');
-            if (document.getElementById('check-iris').checked) assigned.push('iris');
-            if (assigned.length === 0) assigned.push('hermes');
+            pxRect(desk.x - 16, desk.y - 10, 12, 8, scrCol1);
+            pxRect(desk.x + 4, desk.y - 10, 12, 8, scrCol2);
 
-            closeNewWorksheetModal();
-            playChime('dispatch');
+            // Ergonomic Chair behind desk
+            pxRect(desk.x - 10, desk.y + 12, 20, 16, "#2d3436");
+            pxRect(desk.x - 8, desk.y + 14, 16, 12, "#404b4e");
+        });
+    }
 
-            try {
-                const res = await fetch(`${BRIDGE_API}/worksheets/create`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ title, goal, assigned })
-                });
-                if (res.ok) {
-                    const data = await res.json();
-                    if (data.worksheet) {
-                        activeWorksheetId = data.worksheet.id;
-                        fetchWorksheets();
-                        showToast(`✨ Pembahasan [${data.worksheet.code}] dibuat!`);
-                    }
-                }
-            } catch (e) {
-                const newCode = String.fromCharCode(65 + (worksheetsList.length % 26));
-                const localWs = {
-                    id: `ws-${Date.now()}`,
-                    code: newCode,
-                    title: title,
-                    category: 'Custom Topic',
-                    status: 'active',
-                    assigned: assigned,
-                    goal: goal,
-                    deliverable: `# Lembar Kerja ${newCode}: ${title}\n**Tujuan**: ${goal}\n\nCatatan kerja agen...`
+    /* =========================================================================
+       SAKURA FLOATING PETALS SYSTEM
+       ========================================================================= */
+    function drawSakuraPetals() {
+        sakuraPetals.forEach(p => {
+            p.x += p.speedX + Math.sin(p.sway + frame * 0.05) * 0.3;
+            p.y += p.speedY;
+            if (p.y > 620 || p.x > 980) {
+                p.x = 680 + Math.random() * 200;
+                p.y = 330 + Math.random() * 80;
+            }
+            pxRect(p.x, p.y, p.w, p.h, p.color);
+        });
+    }
+
+    /* =========================================================================
+       CHARACTER SPRITES & 4-WAY ANIMATION ENGINE
+       ========================================================================= */
+    // Agent Palette Configurations
+    const AGENT_SKINS = ["#f0c8a0", "#c68b59", "#ffdbac", "#f0c8a0", "#a1665e"];
+    const AGENT_HAIRS = ["#3e2723", "#dfe6e9", "#d35400", "#1dd1a1", "#2d3436"];
+    const AGENT_SHIRTS = ["#22325c", "#6c5ce7", "#d35400", "#00b894", "#0984e3"];
+
+    function drawPixelAgent(vis, agent, isSeated) {
+        const x = Math.round(vis.x);
+        const y = Math.round(vis.y);
+        const palIdx = (agent.avatar_idx || 0) % 5;
+        const skin = AGENT_SKINS[palIdx];
+        const hair = AGENT_HAIRS[palIdx];
+        const shirt = AGENT_SHIRTS[palIdx];
+
+        const isWalking = vis.isMoving;
+        const walkFrame = Math.floor(frame / 6) % 4;
+        const bob = (isWalking && (walkFrame % 2 === 1)) ? -1 : 0;
+
+        // Shadow under character
+        ctx.fillStyle = "rgba(0, 0, 0, 0.4)";
+        ctx.beginPath();
+        ctx.ellipse(x + 7, y + 21, 8, 3, 0, 0, Math.PI * 2);
+        ctx.fill();
+
+        const cy = y + bob;
+
+        // 1. Hair & Head
+        pxRect(x + 3, cy, 8, 4, hair);
+        if (palIdx === 0) {
+            // Hermes Prime: Golden laurel/antenna
+            pxRect(x + 10, cy - 2, 2, 3, "#f1c40f");
+        } else if (palIdx === 1) {
+            // Athena: Glasses
+            pxRect(x + 3, cy + 4, 3, 2, "#74b9ff");
+            pxRect(x + 8, cy + 4, 3, 2, "#74b9ff");
+        } else if (palIdx === 3) {
+            // Iris: DJ Headphones
+            pxRect(x + 1, cy + 2, 2, 5, "#fd79a8");
+            pxRect(x + 11, cy + 2, 2, 5, "#fd79a8");
+            pxRect(x + 3, cy - 1, 8, 2, "#fd79a8");
+        }
+
+        // Face
+        pxRect(x + 4, cy + 3, 6, 5, skin);
+        // Eyes
+        if (vis.facing === "left") {
+            pxRect(x + 4, cy + 5, 2, 2, "#2d3436");
+        } else if (vis.facing === "right") {
+            pxRect(x + 8, cy + 5, 2, 2, "#2d3436");
+        } else {
+            pxRect(x + 5, cy + 5, 1, 2, "#2d3436");
+            pxRect(x + 8, cy + 5, 1, 2, "#2d3436");
+        }
+
+        // 2. Torso / Shirt
+        pxRect(x + 3, cy + 8, 8, 7, shirt);
+        // Collar / Badge
+        pxRect(x + 6, cy + 8, 2, 3, "#f5f6fa");
+
+        // 3. Arms
+        if (isSeated && agent.activity === "typing") {
+            // Rapid typing hands on desk
+            const typeJitter = (frame % 4 < 2) ? 1 : 0;
+            pxRect(x + 1, cy + 10 + typeJitter, 2, 4, skin);
+            pxRect(x + 11, cy + 10 - typeJitter, 2, 4, skin);
+        } else if (vis.isDrinking) {
+            // Holding coffee mug to mouth
+            pxRect(x + 10, cy + 8, 3, 3, skin);
+            pxRect(x + 11, cy + 7, 4, 4, "#ecf0f1"); // White coffee mug
+            if (frame % 20 < 10) pxRect(x + 13, cy + 4, 1, 2, "#bdc3c7"); // mini steam
+        } else {
+            // Natural walking or standing arms
+            const armSwing = isWalking ? ((walkFrame % 2 === 0) ? 1 : -1) : 0;
+            pxRect(x + 1, cy + 9 + armSwing, 2, 5, shirt);
+            pxRect(x + 11, cy + 9 - armSwing, 2, 5, shirt);
+            pxRect(x + 1, cy + 14 + armSwing, 2, 2, skin);
+            pxRect(x + 11, cy + 14 - armSwing, 2, 2, skin);
+        }
+
+        // 4. Legs
+        if (isSeated) {
+            // Seated legs folded
+            pxRect(x + 4, cy + 15, 3, 4, "#2d3436");
+            pxRect(x + 7, cy + 15, 3, 4, "#2d3436");
+        } else if (isWalking) {
+            // 4-frame walk cycle
+            if (walkFrame === 0) {
+                pxRect(x + 4, cy + 15, 2, 6, "#2d3436");
+                pxRect(x + 8, cy + 15, 2, 4, "#2d3436");
+            } else if (walkFrame === 1) {
+                pxRect(x + 4, cy + 15, 2, 5, "#2d3436");
+                pxRect(x + 8, cy + 15, 2, 5, "#2d3436");
+            } else if (walkFrame === 2) {
+                pxRect(x + 4, cy + 15, 2, 4, "#2d3436");
+                pxRect(x + 8, cy + 15, 2, 6, "#2d3436");
+            } else {
+                pxRect(x + 4, cy + 15, 2, 5, "#2d3436");
+                pxRect(x + 8, cy + 15, 2, 5, "#2d3436");
+            }
+        } else {
+            // Standing still
+            pxRect(x + 4, cy + 15, 2, 6, "#2d3436");
+            pxRect(x + 8, cy + 15, 2, 6, "#2d3436");
+        }
+
+        // 5. Thought & Speech Bubbles Above Head
+        drawAgentBubble(x, cy, agent, vis);
+
+        // 6. Name Label & Status Tag
+        ctx.font = "9px 'JetBrains Mono', monospace";
+        ctx.textAlign = "center";
+
+        // Background pill for label
+        const nameText = agent.label || agent.id;
+        const textW = ctx.measureText(nameText).width;
+        ctx.fillStyle = "rgba(17, 13, 26, 0.85)";
+        ctx.fillRect(x + 7 - textW / 2 - 4, cy + 24, textW + 8, 12);
+        ctx.strokeStyle = "#412e5e";
+        ctx.lineWidth = 1;
+        ctx.strokeRect(x + 7 - textW / 2 - 4, cy + 24, textW + 8, 12);
+
+        ctx.fillStyle = (agent.id === (selectedAgent ? selectedAgent.id : null)) ? "#f3c44c" : "#e2dcf2";
+        ctx.fillText(nameText, x + 7, cy + 33);
+    }
+
+    function drawAgentBubble(x, y, agent, vis) {
+        let icon = null;
+        let bubbleBg = "#f5f6fa";
+        let bubbleBorder = "#2d3436";
+
+        if (agent.status === "waiting") {
+            icon = "⚠️";
+            bubbleBg = "#ff7675";
+        } else if (vis.isDrinking || agent.behavior === "drinking") {
+            icon = "☕";
+        } else if (agent.behavior === "bench") {
+            icon = "🌸";
+        } else if (agent.behavior === "meeting") {
+            icon = "📢";
+        } else if (agent.status === "working") {
+            if (agent.activity === "typing") icon = "💻";
+            else if (agent.activity === "browsing") icon = "🔍";
+            else if (agent.activity === "running") icon = "⚡";
+            else icon = "⚙️";
+        } else if (agent.status === "thinking") {
+            icon = "💡";
+        }
+
+        if (icon) {
+            const by = y - 16 + Math.sin(frame * 0.1) * 2;
+            pxRect(x + 1, by, 12, 10, bubbleBg);
+            pxRect(x + 5, by + 10, 3, 2, bubbleBg); // pointer
+            ctx.font = "8px sans-serif";
+            ctx.textAlign = "center";
+            ctx.fillText(icon, x + 7, by + 8);
+        }
+    }
+
+    /* =========================================================================
+       AGENT LIFE SIMULATION: PATHFINDING & DESTINATIONS
+       ========================================================================= */
+    const WALK_SPEED = 1.1;
+
+    function updateAgentPositions() {
+        agents.forEach((agent, idx) => {
+            let vis = agentVisuals.get(agent.id);
+            if (!vis) {
+                // Initial placement
+                const initialDesk = POI.desks[idx % POI.desks.length];
+                vis = {
+                    x: initialDesk.x,
+                    y: initialDesk.y + 14,
+                    targetX: initialDesk.x,
+                    targetY: initialDesk.y + 14,
+                    facing: "down",
+                    isMoving: false,
+                    isSeated: true,
+                    isDrinking: false,
+                    currentLocation: `Meja ${idx + 1}`
                 };
-                worksheetsList.push(localWs);
-                activeWorksheetId = localWs.id;
+                agentVisuals.set(agent.id, vis);
+            }
+
+            // Decide target coordinate based on behavior and assigned status
+            let dest = null;
+            let destLocation = "";
+            let shouldSeat = false;
+            let shouldDrink = false;
+
+            if (agent.behavior === "meeting") {
+                dest = POI.meeting[idx % POI.meeting.length];
+                destLocation = "Ruang Rapat All-Hands";
+                shouldSeat = true;
+            } else if (agent.behavior === "bench") {
+                dest = POI.benches[idx % POI.benches.length];
+                destLocation = "Bangku Taman Sakura";
+                shouldSeat = true;
+            } else if (agent.behavior === "drinking") {
+                dest = POI.lounge.coffee;
+                destLocation = "Coffee Lounge";
+                shouldDrink = true;
+            } else if (agent.behavior === "walking") {
+                dest = POI.roam[(idx + Math.floor(frame / 300)) % POI.roam.length];
+                destLocation = "Jalan-jalan di Teras";
+            } else {
+                // Default: Workstation Desk
+                const desk = POI.desks[idx % POI.desks.length];
+                dest = { x: desk.x, y: desk.y + 14 };
+                destLocation = `Meja ${idx + 1}`;
+                shouldSeat = true;
+            }
+
+            if (dest) {
+                vis.targetX = dest.x;
+                vis.targetY = dest.y;
+            }
+
+            // Smooth Movement Interpolation
+            const dx = vis.targetX - vis.x;
+            const dy = vis.targetY - vis.y;
+            const dist = Math.hypot(dx, dy);
+
+            if (dist > 1.5) {
+                vis.isMoving = true;
+                vis.isSeated = false;
+                vis.isDrinking = false;
+                vis.x += (dx / dist) * WALK_SPEED;
+                vis.y += (dy / dist) * WALK_SPEED;
+
+                // Set facing direction
+                if (Math.abs(dx) > Math.abs(dy)) {
+                    vis.facing = dx > 0 ? "right" : "left";
+                } else {
+                    vis.facing = dy > 0 ? "down" : "up";
+                }
+            } else {
+                vis.x = vis.targetX;
+                vis.y = vis.targetY;
+                vis.isMoving = false;
+                vis.isSeated = shouldSeat;
+                vis.isDrinking = shouldDrink;
+                vis.currentLocation = destLocation;
+            }
+        });
+    }
+
+    /* =========================================================================
+       MAIN RENDER LOOP
+       ========================================================================= */
+    function renderLoop() {
+        frame++;
+
+        ctx.save();
+        // Clear full screen
+        ctx.clearRect(0, 0, cv.width, cv.height);
+
+        // Apply Camera Transform
+        ctx.translate(Math.round(camera.x), Math.round(camera.y));
+        ctx.scale(camera.zoom, camera.zoom);
+
+        // 1. Draw Tilemap & Rooms
+        drawFloorAndRooms();
+
+        // 2. Draw Floating Sakura Petals
+        drawSakuraPetals();
+
+        // 3. Update & Draw Animated Agents
+        updateAgentPositions();
+
+        // Sort agents by Y coordinate for correct depth layering
+        const sortedAgents = [...agents].sort((a, b) => {
+            const va = agentVisuals.get(a.id);
+            const vb = agentVisuals.get(b.id);
+            return (va ? va.y : 0) - (vb ? vb.y : 0);
+        });
+
+        sortedAgents.forEach(agent => {
+            const vis = agentVisuals.get(agent.id);
+            if (vis) {
+                drawPixelAgent(vis, agent, vis.isSeated);
+            }
+        });
+
+        ctx.restore();
+
+        requestAnimationFrame(renderLoop);
+    }
+    requestAnimationFrame(renderLoop);
+
+    /* =========================================================================
+       BRIDGE POLLING & SYNC ENGINE (/state & /api/worksheets)
+       ========================================================================= */
+    const BRIDGE_HOST = window.location.origin;
+
+    async function pollState() {
+        try {
+            const res = await fetch(`${BRIDGE_HOST}/state`, { cache: "no-store" });
+            if (!res.ok) throw new Error("HTTP " + res.status);
+            const data = await res.json();
+
+            isConnected = true;
+            updateBridgeBadge(true);
+
+            if (data.agents && Array.isArray(data.agents)) {
+                // Check if any agent leveled up or status changed for SFX
+                data.agents.forEach(newA => {
+                    const oldA = agents.find(a => a.id === newA.id);
+                    if (oldA && newA.level > oldA.level) {
+                        playSfx("levelup");
+                        showToast(`🌟 LEVEL UP! ${newA.label} naik ke Level ${newA.level}!`);
+                    } else if (oldA && newA.status === "waiting" && oldA.status !== "waiting") {
+                        playSfx("meeting");
+                    }
+                });
+
+                agents = data.agents;
+                if (data.active_worksheet) activeWorksheetId = data.active_worksheet;
+
+                // Update bottom telemetry ticker
+                const activeA = agents.find(a => a.status === "working") || agents[0];
+                if (activeA) {
+                    document.getElementById("ticker-text").textContent = `[${activeA.label}] ${activeA.detail || activeA.activity || 'Siaga di workspace'}`;
+                }
+
+                // If modal is currently open, refresh its data
+                if (selectedAgent) {
+                    const fresh = agents.find(a => a.id === selectedAgent.id);
+                    if (fresh) renderAgentModal(fresh);
+                }
+            }
+        } catch(err) {
+            isConnected = false;
+            updateBridgeBadge(false);
+        }
+    }
+
+    async function fetchWorksheets() {
+        try {
+            const res = await fetch(`${BRIDGE_HOST}/api/worksheets`, { cache: "no-store" });
+            if (!res.ok) return;
+            const data = await res.json();
+            if (data.worksheets) {
+                worksheets = data.worksheets;
+                activeWorksheetId = data.activeId || activeWorksheetId;
                 renderWorksheetsDock();
-                renderActiveWorksheetDetail();
-                showToast(`✨ Pembahasan [${newCode}] dibuat secara lokal!`);
+                renderActiveWorksheetDrawer();
             }
-        }
+        } catch(e) {}
+    }
 
-        /******************************************************************
-         * 3. SQUAD AGENTS SPECIFICATION & BEHAVIOR
-         ******************************************************************/
-        const AGENTS = [
-            {
-                id: 'hermes',
-                name: 'Hermes Prime',
-                role: 'Coordinator & Orchestrator',
-                model: 'Hermes-3-Llama-3.1-70B',
-                color: '#f59e0b',
-                icon: 'fa-feather-pointed',
-                deskPos: { x: 0, z: 2.8 },
-                benchId: 0,
-                status: 'WORKING',
-                behavior: 'desk', // 'desk', 'bench', 'walking', 'pond', 'meeting'
-                speech: 'Mengorkestrasi alur kerja multi-agen di kampus.',
-                tools: ['delegate_task', 'invoke_subagent', 'holographic_recall']
-            },
-            {
-                id: 'athena',
-                name: 'Athena Owl',
-                role: 'Knowledge & FTS5 Indexer',
-                model: 'Hermes-Reasoner-32B',
-                color: '#10b981',
-                icon: 'fa-brain',
-                deskPos: { x: -4.5, z: 2.8 },
-                benchId: 1,
-                status: 'WORKING',
-                behavior: 'desk',
-                speech: 'Memindai indeks semantik & review queue.',
-                tools: ['charisna_indexer', 'fts5_search', 'verify_provenance']
-            },
-            {
-                id: 'hephaestus',
-                name: 'Hephaestus Forge',
-                role: 'Full-Stack Code & DevOps',
-                model: 'Hermes-3-Coder-70B',
-                color: '#f43f5e',
-                icon: 'fa-code',
-                deskPos: { x: 4.5, z: 2.8 },
-                benchId: 2,
-                status: 'IDLE',
-                behavior: 'bench',
-                speech: 'Duduk di bangku taman dekat bunga sakura 🌸',
-                tools: ['code_sandbox', 'git_commit', 'dual_stack_bridge']
-            },
-            {
-                id: 'iris',
-                name: 'Iris Prism',
-                role: 'Visual UI & Real-Time Synth',
-                model: 'Hermes-Vision-Multimodal',
-                color: '#a855f7',
-                icon: 'fa-palette',
-                deskPos: { x: 0, z: 7.2 },
-                benchId: 3,
-                status: 'IDLE',
-                behavior: 'bench',
-                speech: 'Santai di tepi kolam meditasi 🍃',
-                tools: ['threejs_engine', 'canvas_pan_zoom', 'motion_synth']
+    async function fetchTelemetryLogs() {
+        try {
+            const res = await fetch(`${BRIDGE_HOST}/api/history`, { cache: "no-store" });
+            if (!res.ok) return;
+            const data = await res.json();
+            if (data.logs) {
+                renderTelemetryList(data.logs);
             }
-        ];
+        } catch(e) {}
+    }
 
-        let selectedAgentId = 'hermes';
-
-        function updateAgentsForWorksheet(ws) {
-            const assigned = ws.assigned || ['hermes'];
-            AGENTS.forEach(a => {
-                if (assigned.includes(a.id)) {
-                    a.status = 'WORKING';
-                    a.behavior = 'desk';
-                    a.speech = `Kembali ke meja kerja: ${ws.title.slice(0, 28)}...`;
-                } else {
-                    a.status = 'IDLE';
-                    a.behavior = 'bench';
-                    a.speech = 'Santai sejenak di bangku taman 🍃';
-                }
-            });
-            renderRoster();
-            renderInspector();
-            update3DAgentGoals();
+    function updateBridgeBadge(online) {
+        const badge = document.getElementById("bridge-badge");
+        const text = document.getElementById("bridge-text");
+        if (online) {
+            badge.className = "flex items-center space-x-1.5 px-2 py-0.5 rounded bg-emerald-950/80 border border-emerald-600/50 text-[10px] text-emerald-300 font-mono";
+            text.textContent = "DUAL-STACK ONLINE";
+        } else {
+            badge.className = "flex items-center space-x-1.5 px-2 py-0.5 rounded bg-rose-950/80 border border-rose-600/50 text-[10px] text-rose-300 font-mono";
+            text.textContent = "OFFLINE (RECONNECTING...)";
         }
+    }
 
-        /******************************************************************
-         * 4. MODERN SMOOTH 3D ZEN CAMPUS (NO VOXELS / NO BOXES)
-         ******************************************************************/
-        let scene, camera, renderer, campusIsland, waterPond;
-        let agent3DMeshes = {};
-        let benchObjects = [];
-        let deskObjects = [];
-        let foliageParticles;
-        const camState = {
-            theta: Math.PI / 4,
-            phi: Math.PI / 3.2,
-            radius: 26,
-            desiredRadius: 26,
-            target: new THREE.Vector3(0, 1.2, 2.5),
-            desiredTarget: new THREE.Vector3(0, 1.2, 2.5),
-            isDragging: false,
-            prevX: 0,
-            prevY: 0
-        };
+    /* =========================================================================
+       WORKSHEETS DOCK & DRAWER SYNC
+       ========================================================================= */
+    function renderWorksheetsDock() {
+        const dock = document.getElementById("worksheets-dock");
+        dock.innerHTML = "";
 
-        // Park Benches Waypoints ("Bangku Taman")
-        const PARK_BENCHES = [
-            { id: 0, pos: { x: -6.5, y: 0.6, z: -3.5 }, rotY: Math.PI / 3, name: "Bangku Sakura Barat" },
-            { id: 1, pos: { x: 6.5, y: 0.6, z: -3.5 }, rotY: -Math.PI / 3, name: "Bangku Cemara Timur" },
-            { id: 2, pos: { x: -7.5, y: 0.6, z: 4.5 }, rotY: Math.PI / 2, name: "Bangku Promenade Kiri" },
-            { id: 3, pos: { x: 7.5, y: 0.6, z: 4.5 }, rotY: -Math.PI / 2, name: "Bangku Promenade Kanan" }
-        ];
+        worksheets.forEach(ws => {
+            const btn = document.createElement("button");
+            btn.className = `pixel-btn px-2.5 py-1 text-[11px] whitespace-nowrap ${ws.id === activeWorksheetId ? "active" : ""}`;
+            btn.innerHTML = `<span class="text-amber-400 font-bold mr-1">[${ws.code}]</span> ${ws.title.slice(0, 18)}…`;
+            btn.addEventListener("click", () => switchWorksheet(ws.id));
+            dock.appendChild(btn);
+        });
 
-        // Garden Promenade Waypoints ("Jalan-jalan")
-        const GARDEN_PATHS = [
-            new THREE.Vector3(-4, 0.6, -2),
-            new THREE.Vector3(0, 0.6, -4.5),
-            new THREE.Vector3(4, 0.6, -2),
-            new THREE.Vector3(5.5, 0.6, 1.5),
-            new THREE.Vector3(3.5, 0.6, 5),
-            new THREE.Vector3(-3.5, 0.6, 5),
-            new THREE.Vector3(-5.5, 0.6, 1.5)
-        ];
+        // Add '+ Baru' button
+        const addBtn = document.createElement("button");
+        addBtn.className = "pixel-btn px-2 py-1 text-[10px] text-amber-300 ml-1";
+        addBtn.title = "Buat Lembar Kerja Baru";
+        addBtn.innerHTML = '<i class="fa-solid fa-plus"></i>';
+        addBtn.addEventListener("click", createNewWorksheet);
+        dock.appendChild(addBtn);
+    }
 
-        function init3DScene() {
-            const container = document.getElementById('canvas-container');
-            const w = window.innerWidth;
-            const h = window.innerHeight;
-
-            scene = new THREE.Scene();
-            scene.background = new THREE.Color(0x090d16);
-            scene.fog = new THREE.FogExp2(0x090d16, 0.018);
-
-            camera = new THREE.PerspectiveCamera(45, w / h, 0.1, 1000);
-            updateCameraPosition();
-
-            renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
-            renderer.setSize(w, h);
-            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-            renderer.shadowMap.enabled = true;
-            renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-            renderer.toneMapping = THREE.ACESFilmicToneMapping;
-            renderer.toneMappingExposure = 1.1;
-            container.appendChild(renderer.domElement);
-
-            // Lighting: Soft Studio Sun & Ambient Fill
-            const ambient = new THREE.HemisphereLight(0xdbeafe, 0x090d16, 0.7);
-            scene.add(ambient);
-
-            const sunLight = new THREE.DirectionalLight(0xfffbeb, 1.25);
-            sunLight.position.set(22, 34, 18);
-            sunLight.castShadow = true;
-            sunLight.shadow.mapSize.width = 2048;
-            sunLight.shadow.mapSize.height = 2048;
-            sunLight.shadow.bias = -0.0005;
-            scene.add(sunLight);
-
-            // Warm Zen Lantern Accent
-            const zenLight = new THREE.PointLight(0xf59e0b, 1.4, 28);
-            zenLight.position.set(0, 4.5, -0.5);
-            scene.add(zenLight);
-
-            buildModernCampusTerrain();
-            buildParkBenches();
-            buildModernWorkstations();
-            buildOrganicTrees();
-            build3DAgents();
-            buildFloatingAtmosphere();
-
-            window.addEventListener('resize', onWindowResize);
-            setup3DInteraction();
-        }
-
-        function buildModernCampusTerrain() {
-            campusIsland = new THREE.Group();
-
-            // 1. Smooth Circular Floating Island
-            const islandGeo = new THREE.CylinderGeometry(18.5, 17.5, 2.2, 64);
-            const islandMat = new THREE.MeshStandardMaterial({
-                color: 0x0f172a,
-                roughness: 0.65,
-                metalness: 0.2
+    async function switchWorksheet(wsId) {
+        playSfx("blip");
+        try {
+            const res = await fetch(`${BRIDGE_HOST}/api/worksheets/switch`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ id: wsId })
             });
-            const island = new THREE.Mesh(islandGeo, islandMat);
-            island.position.y = -0.8;
-            island.receiveShadow = true;
-            campusIsland.add(island);
-
-            // 2. Beveled Dark Lawn Cap
-            const lawnGeo = new THREE.CylinderGeometry(18.2, 18.2, 0.5, 64);
-            const lawnMat = new THREE.MeshStandardMaterial({
-                color: 0x131f33,
-                roughness: 0.85,
-                metalness: 0.05
-            });
-            const lawn = new THREE.Mesh(lawnGeo, lawnMat);
-            lawn.position.y = 0.4;
-            lawn.receiveShadow = true;
-            campusIsland.add(lawn);
-
-            // 3. Titanium Outer Ring
-            const ringGeo = new THREE.TorusGeometry(18.3, 0.18, 16, 64);
-            const ringMat = new THREE.MeshStandardMaterial({
-                color: 0x475569,
-                metalness: 0.85,
-                roughness: 0.2
-            });
-            const ring = new THREE.Mesh(ringGeo, ringMat);
-            ring.rotation.x = Math.PI / 2;
-            ring.position.y = 0.65;
-            campusIsland.add(ring);
-
-            // 4. Smooth Curved Pathway (Inner Zen Slate Circle)
-            const pathGeo = new THREE.RingGeometry(6.2, 8.8, 48);
-            const pathMat = new THREE.MeshStandardMaterial({
-                color: 0x1e293b,
-                roughness: 0.5,
-                metalness: 0.15,
-                side: THREE.DoubleSide
-            });
-            const path = new THREE.Mesh(pathGeo, pathMat);
-            path.rotation.x = -Math.PI / 2;
-            path.position.y = 0.66;
-            path.receiveShadow = true;
-            campusIsland.add(path);
-
-            // 5. Meditation Reflection Pond (Oval Water Basin)
-            const pondBasinGeo = new THREE.CylinderGeometry(4.2, 3.8, 0.6, 36);
-            const pondBasinMat = new THREE.MeshStandardMaterial({
-                color: 0x090d16,
-                roughness: 0.3
-            });
-            const pondBasin = new THREE.Mesh(pondBasinGeo, pondBasinMat);
-            pondBasin.position.set(0, 0.45, -5.5);
-            campusIsland.add(pondBasin);
-
-            const waterGeo = new THREE.CircleGeometry(3.9, 36);
-            const waterMat = new THREE.MeshStandardMaterial({
-                color: 0x0284c7,
-                roughness: 0.1,
-                metalness: 0.8,
-                transparent: true,
-                opacity: 0.88
-            });
-            waterPond = new THREE.Mesh(waterGeo, waterMat);
-            waterPond.rotation.x = -Math.PI / 2;
-            waterPond.position.set(0, 0.68, -5.5);
-            campusIsland.add(waterPond);
-
-            // Floating Water Lily Pads
-            const lilyPadGeo = new THREE.CircleGeometry(0.55, 16);
-            const lilyPadMat = new THREE.MeshStandardMaterial({ color: 0x10b981, roughness: 0.6 });
-            for (let i = 0; i < 4; i++) {
-                const pad = new THREE.Mesh(lilyPadGeo, lilyPadMat);
-                pad.rotation.x = -Math.PI / 2;
-                pad.position.set(-1.8 + i * 1.2, 0.69, -5.8 + (i % 2) * 0.8);
-                campusIsland.add(pad);
+            if (res.ok) {
+                activeWorksheetId = wsId;
+                renderWorksheetsDock();
+                renderActiveWorksheetDrawer();
+                pollState();
             }
+        } catch(e) {}
+    }
 
-            // Central Glowing Obelisk (Intelligence Hub)
-            const obeliskGeo = new THREE.OctahedronGeometry(1.2, 0);
-            const obeliskMat = new THREE.MeshStandardMaterial({
-                color: 0xf59e0b,
-                emissive: 0xd97706,
-                emissiveIntensity: 0.6,
-                roughness: 0.2,
-                metalness: 0.9
+    async function createNewWorksheet() {
+        const title = prompt("Masukkan Judul Lembar Kerja Baru:", "Arsitektur & Optimasi Baru");
+        if (!title) return;
+        const goal = prompt("Tujuan pembahasan ini:", "Deskripsi tugas dan KPI");
+        playSfx("blip");
+        try {
+            const res = await fetch(`${BRIDGE_HOST}/api/worksheets/create`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ title, goal, assigned: ["hermes", "iris"] })
             });
-            const obelisk = new THREE.Mesh(obeliskGeo, obeliskMat);
-            obelisk.position.set(0, 3.2, -0.5);
-            obelisk.name = "central-obelisk";
-            campusIsland.add(obelisk);
+            if (res.ok) {
+                fetchWorksheets();
+            }
+        } catch(e) {}
+    }
 
-            scene.add(campusIsland);
-        }
+    function renderActiveWorksheetDrawer() {
+        const ws = worksheets.find(w => w.id === activeWorksheetId) || worksheets[0];
+        if (!ws) return;
 
-        function buildParkBenches() {
-            benchObjects = [];
-            PARK_BENCHES.forEach(b => {
-                const benchGroup = new THREE.Group();
+        document.getElementById("ws-code-badge").textContent = `TOPIK ${ws.code}`;
+        document.getElementById("ws-title").textContent = ws.title;
+        document.getElementById("ws-goal").textContent = ws.goal || "Tidak ada rincian tujuan.";
+        document.getElementById("ws-assigned").textContent = (ws.assigned || []).map(a => a.toUpperCase()).join(", ");
+        document.getElementById("ws-content-editor").value = ws.deliverable || "";
+    }
 
-                // Bench Wood Planks (Smooth Curved Teak Slats)
-                const woodMat = new THREE.MeshStandardMaterial({ color: 0x9a3412, roughness: 0.55, metalness: 0.1 });
-                const slatGeo = new THREE.BoxGeometry(2.4, 0.08, 0.7);
-                const seat = new THREE.Mesh(slatGeo, woodMat);
-                seat.position.y = 0.55;
-                seat.castShadow = true;
-                benchGroup.add(seat);
-
-                const backGeo = new THREE.BoxGeometry(2.4, 0.5, 0.08);
-                const back = new THREE.Mesh(backGeo, woodMat);
-                back.position.set(0, 0.82, -0.32);
-                back.castShadow = true;
-                benchGroup.add(back);
-
-                // Dark Iron Legs & Curved Armrests
-                const ironMat = new THREE.MeshStandardMaterial({ color: 0x1e293b, roughness: 0.3, metalness: 0.8 });
-                const legGeo = new THREE.CylinderGeometry(0.05, 0.05, 0.55, 12);
-                [-1.05, 1.05].forEach(x => {
-                    const legF = new THREE.Mesh(legGeo, ironMat);
-                    legF.position.set(x, 0.28, 0.25);
-                    benchGroup.add(legF);
-
-                    const legB = new THREE.Mesh(legGeo, ironMat);
-                    legB.position.set(x, 0.28, -0.25);
-                    benchGroup.add(legB);
-
-                    const armGeo = new THREE.TorusGeometry(0.2, 0.035, 8, 16, Math.PI);
-                    const arm = new THREE.Mesh(armGeo, ironMat);
-                    arm.rotation.z = Math.PI;
-                    arm.position.set(x, 0.68, 0);
-                    benchGroup.add(arm);
-                });
-
-                benchGroup.position.set(b.pos.x, b.pos.y, b.pos.z);
-                benchGroup.rotation.y = b.rotY;
-                scene.add(benchGroup);
-                benchObjects.push({ id: b.id, group: benchGroup, pos: b.pos, name: b.name });
+    // Save Worksheet Notes
+    document.getElementById("btn-save-notes").addEventListener("click", async () => {
+        const content = document.getElementById("ws-content-editor").value;
+        playSfx("click");
+        try {
+            const res = await fetch(`${BRIDGE_HOST}/api/worksheets/save`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ id: activeWorksheetId, deliverable: content })
             });
-        }
+            if (res.ok) {
+                const badge = document.getElementById("save-status");
+                badge.classList.remove("hidden");
+                setTimeout(() => badge.classList.add("hidden"), 2000);
+            }
+        } catch(e) {}
+    });
 
-        function buildModernWorkstations() {
-            deskObjects = [];
-            AGENTS.forEach((a, i) => {
-                const workstation = new THREE.Group();
-
-                // Curved Workstation Desk Tabletop
-                const deskGeo = new THREE.BoxGeometry(2.8, 0.12, 1.4);
-                const deskMat = new THREE.MeshStandardMaterial({ color: 0x334155, roughness: 0.4, metalness: 0.3 });
-                const desk = new THREE.Mesh(deskGeo, deskMat);
-                desk.position.y = 0.85;
-                desk.castShadow = true;
-                workstation.add(desk);
-
-                // Titanium Desk Legs
-                const legGeo = new THREE.CylinderGeometry(0.06, 0.06, 0.85, 12);
-                const legMat = new THREE.MeshStandardMaterial({ color: 0x0f172a, metalness: 0.8 });
-                [[-1.25, -0.55], [-1.25, 0.55], [1.25, -0.55], [1.25, 0.55]].forEach(pt => {
-                    const leg = new THREE.Mesh(legGeo, legMat);
-                    leg.position.set(pt[0], 0.42, pt[1]);
-                    workstation.add(leg);
-                });
-
-                // Ultra-thin Curved OLED Display
-                const screenGeo = new THREE.CylinderGeometry(1.6, 1.6, 0.9, 24, 1, true, -Math.PI / 5, (2 * Math.PI) / 5);
-                const screenMat = new THREE.MeshStandardMaterial({
-                    color: a.color,
-                    emissive: a.color,
-                    emissiveIntensity: 0.75,
-                    roughness: 0.2,
-                    side: THREE.DoubleSide
-                });
-                const screen = new THREE.Mesh(screenGeo, screenMat);
-                screen.rotation.y = Math.PI;
-                screen.position.set(0, 1.5, -0.2);
-                workstation.add(screen);
-
-                // Stand
-                const standGeo = new THREE.CylinderGeometry(0.04, 0.04, 0.55, 12);
-                const stand = new THREE.Mesh(standGeo, legMat);
-                stand.position.set(0, 1.15, -0.2);
-                workstation.add(stand);
-
-                // Modern Ergonomic Mesh Chair
-                const chairMat = new THREE.MeshStandardMaterial({ color: 0x1e293b, roughness: 0.6 });
-                const seatGeo = new THREE.CylinderGeometry(0.48, 0.48, 0.08, 16);
-                const chairSeat = new THREE.Mesh(seatGeo, chairMat);
-                chairSeat.position.set(0, 0.58, 0.8);
-                workstation.add(chairSeat);
-
-                const backGeo = new THREE.BoxGeometry(0.7, 0.65, 0.06);
-                const chairBack = new THREE.Mesh(backGeo, chairMat);
-                chairBack.position.set(0, 0.92, 1.05);
-                workstation.add(chairBack);
-
-                const baseGeo = new THREE.CylinderGeometry(0.05, 0.05, 0.58, 12);
-                const base = new THREE.Mesh(baseGeo, legMat);
-                base.position.set(0, 0.29, 0.8);
-                workstation.add(base);
-
-                workstation.position.set(a.deskPos.x, 0.65, a.deskPos.z);
-                scene.add(workstation);
-                deskObjects.push({ agentId: a.id, group: workstation, screen: screen });
+    // Export to Artifact File
+    document.getElementById("btn-export-artifact").addEventListener("click", async () => {
+        const ws = worksheets.find(w => w.id === activeWorksheetId);
+        const content = document.getElementById("ws-content-editor").value;
+        playSfx("blip");
+        try {
+            const res = await fetch(`${BRIDGE_HOST}/api/save_artifact`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    title: ws ? ws.title : "Lembar_Kerja_Hermes",
+                    content: content
+                })
             });
-        }
+            const data = await res.json();
+            if (data.success) {
+                alert(`📦 Artefak Berhasil Dibuat!\nTersimpan ke: ${data.filename}`);
+            }
+        } catch(e) {}
+    });
 
-        function buildOrganicTrees() {
-            // Stylized Smooth Trees (Smooth Spherical Canopy, Organic Wood)
-            const treePositions = [
-                { x: -9.5, z: -5.5, col: 0xf472b6, scale: 1.35 }, // Sakura Pink
-                { x: -11.5, z: 0.5, col: 0x10b981, scale: 1.15 }, // Emerald Pine
-                { x: 9.5, z: -5.5, col: 0x34d399, scale: 1.25 }, // Mint Birch
-                { x: 11.5, z: 0.5, col: 0x059669, scale: 1.1 },  // Forest Jade
-                { x: -8.5, z: 8.5, col: 0x10b981, scale: 1.0 },
-                { x: 8.5, z: 8.5, col: 0xf472b6, scale: 1.05 }
-            ];
+    /* =========================================================================
+       MACRO OFFICE CONTROLS (Rapat, Rehat, Sprint, Bebas)
+       ========================================================================= */
+    async function sendMacro(action) {
+        if (action === "meeting") playSfx("meeting");
+        else if (action === "break") playSfx("coffee");
+        else playSfx("blip");
 
-            treePositions.forEach(t => {
-                const treeGroup = new THREE.Group();
-
-                // Curved Trunk
-                const trunkGeo = new THREE.CylinderGeometry(0.22, 0.45, 2.8, 16);
-                const trunkMat = new THREE.MeshStandardMaterial({ color: 0x5c3d2e, roughness: 0.85 });
-                const trunk = new THREE.Mesh(trunkGeo, trunkMat);
-                trunk.position.y = 1.4;
-                trunk.castShadow = true;
-                treeGroup.add(trunk);
-
-                // Smooth Multi-Sphere Foliage Canopy (No Cubes!)
-                const leafMat = new THREE.MeshStandardMaterial({
-                    color: t.col,
-                    roughness: 0.4,
-                    metalness: 0.05,
-                    flatShading: false
-                });
-
-                const mainSphere = new THREE.Mesh(new THREE.IcosahedronGeometry(1.6 * t.scale, 2), leafMat);
-                mainSphere.position.set(0, 3.2 * t.scale, 0);
-                mainSphere.castShadow = true;
-                treeGroup.add(mainSphere);
-
-                const subSphere1 = new THREE.Mesh(new THREE.IcosahedronGeometry(1.1 * t.scale, 2), leafMat);
-                subSphere1.position.set(0.7 * t.scale, 2.6 * t.scale, 0.6 * t.scale);
-                treeGroup.add(subSphere1);
-
-                const subSphere2 = new THREE.Mesh(new THREE.IcosahedronGeometry(1.0 * t.scale, 2), leafMat);
-                subSphere2.position.set(-0.7 * t.scale, 2.7 * t.scale, -0.5 * t.scale);
-                treeGroup.add(subSphere2);
-
-                treeGroup.position.set(t.x, 0.65, t.z);
-                scene.add(treeGroup);
+        try {
+            await fetch(`${BRIDGE_HOST}/api/office/macro`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ action })
             });
+            pollState();
+        } catch(e) {}
+    }
+
+    document.getElementById("macro-meeting").addEventListener("click", () => sendMacro("meeting"));
+    document.getElementById("macro-break").addEventListener("click", () => sendMacro("break"));
+    document.getElementById("macro-sprint").addEventListener("click", () => sendMacro("sprint"));
+    document.getElementById("macro-roam").addEventListener("click", () => sendMacro("roam"));
+
+    /* =========================================================================
+       AGENT DOSSIER MODAL & MICRO-INTERACTION
+       ========================================================================= */
+    function openAgentModal(agent) {
+        selectedAgent = agent;
+        renderAgentModal(agent);
+        document.getElementById("agent-modal").classList.remove("hidden");
+    }
+
+    function renderAgentModal(agent) {
+        document.getElementById("modal-agent-name").textContent = (agent.label || agent.id).toUpperCase();
+        document.getElementById("modal-agent-role").textContent = agent.role || "Autonomous Worker";
+        document.getElementById("modal-agent-model").textContent = `Model: ${agent.model || 'Hermes-3-70B'}`;
+
+        const level = agent.level || 1;
+        const xp = agent.xp || 50;
+        const max_xp = agent.max_xp || 200;
+        const pct = Math.min(Math.round((xp / max_xp) * 100), 100);
+
+        document.getElementById("modal-agent-badge").textContent = `LVL ${level}`;
+        document.getElementById("modal-level-text").textContent = `Level ${level} Specialist`;
+        document.getElementById("modal-xp-text").textContent = `${xp} / ${max_xp} XP`;
+        document.getElementById("modal-xp-bar").style.width = `${pct}%`;
+
+        const vis = agentVisuals.get(agent.id);
+        document.getElementById("modal-location").textContent = vis ? vis.currentLocation : "Workspace";
+        document.getElementById("modal-detail-text").textContent = agent.detail || agent.activity || "Menunggu tugas aktif.";
+
+        const statusLabel = document.getElementById("modal-status-label");
+        const statusDot = document.getElementById("modal-status-dot");
+        statusLabel.textContent = (agent.status || "IDLE").toUpperCase();
+        if (agent.status === "working") {
+            statusDot.className = "w-2 h-2 rounded-full bg-emerald-400";
+            statusLabel.className = "uppercase text-emerald-400 font-bold";
+        } else if (agent.status === "waiting") {
+            statusDot.className = "w-2 h-2 rounded-full bg-rose-400 pixel-blink";
+            statusLabel.className = "uppercase text-rose-400 font-bold";
+        } else {
+            statusDot.className = "w-2 h-2 rounded-full bg-slate-400";
+            statusLabel.className = "uppercase text-slate-400 font-bold";
         }
 
-        function build3DAgents() {
-            agent3DMeshes = {};
+        // Draw portrait canvas (enlarged 4x)
+        drawAvatarPortrait(agent);
+    }
 
-            AGENTS.forEach(agent => {
-                const agentGroup = new THREE.Group();
-                agentGroup.userData.agentId = agent.id;
+    function drawAvatarPortrait(agent) {
+        const pc = document.getElementById("avatar-portrait-canvas");
+        const pctx = pc.getContext("2d");
+        pctx.imageSmoothingEnabled = false;
+        pctx.clearRect(0, 0, pc.width, pc.height);
 
-                // 1. Stylized Humanoid Body (Smooth Capsule)
-                const bodyGeo = new THREE.CylinderGeometry(0.32, 0.28, 0.9, 24);
-                const bodyMat = new THREE.MeshStandardMaterial({
-                    color: 0x1e293b,
-                    roughness: 0.4,
-                    metalness: 0.2
-                });
-                const body = new THREE.Mesh(bodyGeo, bodyMat);
-                body.position.y = 1.05;
-                body.castShadow = true;
-                agentGroup.add(body);
+        const palIdx = (agent.avatar_idx || 0) % 5;
+        const skin = AGENT_SKINS[palIdx];
+        const hair = AGENT_HAIRS[palIdx];
+        const shirt = AGENT_SHIRTS[palIdx];
 
-                // Color accent jacket
-                const jacketGeo = new THREE.CylinderGeometry(0.34, 0.32, 0.45, 24);
-                const jacketMat = new THREE.MeshStandardMaterial({
-                    color: agent.color,
-                    roughness: 0.3,
-                    metalness: 0.3
-                });
-                const jacket = new THREE.Mesh(jacketGeo, jacketMat);
-                jacket.position.y = 1.15;
-                agentGroup.add(jacket);
+        // 4x scale pixel art portrait
+        const S = 3.5;
+        const ox = 12;
+        const oy = 6;
 
-                // 2. Smooth Head (Sphere with Sleek Visor)
-                const headGeo = new THREE.SphereGeometry(0.38, 32, 32);
-                const headMat = new THREE.MeshStandardMaterial({ color: 0xf8fafc, roughness: 0.2 });
-                const head = new THREE.Mesh(headGeo, headMat);
-                head.position.y = 1.75;
-                head.castShadow = true;
-                agentGroup.add(head);
+        function r(x, y, w, h, col) {
+            pctx.fillStyle = col;
+            pctx.fillRect(Math.round(ox + x * S), Math.round(oy + y * S), Math.round(w * S), Math.round(h * S));
+        }
 
-                // Glowing Expressive Visor / Eyes
-                const visorGeo = new THREE.BoxGeometry(0.48, 0.16, 0.14);
-                const visorMat = new THREE.MeshStandardMaterial({
-                    color: agent.color,
-                    emissive: agent.color,
-                    emissiveIntensity: 0.85,
-                    roughness: 0.1
-                });
-                const visor = new THREE.Mesh(visorGeo, visorMat);
-                visor.position.set(0, 1.76, 0.32);
-                agentGroup.add(visor);
+        // Hair
+        r(2, 0, 8, 4, hair);
+        if (palIdx === 0) r(9, -2, 2, 3, "#f1c40f"); // golden laurel
+        // Face
+        r(3, 3, 6, 6, skin);
+        // Eyes
+        r(4, 5, 1, 2, "#111");
+        r(7, 5, 1, 2, "#111");
+        // Clothes / Jacket
+        r(1, 9, 10, 9, shirt);
+        r(4, 9, 4, 9, "#f5f6fa"); // collar
+    }
 
-                // 3. Floating Halo Ring (Agent Status Halo)
-                const haloGeo = new THREE.TorusGeometry(0.45, 0.04, 12, 32);
-                const haloMat = new THREE.MeshStandardMaterial({
-                    color: agent.color,
-                    emissive: agent.color,
-                    emissiveIntensity: 0.9,
-                    transparent: true,
-                    opacity: 0.85
-                });
-                const halo = new THREE.Mesh(haloGeo, haloMat);
-                halo.rotation.x = Math.PI / 2;
-                halo.position.y = 2.35;
-                agentGroup.add(halo);
+    document.getElementById("btn-close-modal").addEventListener("click", () => {
+        document.getElementById("agent-modal").classList.add("hidden");
+        selectedAgent = null;
+        playSfx("click");
+    });
 
-                // 4. Smooth Legs (Left & Right)
-                const legGeo = new THREE.CylinderGeometry(0.08, 0.08, 0.65, 16);
-                const legMat = new THREE.MeshStandardMaterial({ color: 0x0f172a, roughness: 0.5 });
-                
-                const legL = new THREE.Mesh(legGeo, legMat);
-                legL.position.set(-0.16, 0.42, 0);
-                agentGroup.add(legL);
-
-                const legR = new THREE.Mesh(legGeo, legMat);
-                legR.position.set(0.16, 0.42, 0);
-                agentGroup.add(legR);
-
-                // 5. Smooth Arms
-                const armGeo = new THREE.CylinderGeometry(0.065, 0.065, 0.55, 16);
-                const armMat = new THREE.MeshStandardMaterial({ color: 0xf8fafc, roughness: 0.4 });
-                
-                const armL = new THREE.Mesh(armGeo, armMat);
-                armL.position.set(-0.42, 1.05, 0);
-                agentGroup.add(armL);
-
-                const armR = new THREE.Mesh(armGeo, armMat);
-                armR.position.set(0.42, 1.05, 0);
-                agentGroup.add(armR);
-
-                // Initial Placement
-                const startPos = agent.behavior === 'desk' 
-                    ? { x: agent.deskPos.x, y: 0.65, z: agent.deskPos.z + 0.8 } 
-                    : PARK_BENCHES[agent.benchId].pos;
-
-                agentGroup.position.set(startPos.x, startPos.y, startPos.z);
-                scene.add(agentGroup);
-
-                agent3DMeshes[agent.id] = {
-                    group: agentGroup,
-                    halo: halo,
-                    visor: visor,
-                    legL: legL,
-                    legR: legR,
-                    armL: armL,
-                    armR: armR,
-                    targetPos: new THREE.Vector3(startPos.x, startPos.y, startPos.z),
-                    behavior: agent.behavior,
-                    walkCycle: 0
-                };
+    // Send Micro-Actions to Agent
+    async function sendAgentAction(action) {
+        if (!selectedAgent) return;
+        playSfx("blip");
+        try {
+            await fetch(`${BRIDGE_HOST}/api/agent/action`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ id: selectedAgent.id, action })
             });
-        }
+            pollState();
+        } catch(e) {}
+    }
 
-        function buildFloatingAtmosphere() {
-            // Gentle ambient floating dust / pollen / blossom petals
-            const count = 75;
-            const geo = new THREE.BufferGeometry();
-            const positions = new Float32Array(count * 3);
-            for (let i = 0; i < count * 3; i += 3) {
-                positions[i] = (Math.random() - 0.5) * 32;
-                positions[i + 1] = Math.random() * 12 + 1;
-                positions[i + 2] = (Math.random() - 0.5) * 32;
-            }
-            geo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-            const mat = new THREE.PointsMaterial({
-                color: 0xfde047,
-                size: 0.18,
-                transparent: true,
-                opacity: 0.65
+    document.getElementById("cmd-work").addEventListener("click", () => sendAgentAction("work"));
+    document.getElementById("cmd-bench").addEventListener("click", () => sendAgentAction("bench"));
+    document.getElementById("cmd-coffee").addEventListener("click", () => sendAgentAction("coffee"));
+    document.getElementById("cmd-meeting").addEventListener("click", () => sendAgentAction("meeting"));
+
+    // Send Custom User Instruction
+    document.getElementById("btn-send-instruction").addEventListener("click", async () => {
+        const inp = document.getElementById("agent-instruction-input");
+        const val = inp.value.trim();
+        if (!val || !selectedAgent) return;
+        playSfx("click");
+        try {
+            await fetch(`${BRIDGE_HOST}/api/agent/command`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ id: selectedAgent.id, command: val })
             });
-            foliageParticles = new THREE.Points(geo, mat);
-            scene.add(foliageParticles);
-        }
-
-        function update3DAgentGoals() {
-            AGENTS.forEach(a => {
-                const meshData = agent3DMeshes[a.id];
-                if (!meshData) return;
-
-                meshData.behavior = a.behavior;
-
-                if (a.behavior === 'desk') {
-                    // Go to assigned workstation desk
-                    meshData.targetPos.set(a.deskPos.x, 0.65, a.deskPos.z + 0.8);
-                } else if (a.behavior === 'bench') {
-                    // Go to park bench and sit down
-                    const bench = PARK_BENCHES[a.benchId % PARK_BENCHES.length];
-                    meshData.targetPos.set(bench.pos.x, bench.pos.y, bench.pos.z);
-                } else if (a.behavior === 'walking') {
-                    // Stroll through garden path
-                    const pathNode = GARDEN_PATHS[Math.floor(Math.random() * GARDEN_PATHS.length)];
-                    meshData.targetPos.set(pathNode.x, pathNode.y, pathNode.z);
-                } else if (a.behavior === 'meeting') {
-                    // Convene at central obelisk
-                    const angle = (AGENTS.indexOf(a) / AGENTS.length) * Math.PI * 2;
-                    meshData.targetPos.set(Math.cos(angle) * 3.2, 0.65, Math.sin(angle) * 3.2 - 0.5);
-                }
-            });
-        }
-
-        function animate3DScene(time) {
-            requestAnimationFrame(animate3DScene);
-
-            // Rotate central obelisk
-            const obelisk = scene.getObjectByName('central-obelisk');
-            if (obelisk) {
-                obelisk.rotation.y += 0.015;
-                obelisk.position.y = 3.2 + Math.sin(time * 0.002) * 0.25;
-            }
-
-            // Gentle water ripples
-            if (waterPond) {
-                waterPond.material.opacity = 0.82 + Math.sin(time * 0.0025) * 0.08;
-            }
-
-            // Floating atmosphere particles
-            if (foliageParticles) {
-                const pos = foliageParticles.geometry.attributes.position.array;
-                for (let i = 1; i < pos.length; i += 3) {
-                    pos[i] -= 0.015;
-                    if (pos[i] < 0.5) pos[i] = 12;
-                }
-                foliageParticles.geometry.attributes.position.needsUpdate = true;
-            }
-
-            // Smooth Agent Movement & Sitting Animation
-            const t = time * 0.001;
-            AGENTS.forEach(a => {
-                const meshData = agent3DMeshes[a.id];
-                if (!meshData) return;
-
-                const grp = meshData.group;
-                const target = meshData.targetPos;
-                const dx = target.x - grp.position.x;
-                const dz = target.z - grp.position.z;
-                const dist = Math.hypot(dx, dz);
-
-                // Rotate halo
-                meshData.halo.rotation.z += 0.02;
-
-                if (dist > 0.15) {
-                    // WALKING: Walk smoothly toward target
-                    const speed = 0.065;
-                    grp.position.x += (dx / dist) * speed;
-                    grp.position.z += (dz / dist) * speed;
-
-                    // Face walking direction
-                    grp.rotation.y = Math.atan2(dx, dz);
-
-                    // Leg & arm walking swing
-                    meshData.walkCycle += 0.2;
-                    const legAngle = Math.sin(meshData.walkCycle) * 0.45;
-                    meshData.legL.rotation.x = legAngle;
-                    meshData.legR.rotation.x = -legAngle;
-                    meshData.armL.rotation.x = -legAngle * 0.7;
-                    meshData.armR.rotation.x = legAngle * 0.7;
-
-                    // Body bob
-                    grp.position.y = target.y + Math.abs(Math.sin(meshData.walkCycle)) * 0.08;
-                } else {
-                    // REACHED DESTINATION: SITTING OR STANDING
-                    grp.position.x = target.x;
-                    grp.position.z = target.z;
-                    grp.position.y = target.y;
-
-                    if (meshData.behavior === 'desk') {
-                        // SITTING AT DESK (Facing desk screen)
-                        grp.rotation.y = Math.PI;
-                        meshData.legL.rotation.x = Math.PI / 2.2;
-                        meshData.legR.rotation.x = Math.PI / 2.2;
-                        // Typing arm motion
-                        meshData.armL.rotation.x = -Math.PI / 3 + Math.sin(t * 8) * 0.08;
-                        meshData.armR.rotation.x = -Math.PI / 3 + Math.cos(t * 8) * 0.08;
-                    } else if (meshData.behavior === 'bench') {
-                        // SITTING ON PARK BENCH (Relaxed pose)
-                        const bench = PARK_BENCHES[a.benchId % PARK_BENCHES.length];
-                        grp.rotation.y = bench.rotY + Math.PI;
-                        meshData.legL.rotation.x = Math.PI / 2.4;
-                        meshData.legR.rotation.x = Math.PI / 2.4;
-                        meshData.armL.rotation.x = -0.2;
-                        meshData.armR.rotation.x = -0.2;
-                    } else {
-                        // STANDING / POND
-                        meshData.legL.rotation.x = 0;
-                        meshData.legR.rotation.x = 0;
-                        meshData.armL.rotation.x = Math.sin(t * 2) * 0.08;
-                        meshData.armR.rotation.x = -Math.sin(t * 2) * 0.08;
-                    }
-                }
-            });
-
-            // Smooth Camera Interpolation
-            camState.radius += (camState.desiredRadius - camState.radius) * 0.08;
-            camState.target.lerp(camState.desiredTarget, 0.08);
-            updateCameraPosition();
-
-            updateFloatingLabels();
-            renderer.render(scene, camera);
-        }
-
-        function updateCameraPosition() {
-            camera.position.x = camState.target.x + camState.radius * Math.sin(camState.phi) * Math.sin(camState.theta);
-            camera.position.y = camState.target.y + camState.radius * Math.cos(camState.phi);
-            camera.position.z = camState.target.z + camState.radius * Math.sin(camState.phi) * Math.cos(camState.theta);
-            camera.lookAt(camState.target);
-        }
-
-        function setup3DInteraction() {
-            const dom = renderer.domElement;
-            const raycaster = new THREE.Raycaster();
-            const mouse = new THREE.Vector2();
-            let downTime = 0;
-
-            dom.addEventListener('pointerdown', (e) => {
-                camState.isDragging = true;
-                camState.prevX = e.clientX;
-                camState.prevY = e.clientY;
-                downTime = performance.now();
-            });
-
-            window.addEventListener('pointermove', (e) => {
-                if (!camState.isDragging) return;
-                const dx = e.clientX - camState.prevX;
-                const dy = e.clientY - camState.prevY;
-                camState.theta -= dx * 0.0055;
-                camState.phi = Math.max(0.2, Math.min(Math.PI / 2.15, camState.phi - dy * 0.0055));
-                camState.prevX = e.clientX;
-                camState.prevY = e.clientY;
-            });
-
-            window.addEventListener('pointerup', (e) => {
-                const elapsed = performance.now() - downTime;
-                camState.isDragging = false;
-
-                // Click detection: raycast to agent mesh
-                if (elapsed < 200) {
-                    mouse.x = (e.clientX / window.innerWidth) * 2 - 1;
-                    mouse.y = -(e.clientY / window.innerHeight) * 2 + 1;
-                    raycaster.setFromCamera(mouse, camera);
-
-                    const clickable = [];
-                    Object.values(agent3DMeshes).forEach(m => {
-                        m.group.traverse(child => {
-                            if (child.isMesh) {
-                                child.userData.agentId = m.group.userData.agentId;
-                                clickable.push(child);
-                            }
-                        });
-                    });
-
-                    const hits = raycaster.intersectObjects(clickable, false);
-                    if (hits.length > 0 && hits[0].object.userData.agentId) {
-                        selectAgent(hits[0].object.userData.agentId, true);
-                        openMicroModal(hits[0].object.userData.agentId);
-                    }
-                }
-            });
-
-            dom.addEventListener('wheel', (e) => {
-                e.preventDefault();
-                camState.desiredRadius = Math.max(8, Math.min(38, camState.desiredRadius + e.deltaY * 0.02));
-            }, { passive: false });
-        }
-
-        function updateFloatingLabels() {
-            const container = document.getElementById('labels-container');
-            if (currentViewMode !== '3d') {
-                container.style.display = 'none';
-                return;
-            }
-            container.style.display = 'block';
-
-            AGENTS.forEach(agent => {
-                const mesh = agent3DMeshes[agent.id];
-                if (!mesh) return;
-
-                let labelEl = document.getElementById(`label-3d-${agent.id}`);
-                if (!labelEl) {
-                    labelEl = document.createElement('div');
-                    labelEl.id = `label-3d-${agent.id}`;
-                    labelEl.className = 'world-label flex flex-col items-center';
-                    labelEl.onclick = () => {
-                        selectAgent(agent.id, true);
-                        openMicroModal(agent.id);
-                    };
-                    container.appendChild(labelEl);
-                }
-
-                // Project 3D coordinate to screen 2D
-                const worldPos = new THREE.Vector3();
-                mesh.group.getWorldPosition(worldPos);
-                worldPos.y += 2.5;
-
-                const screenPos = worldPos.clone().project(camera);
-                const x = (screenPos.x * 0.5 + 0.5) * window.innerWidth;
-                const y = (-(screenPos.y * 0.5) + 0.5) * window.innerHeight;
-
-                labelEl.style.left = `${x}px`;
-                labelEl.style.top = `${y}px`;
-
-                const speech = agent.speech || 'Aktif di kampus';
-                labelEl.innerHTML = `
-                    <div class="speech-bubble px-2.5 py-1 mb-1 text-center max-w-[190px]">
-                        <p class="text-[11px] font-mono-code leading-tight text-slate-200">${speech}</p>
-                    </div>
-                    <div class="flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-slate-900/90 border shadow-lg" style="border-color: ${agent.color}">
-                        <i class="fa-solid ${agent.icon} text-[10px]" style="color: ${agent.color}"></i>
-                        <span class="font-mono-code text-[10px] font-bold text-slate-100">${agent.name.split(' ')[0]}</span>
-                        <span class="w-1.5 h-1.5 rounded-full" style="background-color: ${agent.color}"></span>
-                    </div>
-                `;
-            });
-        }
-
-        function onWindowResize() {
-            const w = window.innerWidth;
-            const h = window.innerHeight;
-            if (camera) {
-                camera.aspect = w / h;
-                camera.updateProjectionMatrix();
-            }
-            if (renderer) renderer.setSize(w, h);
-            if (officeCv) {
-                officeCv.width = w;
-                officeCv.height = h;
-            }
-        }
-
-        /******************************************************************
-         * 5. 2D INTERACTIVE ARCHITECTURAL OFFICE (PAN & ZOOM)
-         ******************************************************************/
-        let currentViewMode = '3d'; // '3d' | '2d'
-        const officeCv = document.getElementById("office-canvas");
-        const officeCtx = officeCv ? officeCv.getContext("2d") : null;
-
-        const panZoom2D = {
-            scale: 1.15,
-            offsetX: 0,
-            offsetY: 0,
-            isPanning: false,
-            startX: 0,
-            startY: 0
-        };
-
-        function init2DPanZoom() {
-            const container = document.getElementById('office-2d-container');
-            if (!container) return;
-
-            // Mouse Drag Pan
-            container.addEventListener('pointerdown', (e) => {
-                panZoom2D.isPanning = true;
-                panZoom2D.startX = e.clientX - panZoom2D.offsetX;
-                panZoom2D.startY = e.clientY - panZoom2D.offsetY;
-            });
-
-            window.addEventListener('pointermove', (e) => {
-                if (!panZoom2D.isPanning) return;
-                panZoom2D.offsetX = e.clientX - panZoom2D.startX;
-                panZoom2D.offsetY = e.clientY - panZoom2D.startY;
-            });
-
-            window.addEventListener('pointerup', () => {
-                panZoom2D.isPanning = false;
-            });
-
-            // Smooth Mouse Wheel Zoom
-            container.addEventListener('wheel', (e) => {
-                e.preventDefault();
-                const zoomFactor = e.deltaY < 0 ? 1.12 : 0.89;
-                const rect = container.getBoundingClientRect();
-                const mouseX = e.clientX - rect.left;
-                const mouseY = e.clientY - rect.top;
-
-                const newScale = Math.max(0.45, Math.min(3.2, panZoom2D.scale * zoomFactor));
-
-                // Zoom centered around mouse pointer
-                panZoom2D.offsetX = mouseX - (mouseX - panZoom2D.offsetX) * (newScale / panZoom2D.scale);
-                panZoom2D.offsetY = mouseY - (mouseY - panZoom2D.offsetY) * (newScale / panZoom2D.scale);
-                panZoom2D.scale = newScale;
-            }, { passive: false });
-        }
-
-        function zoom2D(factor) {
-            playChime('select');
-            const centerX = window.innerWidth / 2;
-            const centerY = window.innerHeight / 2;
-            const newScale = Math.max(0.45, Math.min(3.2, panZoom2D.scale * factor));
-            panZoom2D.offsetX = centerX - (centerX - panZoom2D.offsetX) * (newScale / panZoom2D.scale);
-            panZoom2D.offsetY = centerY - (centerY - panZoom2D.offsetY) * (newScale / panZoom2D.scale);
-            panZoom2D.scale = newScale;
-        }
-
-        function reset2DView() {
-            playChime('select');
-            panZoom2D.scale = 1.15;
-            panZoom2D.offsetX = (window.innerWidth - 820 * panZoom2D.scale) / 2;
-            panZoom2D.offsetY = (window.innerHeight - 560 * panZoom2D.scale) / 2;
-        }
-
-        function render2DOffice() {
-            if (currentViewMode !== '2d') return;
-            requestAnimationFrame(render2DOffice);
-            if (!officeCtx || !officeCv) return;
-
-            const W = window.innerWidth;
-            const H = window.innerHeight;
-            if (officeCv.width !== W || officeCv.height !== H) {
-                officeCv.width = W;
-                officeCv.height = H;
-                if (panZoom2D.offsetX === 0 && panZoom2D.offsetY === 0) {
-                    reset2DView();
-                }
-            }
-
-            officeCtx.clearRect(0, 0, W, H);
-            officeCtx.save();
-            officeCtx.translate(panZoom2D.offsetX, panZoom2D.offsetY);
-            officeCtx.scale(panZoom2D.scale, panZoom2D.scale);
-
-            // 1. Modern Architectural Floorplan (820 x 560)
-            const mapW = 820;
-            const mapH = 560;
-
-            // Blueprint Grid / Dark Marble Floor
-            officeCtx.fillStyle = '#0f172a';
-            officeCtx.fillRect(0, 0, mapW, mapH);
-
-            // Subtle Grid
-            officeCtx.strokeStyle = 'rgba(255, 255, 255, 0.04)';
-            officeCtx.lineWidth = 1;
-            for (let x = 0; x <= mapW; x += 40) {
-                officeCtx.beginPath();
-                officeCtx.moveTo(x, 0);
-                officeCtx.lineTo(x, mapH);
-                officeCtx.stroke();
-            }
-            for (let y = 0; y <= mapH; y += 40) {
-                officeCtx.beginPath();
-                officeCtx.moveTo(0, y);
-                officeCtx.lineTo(mapW, y);
-                officeCtx.stroke();
-            }
-
-            // Outer Perimeter Wall
-            officeCtx.strokeStyle = '#334155';
-            officeCtx.lineWidth = 4;
-            officeCtx.strokeRect(0, 0, mapW, mapH);
-
-            // 2. Zone A: Garden Terrace & Park Benches (Right Wing)
-            officeCtx.fillStyle = '#14233c';
-            officeCtx.fillRect(520, 20, 280, 520);
-            officeCtx.strokeStyle = '#1e3a8a';
-            officeCtx.lineWidth = 2;
-            officeCtx.strokeRect(520, 20, 280, 520);
-
-            officeCtx.fillStyle = '#38bdf8';
-            officeCtx.font = "bold 12px 'JetBrains Mono', monospace";
-            officeCtx.fillText("ZONA TAMAN & BANGKU", 540, 48);
-
-            // Draw 2D Park Benches
-            const benches2D = [
-                { x: 560, y: 110, w: 90, h: 26, name: "Bangku Sakura" },
-                { x: 680, y: 110, w: 90, h: 26, name: "Bangku Cemara" },
-                { x: 560, y: 380, w: 90, h: 26, name: "Bangku Kolam 1" },
-                { x: 680, y: 380, w: 90, h: 26, name: "Bangku Kolam 2" }
-            ];
-
-            benches2D.forEach(b => {
-                officeCtx.fillStyle = '#78350f';
-                officeCtx.fillRect(b.x, b.y, b.w, b.h);
-                officeCtx.strokeStyle = '#d97706';
-                officeCtx.lineWidth = 1.5;
-                officeCtx.strokeRect(b.x, b.y, b.w, b.h);
-                officeCtx.fillStyle = '#fde68a';
-                officeCtx.font = "10px sans-serif";
-                officeCtx.fillText(b.name, b.x + 8, b.y + 17);
-            });
-
-            // 2D Pond in Garden
-            officeCtx.fillStyle = '#0284c7';
-            officeCtx.beginPath();
-            officeCtx.ellipse(665, 250, 75, 55, 0, 0, Math.PI * 2);
-            officeCtx.fill();
-            officeCtx.strokeStyle = '#38bdf8';
-            officeCtx.stroke();
-            officeCtx.fillStyle = '#e0f2fe';
-            officeCtx.fillText("Kolam Refleksi", 625, 254);
-
-            // 3. Zone B: Workstations Pods (Left Wing)
-            officeCtx.fillStyle = '#38bdf8';
-            officeCtx.fillText("ZONA WORKSTATION AI", 40, 48);
-
-            AGENTS.forEach((a, i) => {
-                const dx = 50 + (i % 2) * 230;
-                const dy = 80 + Math.floor(i / 2) * 160;
-
-                // Desk Surface
-                officeCtx.fillStyle = '#1e293b';
-                officeCtx.fillRect(dx, dy, 180, 80);
-                officeCtx.strokeStyle = a.behavior === 'desk' ? a.color : '#475569';
-                officeCtx.lineWidth = 2;
-                officeCtx.strokeRect(dx, dy, 180, 80);
-
-                // Monitor Bar
-                officeCtx.fillStyle = a.behavior === 'desk' ? a.color : '#0f172a';
-                officeCtx.fillRect(dx + 25, dy + 10, 130, 14);
-
-                // Label
-                officeCtx.fillStyle = '#f8fafc';
-                officeCtx.font = "bold 11px 'JetBrains Mono', monospace";
-                officeCtx.fillText(a.name, dx + 15, dy + 45);
-
-                officeCtx.font = "10px sans-serif";
-                officeCtx.fillStyle = '#94a3b8';
-                officeCtx.fillText(`Status: ${a.behavior.toUpperCase()}`, dx + 15, dy + 62);
-            });
-
-            // 4. Zone C: Central Conference Round Table (Rapat All-Hands)
-            officeCtx.fillStyle = '#451a03';
-            officeCtx.beginPath();
-            officeCtx.ellipse(260, 430, 95, 60, 0, 0, Math.PI * 2);
-            officeCtx.fill();
-            officeCtx.strokeStyle = '#f59e0b';
-            officeCtx.lineWidth = 2;
-            officeCtx.stroke();
-
-            officeCtx.fillStyle = '#f8fafc';
-            officeCtx.font = "bold 11px sans-serif";
-            officeCtx.fillText("Meja Rapat Konferensi", 200, 434);
-
-            // 5. Draw Agents on 2D map
-            AGENTS.forEach((a, i) => {
-                let ax = 140, ay = 120;
-                if (a.behavior === 'desk') {
-                    ax = 140 + (i % 2) * 230;
-                    ay = 120 + Math.floor(i / 2) * 160;
-                } else if (a.behavior === 'bench') {
-                    const bench = benches2D[i % benches2D.length];
-                    ax = bench.x + 45;
-                    ay = bench.y + 12;
-                } else if (a.behavior === 'meeting') {
-                    const angle = (i / AGENTS.length) * Math.PI * 2;
-                    ax = 260 + Math.cos(angle) * 85;
-                    ay = 430 + Math.sin(angle) * 50;
-                } else {
-                    ax = 580 + (i * 35);
-                    ay = 280;
-                }
-
-                // Avatar Circle
-                officeCtx.beginPath();
-                officeCtx.arc(ax, ay, 14, 0, Math.PI * 2);
-                officeCtx.fillStyle = a.color;
-                officeCtx.fill();
-                officeCtx.strokeStyle = '#ffffff';
-                officeCtx.lineWidth = 2;
-                officeCtx.stroke();
-
-                // Speech Bubble
-                officeCtx.fillStyle = 'rgba(15, 23, 42, 0.9)';
-                officeCtx.fillRect(ax - 55, ay - 32, 110, 20);
-                officeCtx.strokeStyle = 'rgba(255, 255, 255, 0.2)';
-                officeCtx.lineWidth = 1;
-                officeCtx.strokeRect(ax - 55, ay - 32, 110, 20);
-
-                officeCtx.fillStyle = '#ffffff';
-                officeCtx.font = "9px sans-serif";
-                officeCtx.textAlign = "center";
-                officeCtx.fillText(a.behavior === 'bench' ? "💤 Bangku Taman" : (a.behavior === 'desk' ? "💻 Coding" : "🚶 Jalan"), ax, ay - 18);
-                officeCtx.textAlign = "left";
-            });
-
-            officeCtx.restore();
-        }
-
-        function switchViewMode(mode) {
-            currentViewMode = mode;
-            playChime('select');
-
-            const btn3d = document.getElementById('btn-view-3d');
-            const btn2d = document.getElementById('btn-view-2d');
-            const canvas3d = document.getElementById('canvas-container');
-            const container2d = document.getElementById('office-2d-container');
-            const zoomPill = document.getElementById('zoom-controls-2d');
-            const labelsContainer = document.getElementById('labels-container');
-
-            if (mode === '3d') {
-                btn3d.className = 'px-2.5 py-1.5 rounded-md text-xs font-semibold bg-amber-500 text-slate-950 transition flex items-center gap-1.5 shadow-sm';
-                btn2d.className = 'px-2.5 py-1.5 rounded-md text-xs font-semibold text-slate-400 hover:text-slate-200 transition flex items-center gap-1.5';
-                canvas3d.style.display = 'block';
-                container2d.classList.add('hidden');
-                zoomPill.classList.add('hidden');
-                labelsContainer.style.display = 'block';
-                showToast('🏝️ Mode: Taman 3D Modern Campus');
-            } else {
-                btn2d.className = 'px-2.5 py-1.5 rounded-md text-xs font-semibold bg-amber-500 text-slate-950 transition flex items-center gap-1.5 shadow-sm';
-                btn3d.className = 'px-2.5 py-1.5 rounded-md text-xs font-semibold text-slate-400 hover:text-slate-200 transition flex items-center gap-1.5';
-                canvas3d.style.display = 'none';
-                container2d.classList.remove('hidden');
-                zoomPill.classList.remove('hidden');
-                labelsContainer.style.display = 'none';
-                showToast('🗺️ Mode: 2D Plan (Scroll untuk Zoom, Drag untuk Geser)');
-                reset2DView();
-                render2DOffice();
-            }
-        }
-
-        /******************************************************************
-         * 6. UI RENDERING & INTERACTION (ROSTER, INSPECTOR, MODALS)
-         ******************************************************************/
-        function renderRoster() {
-            const listEl = document.getElementById('agent-roster-list');
-            listEl.innerHTML = AGENTS.map(agent => {
-                const isSelected = agent.id === selectedAgentId;
-                return `
-                    <div onclick="selectAgent('${agent.id}', true)" 
-                         class="p-2.5 rounded-xl border cursor-pointer transition-all flex items-center justify-between ${isSelected ? 'bg-slate-800/90 border-amber-500/60 shadow-lg ring-1 ring-amber-500/30' : 'bg-slate-900/60 border-slate-800/80 hover:border-slate-700 hover:bg-slate-800/50'}">
-                        <div class="flex items-center gap-2.5 min-w-0">
-                            <div class="w-8 h-8 rounded-lg border flex items-center justify-center font-bold shrink-0 text-xs shadow-inner" style="background-color: ${agent.color}33; border-color: ${agent.color}88">
-                                <i class="fa-solid ${agent.icon}" style="color: ${agent.color}"></i>
-                            </div>
-                            <div class="truncate">
-                                <div class="text-xs font-semibold text-slate-100 truncate">${agent.name}</div>
-                                <div class="text-[11px] text-slate-400 font-medium truncate">${agent.role}</div>
-                            </div>
-                        </div>
-                        <div class="flex items-center gap-1.5 shrink-0">
-                            <span class="text-[10px] font-mono-code font-semibold px-2 py-0.5 rounded border border-emerald-500/30 bg-emerald-500/10 text-emerald-400">
-                                ${agent.behavior.toUpperCase()}
-                            </span>
-                            <button onclick="event.stopPropagation(); openMicroModal('${agent.id}')" class="w-6 h-6 rounded bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-300 hover:text-amber-400 flex items-center justify-center text-[10px]" title="Buka Kontrol Aksi">
-                                <i class="fa-solid fa-sliders"></i>
-                            </button>
-                        </div>
-                    </div>
-                `;
-            }).join('');
-        }
-
-        function renderInspector() {
-            const agent = AGENTS.find(a => a.id === selectedAgentId) || AGENTS[0];
-            const inspectorEl = document.getElementById('agent-inspector');
-
-            inspectorEl.innerHTML = `
-                <div class="flex flex-col gap-2.5">
-                    <div class="flex items-center justify-between border-b border-slate-800/80 pb-2.5">
-                        <div class="flex items-center gap-2.5 min-w-0">
-                            <div class="w-9 h-9 rounded-xl border flex items-center justify-center text-sm shadow-inner shrink-0" style="background-color: ${agent.color}33; border-color: ${agent.color}88">
-                                <i class="fa-solid ${agent.icon}" style="color: ${agent.color}"></i>
-                            </div>
-                            <div class="truncate">
-                                <h3 class="font-mono-code font-bold text-xs text-slate-100 truncate">${agent.name}</h3>
-                                <p class="text-[11px] text-slate-400 flex items-center gap-1 mt-0.5 font-medium"><i class="fa-solid fa-location-dot text-rose-400 text-[10px]"></i>${agent.behavior === 'desk' ? 'Workstation Meja' : 'Bangku Taman'}</p>
-                            </div>
-                        </div>
-                        <button onclick="openMicroModal('${agent.id}')" class="btn-modern px-2.5 py-1 text-[11px] text-amber-300 flex items-center gap-1 shrink-0" title="Kelola Aksi">
-                            <i class="fa-solid fa-bolt text-[10px]"></i> Aksi
-                        </button>
-                    </div>
-
-                    <div class="space-y-2 text-xs">
-                        <div class="bg-slate-900/80 border border-slate-800/80 rounded-lg p-2 flex justify-between items-center">
-                            <span class="text-slate-400 font-medium text-[11px]">Model:</span>
-                            <span class="font-mono-code font-semibold text-slate-200 text-[11px]">${agent.model}</span>
-                        </div>
-
-                        <div class="bg-slate-900/80 border border-slate-800/80 rounded-lg p-2.5">
-                            <div class="text-[9px] font-bold uppercase tracking-wider text-amber-400/90 mb-1">Aktivitas Terkini</div>
-                            <div class="text-slate-200 text-xs leading-relaxed font-mono-code">${agent.speech}</div>
-                        </div>
-
-                        <div>
-                            <div class="text-[9px] font-bold uppercase tracking-wider text-slate-400 mb-1.5">Capabilities (${agent.tools.length})</div>
-                            <div class="flex flex-wrap gap-1">
-                                ${agent.tools.map(t => `<span class="font-mono-code text-[10px] bg-slate-950 text-emerald-400 px-2 py-0.5 rounded border border-slate-800/80">${t}()</span>`).join('')}
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="pt-2.5 border-t border-slate-800/80 mt-2 flex items-center justify-between gap-1.5">
-                    <button onclick="sendAgentActionQuick('${agent.id}', 'bench')" class="flex-1 btn-modern py-1.5 text-[11px] text-purple-300 hover:text-purple-200 flex items-center justify-center gap-1" title="Duduk Santai di Bangku">
-                        <i class="fa-solid fa-couch text-[10px]"></i> Bangku
-                    </button>
-                    <button onclick="sendAgentActionQuick('${agent.id}', 'walk')" class="flex-1 btn-modern py-1.5 text-[11px] text-sky-300 hover:text-sky-200 flex items-center justify-center gap-1" title="Jalan-jalan di Taman">
-                        <i class="fa-solid fa-person-walking text-[10px]"></i> Jalan
-                    </button>
-                    <button onclick="sendAgentActionQuick('${agent.id}', 'work')" class="flex-1 btn-modern py-1.5 text-[11px] text-emerald-300 hover:text-emerald-200 flex items-center justify-center gap-1" title="Bekerja di Meja">
-                        <i class="fa-solid fa-laptop-code text-[10px]"></i> Kerja
-                    </button>
-                </div>
-            `;
-        }
-
-        function selectAgent(agentId, focusCamera = true) {
-            selectedAgentId = agentId;
-            playChime('select');
-            renderRoster();
-            renderInspector();
-
-            const agent = AGENTS.find(a => a.id === agentId);
-            if (agent && focusCamera && currentViewMode === '3d') {
-                const mesh = agent3DMeshes[agentId];
-                if (mesh) {
-                    camState.desiredTarget.set(mesh.group.position.x, 1.4, mesh.group.position.z);
-                    camState.desiredRadius = 12;
-                }
-            }
-        }
-
-        let currentModalAgentId = null;
-
-        function openMicroModal(agentId) {
-            initAudio();
-            playChime('select');
-            currentModalAgentId = agentId;
-
-            const agent = AGENTS.find(a => a.id === agentId);
-            if (!agent) return;
-
-            document.getElementById('modal-agent-name').textContent = agent.name;
-            document.getElementById('modal-agent-role').textContent = agent.role;
-            document.getElementById('modal-agent-status').textContent = `${agent.behavior.toUpperCase()} — "${agent.speech}"`;
-            document.getElementById('modal-agent-dot').style.backgroundColor = agent.color;
-
-            document.getElementById('micro-action-modal').classList.remove('hidden');
-            const input = document.getElementById('modal-prompt-input');
-            if (input) {
-                input.value = '';
-                input.focus();
-            }
-        }
-
-        function closeMicroModal() {
-            document.getElementById('micro-action-modal').classList.add('hidden');
-            currentModalAgentId = null;
-        }
-
-        async function sendAgentAction(action) {
-            if (!currentModalAgentId) return;
-            const aid = currentModalAgentId;
-            closeMicroModal();
-            await sendAgentActionQuick(aid, action);
-        }
-
-        async function sendAgentActionQuick(agentId, action) {
-            initAudio();
-            playChime('dispatch');
-
-            const agent = AGENTS.find(a => a.id === agentId);
-            if (!agent) return;
-
-            if (action === 'bench') {
-                agent.behavior = 'bench';
-                agent.speech = 'Duduk santai di bangku taman dekat bunga sakura 🌸';
-                showToast(`🛋️ ${agent.name} berjalan ke bangku taman...`);
-            } else if (action === 'walk') {
-                agent.behavior = 'walking';
-                agent.speech = 'Jalan-jalan menikmati udara sejuk taman 🚶';
-                showToast(`🚶 ${agent.name} jalan-jalan di sekitar taman...`);
-            } else if (action === 'work') {
-                agent.behavior = 'desk';
-                agent.speech = 'Fokus sprint coding di workstation ⚡';
-                showToast(`💻 ${agent.name} kembali ke workstation meja kerja...`);
-            } else if (action === 'coffee') {
-                agent.behavior = 'bench';
-                agent.speech = 'Menikmati seduhan matcha hangat di bangku taman 🍵';
-                showToast(`🍵 ${agent.name} menikmati seduhan matcha hangat...`);
-            }
-
-            renderRoster();
-            renderInspector();
-            update3DAgentGoals();
-
-            try {
-                await fetch(`${BRIDGE_API}/agent/action`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ id: agentId, action: action })
-                });
-            } catch (e) {}
-        }
-
-        async function sendAgentCustomPrompt() {
-            const input = document.getElementById('modal-prompt-input');
-            const text = input ? input.value.trim() : '';
-            if (!text || !currentModalAgentId) return;
-
-            const aid = currentModalAgentId;
-            closeMicroModal();
-            initAudio();
-            playChime('dispatch');
-
-            const agent = AGENTS.find(a => a.id === aid);
-            if (agent) {
-                agent.behavior = 'desk';
-                agent.speech = `Mengerjakan: ${text}`;
-                renderRoster();
-                renderInspector();
-                update3DAgentGoals();
-            }
-
-            showToast(`✉️ Instruksi dikirim ke ${agent ? agent.name : aid}!`);
-            addTelemetryLog('INSTRUKSI', '#f59e0b', `[${agent ? agent.name : aid}]: ${text}`);
-
-            try {
-                await fetch(`${BRIDGE_API}/agent/action`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ id: aid, action: 'chat', message: text })
-                });
-            } catch (e) {}
-        }
-
-        async function triggerMacroAction(action) {
-            initAudio();
-            playChime('dispatch');
-
-            if (action === 'meeting') {
-                showToast('📢 Rapat Tim: Semua agen berkumpul di Meja Konferensi!');
-                AGENTS.forEach(a => {
-                    a.behavior = 'meeting';
-                    a.speech = 'Rapat All-Hands koordinasi tim 📢';
-                });
-            } else if (action === 'break') {
-                showToast('🌸 Rehat Taman: Semua agen santai di bangku taman!');
-                AGENTS.forEach(a => {
-                    a.behavior = 'bench';
-                    a.speech = 'Istirahat santai di bangku taman 🌸';
-                });
-            } else if (action === 'sprint') {
-                showToast('⚡ Turbo Sprint: Semua agen kembali bekerja di meja!');
-                AGENTS.forEach(a => {
-                    a.behavior = 'desk';
-                    a.speech = 'Overclock coding di workstation ⚡';
-                });
-            }
-
-            renderRoster();
-            renderInspector();
-            update3DAgentGoals();
-
-            try {
-                await fetch(`${BRIDGE_ORIGIN}/api/office/macro`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ action: action })
-                });
-            } catch (e) {}
-        }
-
-        function switchRightTab(tab) {
-            playChime('select');
-            const btnWs = document.getElementById('tab-btn-worksheet');
-            const btnStream = document.getElementById('tab-btn-stream');
-            const contentWs = document.getElementById('tab-content-worksheet');
-            const contentStream = document.getElementById('tab-content-stream');
-            const title = document.getElementById('right-panel-title');
-
-            if (tab === 'worksheet') {
-                btnWs.className = 'text-[11px] font-semibold px-2.5 py-1 rounded bg-amber-500 text-slate-950 transition';
-                btnStream.className = 'text-[11px] font-semibold px-2.5 py-1 rounded text-slate-400 hover:text-slate-200 transition';
-                contentWs.classList.remove('hidden');
-                contentStream.classList.add('hidden');
-                title.textContent = 'LEMBAR KERJA AKTIF';
-            } else {
-                btnStream.className = 'text-[11px] font-semibold px-2.5 py-1 rounded bg-amber-500 text-slate-950 transition';
-                btnWs.className = 'text-[11px] font-semibold px-2.5 py-1 rounded text-slate-400 hover:text-slate-200 transition';
-                contentStream.classList.remove('hidden');
-                contentWs.classList.add('hidden');
-                title.textContent = 'LOG ALUR TELEMETRI';
-            }
-        }
-
-        function addTelemetryLog(agentName, badgeColor, text) {
-            const streamEl = document.getElementById('tab-content-stream');
-            if (!streamEl) return;
-            const time = new Date().toLocaleTimeString('id-ID', { hour12: false });
-            const item = document.createElement('div');
-            item.className = 'bg-slate-900/80 border border-slate-800 rounded-lg p-2 transition-all';
-            item.innerHTML = `
-                <div class="flex items-center justify-between mb-1">
-                    <span class="font-bold text-[10px] px-1.5 py-0.2 rounded text-slate-950" style="background-color: ${badgeColor}">${agentName}</span>
-                    <span class="text-[10px] text-slate-500">${time}</span>
-                </div>
-                <p class="text-slate-200 text-[11px] leading-relaxed">${text}</p>
-            `;
-            streamEl.prepend(item);
-            if (streamEl.children.length > 30) {
-                streamEl.removeChild(streamEl.lastChild);
-            }
-        }
-
-        function dispatchMainPrompt() {
-            const input = document.getElementById('mission-input');
-            const text = input ? input.value.trim() : '';
-            if (!text) return;
-            input.value = '';
-
-            playChime('dispatch');
-            showToast(`🚀 Misi diterima: "${text}"`);
-            addTelemetryLog('USER PROMPT', '#f59e0b', text);
-
-            // Set Hermes & Athena to working
-            AGENTS.forEach(a => {
-                if (a.id === 'hermes' || a.id === 'athena') {
-                    a.status = 'WORKING';
-                    a.behavior = 'desk';
-                    a.speech = `Menjalankan: ${text.slice(0, 32)}...`;
-                }
-            });
-            renderRoster();
-            renderInspector();
-            update3DAgentGoals();
-
-            // Append to active worksheet deliverable
-            const scratchpad = document.getElementById('ws-scratchpad');
-            if (scratchpad) {
-                scratchpad.value += `\n\n### Task [${new Date().toLocaleTimeString('id-ID')}]: ${text}\n- Status: In Progress\n- Agen: Hermes Prime`;
-                saveActiveWorksheet();
-            }
-        }
-
-        function dispatchQuickTopic(topic) {
-            const input = document.getElementById('mission-input');
-            if (input) input.value = topic;
-            dispatchMainPrompt();
-        }
-
-        async function checkBridgeStatus(notifyUser = false) {
-            try {
-                const res = await fetch(`${BRIDGE_API}/status`);
-                if (res.ok) {
-                    isBridgeOnline = true;
-                    document.getElementById('bridge-dot').className = 'w-2 h-2 rounded-full bg-emerald-400 animate-pulse';
-                    document.getElementById('bridge-label').textContent = 'Online';
-                    document.getElementById('bridge-label').className = 'hidden xl:inline text-[11px] text-emerald-400 font-mono-code font-semibold';
-                    if (notifyUser) showToast('✨ Drive Bridge Terhubung (Dual-Stack IPv6/IPv4)!');
-                    return;
-                }
-            } catch (e) {}
-            isBridgeOnline = false;
-            document.getElementById('bridge-dot').className = 'w-2 h-2 rounded-full bg-slate-500';
-            document.getElementById('bridge-label').textContent = 'Offline';
-            document.getElementById('bridge-label').className = 'hidden xl:inline text-[11px] text-slate-400 font-mono-code';
-            if (notifyUser) showToast('⚠️ Bridge offline. Jalankan run_desk.bat');
-        }
-
-        /******************************************************************
-         * 7. STARTUP & LIFECYCLE
-         ******************************************************************/
-        window.onload = function () {
-            init3DScene();
-            init2DPanZoom();
-            renderRoster();
-            renderInspector();
+            inp.value = "";
+            showToast(`Instruksi terkirim ke ${selectedAgent.label}!`);
+            pollState();
+        } catch(e) {}
+    });
+
+    /* =========================================================================
+       DRAWER TABS & TELEMETRY LIST
+       ========================================================================= */
+    const drawer = document.getElementById("side-drawer");
+    const tabWs = document.getElementById("tab-btn-ws");
+    const tabTelem = document.getElementById("tab-btn-telemetry");
+    const viewWs = document.getElementById("drawer-tab-ws");
+    const viewTelem = document.getElementById("drawer-tab-telemetry");
+
+    document.getElementById("btn-toggle-drawer").addEventListener("click", () => {
+        drawer.classList.toggle("translate-x-full");
+        playSfx("click");
+        if (!drawer.classList.contains("translate-x-full")) {
             fetchWorksheets();
+            fetchTelemetryLogs();
+        }
+    });
 
-            addTelemetryLog('HERMES CORE', '#f59e0b', 'Sistem Hermes Modern Campus v5.0 aktif.');
-            addTelemetryLog('ATHENA OWL', '#10b981', 'Koneksi FTS5 memory index & decision log siap.');
-            addTelemetryLog('HEPHAESTUS', '#f43f5e', 'Dual-Stack HTTP Bridge aktif melayani port 8765.');
-            addTelemetryLog('IRIS PRISM', '#a855f7', 'Engine smooth 3D & 2D Pan-Zoom aktif 60 FPS.');
+    document.getElementById("btn-close-drawer").addEventListener("click", () => {
+        drawer.classList.add("translate-x-full");
+        playSfx("click");
+    });
 
-            checkBridgeStatus();
-            setInterval(checkBridgeStatus, 6000);
-            setInterval(fetchWorksheets, 4000);
+    tabWs.addEventListener("click", () => {
+        tabWs.classList.add("active");
+        tabTelem.classList.remove("active");
+        viewWs.classList.remove("hidden");
+        viewTelem.classList.add("hidden");
+        playSfx("click");
+    });
 
-            animate3DScene(0);
+    tabTelem.addEventListener("click", () => {
+        tabTelem.classList.add("active");
+        tabWs.classList.remove("active");
+        viewTelem.classList.remove("hidden");
+        viewWs.classList.add("hidden");
+        fetchTelemetryLogs();
+        playSfx("click");
+    });
 
-            // Check if ?view=2d requested via URL
-            const urlParams = new URLSearchParams(window.location.search);
-            if (urlParams.get('view') === '2d') {
-                switchViewMode('2d');
-            }
-        };
+    function renderTelemetryList(logs) {
+        const container = document.getElementById("telemetry-items");
+        container.innerHTML = "";
+        logs.slice(-30).reverse().forEach(log => {
+            const div = document.createElement("div");
+            div.className = "p-2 rounded bg-[#0d0916] border border-[#2d1f45] text-[10px]";
+            const timeStr = log.saved_at ? log.saved_at.slice(11, 19) : "";
+            div.innerHTML = `
+                <div class="flex items-center justify-between text-slate-400 mb-0.5">
+                    <span class="text-amber-400 font-bold">${log.agent || log.role || 'SISTEM'}</span>
+                    <span class="text-[9px] text-slate-500">${timeStr}</span>
+                </div>
+                <div class="text-slate-300 font-mono">${log.detail || log.message || log.preview || 'Menjalankan eksekusi'}</div>
+            `;
+            container.appendChild(div);
+        });
+    }
+
+    function showToast(msg) {
+        const toast = document.createElement("div");
+        toast.className = "fixed bottom-14 left-1/2 transform -translate-x-1/2 z-50 pixel-box px-4 py-2 text-xs text-amber-300 font-mono shadow-2xl bg-[#1b1429]";
+        toast.textContent = msg;
+        document.body.appendChild(toast);
+        setTimeout(() => toast.remove(), 3200);
+    }
+
+    /* =========================================================================
+       INITIALIZATION & INTERVALS
+       ========================================================================= */
+    pollState();
+    fetchWorksheets();
+    setInterval(pollState, 1500);
+    setInterval(fetchWorksheets, 5000);
+
     </script>
 </body>
 </html>

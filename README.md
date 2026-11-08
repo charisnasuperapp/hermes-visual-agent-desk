@@ -1,101 +1,104 @@
-# 🪄 Hermes Visual Agent Desk & Pixel Office Pro (v4.2)
+# 🎮 Hermes Pixel Office (v6.0) — Virtual Agent Workspace
 
-> **Cockpit Visual Profesional untuk Agen AI Hermes: Dual-View (3D Cyberpunk Studio & 2D Pixel Virtual Office) dengan integrasi VS Code Extension, Autonomous Agent Life (Jalan-jalan, Istirahat Sofa, Ngopi Pantry, Rapat Konferensi), serta Micro & Macro Interactivity.**
+> **Cockpit Virtual Retro 2D Pixel-Art untuk Agen AI Hermes: Mengusung arsitektur visual `app.pixeloffice.org`, kanvas HTML5 2D performa tinggi (<1% CPU), kontrol Smooth Pan & Zoom, 5 zona ruangan kantor interaktif, maskot kucing peliharaan (Mochi), mode pencahayaan atmosfer, sinkronisasi lembar kerja Hermes, serta efek audio 8-bit synthesizer murni.**
 
-![HTML5](https://img.shields.io/badge/HTML5-Dual--View-E34F26?logo=html5&logoColor=white)
-![VS Code Extension](https://img.shields.io/badge/VS_Code-Ready-007ACC?logo=visual-studio-code)
-![Three.js](https://img.shields.io/badge/Three.js-r128-black?logo=three.js)
-![Canvas 2D](https://img.shields.io/badge/Canvas_2D-Pixel_Office-9b6fd8)
+![Canvas 2D](https://img.shields.io/badge/Engine-HTML5_2D_Canvas-9b59b6?logo=html5&logoColor=white)
 ![Zero Dependencies](https://img.shields.io/badge/Dependencies-Zero-brightgreen)
+![Dual-Stack](https://img.shields.io/badge/Bridge-Dual--Stack_IPv6%2FIPv4-blue)
+![VS Code Extension](https://img.shields.io/badge/VS_Code-Ready-007ACC?logo=visual-studio-code)
+![Low CPU](https://img.shields.io/badge/CPU_Load-<1%25-success)
 
 ---
 
-## 🌟 Fitur Baru & Pembaruan v4.2
+## 🌟 Fitur Unggulan v6.0
 
-### 1. 🌑 Tema Gelap Profesional (VS Code Dark Modern / JetBrains IDE)
-- Seluruh antarmuka dirancang ulang menjadi palet gelap presisi tinggi: Obsidian `#090d16`, matte glass `#0f172a`, garis batas hairline `border-slate-800`, tipografi developer modern (`Inter` + `JetBrains Mono`).
-- Menghapus tampilan warna pastel terang dan elemen kartun anak-anak.
-- Mode malam studio 3D dengan pencahayaan moody, lentera hangat, dan obelisk kristal emas.
+### 1. 🚀 Ringan & Bebas Beban CPU (< 1% CPU Load)
+- Menggantikan sepenuhnya Three.js 3D WebGL dengan **HTML5 2D Canvas murni** berteknologi pixelated (`image-rendering: pixelated; crisp-edges`).
+- Bebas dari lag, panas laptop, maupun pembekuan sistem.
 
-### 2. 🛋️ Autonomous Agent Life & Zona Kantor 2D
-Agen tidak lagi hanya diam terpaku di satu kursi:
-- **Zona Meja Pods**: Agen coding intensif dengan dual monitor ultra-wide yang berpendar sesuai jenis tool (`typing` hijau, `browsing` biru, `terminal` amber, `waiting` merah).
-- **Zona Pantry & Bar Kopi**: Bar counter lengkap dengan mesin espresso beruap, lampu LED indikator, dispenser galon air, dan cangkir kopi. Agen berjalan ke sini saat ingin minum kopi (`☕`).
-- **Zona Lounge Sofa**: Sofa santai beludru sectional dengan bantal empuk, meja kopi, dan tanaman ficus. Agen berjalan dan duduk santai di sini saat istirahat (`💤`).
-- **Zona Meja Bundar Rapat (All-Hands Conference Table)**: Meja konferensi kayu mahoni solid dengan layar tengah hologram. Seluruh agen berkumpul di sini saat sesi koordinasi tim (`💬`).
-- **Jalan-jalan (Wandering)**: Agen bergerak otonom antar koridor dengan animasi langkah kaki halus.
+### 2. 🔍 Kontrol Mulus Pan & Zoom (Smooth Camera Engine)
+- **Mouse Wheel Zoom**: Zoom in dan zoom out fleksibel (**90% hingga 450%**) berpusat tepat di posisi kursor mouse.
+- **Klik & Drag Pan**: Geser pandangan kantor ke segala arah secara instan.
+- **Pintasan Cepat**: Tombol `[+]`, `[-]`, `[⊙ Reset 200%]`, dan `[Kantor]` di pojok kiri bawah.
 
-### 3. 🎯 Micro-Interactivity (Interaksi Perorangan Agen)
-Klik agen mana saja (baik di tampilan 3D, kanvas 2D, maupun daftar squad di sidebar):
-- Membuka **Agent Command Modal**:
-  - ☕ **Traktir Kopi**: Agen beranjak ke barista pantry untuk menikmati matcha/kopi.
-  - 🛋️ **Istirahat Lounge**: Agen berjalan ke sofa lounge untuk santai sejenak.
-  - 💻 **Fokus Coding**: Agen kembali ke workstation dan memacu kecepatan coding.
-  - 🎥 **Kunci Kamera**: Mengarahkan fokus kamera ke posisi agen tersebut.
-  - 💬 **Kirim Instruksi Langsung**: Kotak input untuk mengirim prompt atau tugas spesifik ke agen terpilih.
+### 3. 🏢 Denah Kantor Multi-Ruangan (Pixel Floorplan)
+- 💻 **Workstation Dev Pods**: 5 meja kayu dengan kursi ergonomis, dual monitor menyala dinamis (terminal hijau berkedip, browsing biru, flicker cepat saat mengetik kode, dan redup saat rehat).
+- ☕ **Break Room & Coffee Lounge**: Mesin espresso dengan animasi uap mengepul (`~♨~`), dispenser galon air bergelembung, mesin arcade retro "HERMES-88" berkedip, dan sofa santai beludru ungu.
+- 📢 **Conference Boardroom**: Meja rapat besar dengan 6 kursi eksekutif dan papan tulis digital arsitektur sistem CHARISNA.
+- 🗄️ **Server Vault**: Rak server data center berteknologi tinggi dengan lampu LED berkedip hijau, biru, dan amber.
+- 🌸 **Teras Luar & Taman Sakura**: Jalur bebatuan taman, **pohon Sakura mekar dengan kelopak bunga merah muda melayang ditiup angin**, kolam ikan koi dengan riak air halus, lentera batu, serta **bangku taman kayu** tempat agen duduk menikmati udara segar.
 
-### 4. 📢 Macro-Interactivity (Perintah Seluruh Tim)
-Tombol di Top Header Bar:
-- 📢 **Rapat Tim (Meeting)**: Semua agen serentak berdiri dan berjalan berkumpul ke Meja Konferensi untuk rapat All-Hands.
-- ☕ **Rehat Massal (Break)**: Semua agen beristirahat bersama di lounge dan pantry kopi.
-- ⚡ **Sprint Mode (Turbo Coding)**: Semua agen serempak kembali ke meja kerja dengan overclock kecepatan tinggi.
+### 4. 🐱 Maskot Kantor: Kucing Calico "Mochi"
+- Kucing pixel interaktif yang berjalan-jalan di sekitar taman dan lounge atau tidur melingkar di bawah pohon sakura (`zzz`).
+- **Bisa Dielus (Click to Pet)**: Memunculkan balon hati cinta `❤️`, mengeluarkan suara mengeong 8-bit, dan memberikan dorongan semangat tim (+15 Team Morale)!
 
-### 5. 🔌 Dual-Stack IPv4/IPv6 Anti-Crash Bridge (`bridge.py`)
-- Server HTTP multi-threaded dengan dukungan otomatis dual-stack `AF_INET6` + `AF_INET` (`::` dan `0.0.0.0`).
-- Mencegah error `ERR_CONNECTION_REFUSED` pada browser modern Windows yang memprioritaskan IPv6 `[::1]` untuk `localhost`.
-- Menangani pemutusan socket mendadak tanpa crash (anti-`WinError 10053`).
+### 5. 🌗 Pengubah Suasana & Pencahayaan Atmosfer
+Tombol `[Suasana]` di header atas untuk berganti mode pencahayaan secara instan:
+- 🌙 **Cyberpunk Night**: Langit bertabur bintang, pendaran lampu LED server, dan monitor menyala kontras.
+- 🌅 **Golden Twilight (Senja)**: Pencahayaan keemasan hangat merayap di lantai kayu dan kelopak sakura.
+- ☀️ **Studio Day (Siang)**: Nuansa retro studio terang dan jernih.
 
-### 6. 💻 Integrasi Native VS Code Extension
-Dapat dijalankan langsung di dalam VS Code sebagai editor tab atau sidebar panel:
-- Command: `Hermes: Open Visual Agent Desk` (Tampilan Utama)
-- Command: `Hermes: Open 2D Pixel Office` (Membuka langsung di samping editor dengan `?view=2d`)
-- Panel Webview terintegrasi di sidebar panel VS Code.
+### 6. 🛋️ Interaktivitas Perabot (Interactive Furniture)
+- **Klik Mesin Espresso**: Menyeduh kopi panas dengan suara brewing `☕`.
+- **Klik Mesin Arcade**: Memainkan jingle retro 8-bit dan mencatat high score `🕹️`.
+- **Klik Papan Tulis Rapat**: Membuka modal diagram arsitektur decoupled CHARISNA (Bumi Makmur POS, Homestay, Money Management, Core FTS5).
+- **Klik Rak Server**: Memeriksa status kesehatan server dan latensi jaringan.
+
+### 7. 🎯 Interaktivitas Mikro & Makro
+- **Perintah Makro Seluruh Tim**:
+  - 📢 **Rapat**: Memanggil seluruh agen berkumpul ke meja rapat.
+  - ☕ **Rehat**: Mengarahkan seluruh agen santai ke lounge dan bangku taman.
+  - ⚡ **Sprint**: Menugaskan semua agen kembali ke meja kerja untuk fokus coding intensif.
+  - 🌳 **Bebas**: Membebaskan agen berjalan-jalan santai di area kantor dan taman.
+- **Inspeksi Mikro Perorangan**:
+  - Klik agen mana saja untuk membuka **Agent Dossier Modal**: menampilkan potret pixel animasi 4x, Level & XP progress bar (sistem rank RPG), status aktivitas, lokasi agen, serta kotak instruksi langsung.
+
+### 8. 📑 Sinkronisasi Lembar Kerja (Hermes Worksheets Switcher)
+- Bilah tab di header atas: `[A] Intelligence Memory`, `[B] AI Office Bridge`, `[C] Pixel Campus`, dan `[+] Baru`.
+- Berpindah tab menyinkronkan tugas agen dan membuka editor markdown catatan kerja di laci geser samping.
+
+### 9. 🎶 Efek Suara 8-Bit Synthesizer Murni
+- Efek suara retro dihasilkan secara matematis menggunakan Web Audio API (square/triangle wave): suara blip tombol, langkah kaki, seduhan kopi, jingle arcade, meongan kucing, lonceng rapat, dan jingle kenaikan level. Tersedia tombol toggle **Mute/Unmute**.
 
 ---
 
 ## 🚀 Cara Menjalankan
 
-### Opsi A: Jalankan via Bridge Server (Rekomendasi)
-Jalankan file batch:
+### Opsi A: Jalankan via Skrip Otomatis
+Cukup klik ganda file:
 ```cmd
 run_desk.bat
 ```
-Atau via terminal:
+atau via PowerShell:
 ```powershell
-python bridge.py
+.\run_desk.ps1
 ```
-Akses langsung di browser:
-- **`http://localhost:8765`** atau **`http://127.0.0.1:8765`**
-- Mode 2D langsung: **`http://localhost:8765/?view=2d`**
 
-### Opsi B: Jalankan di dalam VS Code
-1. Buka folder ini di VS Code: `code .`
-2. Tekan `F5` untuk menjalankan Extension Development Host, atau jalankan perintah:
-   - `Ctrl+Shift+P` -> Ketik `Hermes: Open Visual Agent Desk`
-   - Tab visual desk akan terbuka berdampingan dengan kode Anda!
+Akses browser akan terbuka otomatis ke:
+👉 **http://localhost:8765** (atau **http://127.0.0.1:8765**)
+
+### Opsi B: Jalankan di dalam VS Code (Extension)
+1. Buka folder ini di VS Code.
+2. Tekan `F5` atau buka Command Palette (`Ctrl+Shift+P`).
+3. Pilih:
+   - `Hermes: Open 2D Pixel Office` (Membuka di panel editor samping).
+   - Atau buka panel **Hermes Desk** di bilah sisi.
 
 ---
 
-## 📁 Struktur Berkas
+## 🏗️ Struktur Proyek
 
 ```
 visual_agent_desk/
-│
-├── index.html          # Dual-View Web App (Dark IDE Theme, 3D Voxel + 2D Pixel Office)
-├── bridge.py           # Dual-Stack HTTP Server, /state folding, micro/macro API
+├── bridge.py           # Dual-Stack IPv6/IPv4 HTTP Bridge & Life-Cycle Simulator
+├── index.html          # HTML5 2D Canvas Engine, Pixel Art Tilemap & UI Overlays
+├── extension.js        # Integrasi VS Code Extension Webview Provider
 ├── package.json        # Manifest VS Code Extension
-├── extension.js        # Provider Webview Panel & Tab VS Code
-├── run_desk.bat        # Windows Batch One-Click Launcher
-├── run_desk.ps1        # PowerShell One-Click Launcher
-├── README.md           # Dokumentasi teknis
-│
-└── data/               # Penyimpanan lokal
-    ├── events.jsonl              # Stream event lifecycle Hermes
-    ├── telemetry_history.jsonl   # Riwayat log aktivitas
-    └── artifacts/                # Berkas output markdown yang dihasilkan agen
-        └── manifest.json         # Indeks artefak tersimpan
+├── run_desk.bat        # Windows Batch Launcher
+├── run_desk.ps1        # PowerShell Runner
+├── README.md           # Dokumentasi Resmi Proyek
+└── data/
+    ├── events.jsonl    # Event log stream agen
+    ├── worksheets.json # Database sinkronisasi lembar kerja
+    └── artifacts/      # Dokumen markdown artefak yang diexport
 ```
-
----
-
-*Dibuat untuk ekosistem CHARISNA SuperApp & Hermes Autonomous Workspace.*

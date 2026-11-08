@@ -1,8 +1,8 @@
 {
   "name": "hermes-visual-agent-desk",
-  "displayName": "Hermes Visual Agent Desk",
-  "description": "Professional 3D Voxel & 2D Pixel Virtual Office for Hermes Agents",
-  "version": "4.0.0",
+  "displayName": "Hermes Pixel Office",
+  "description": "Retro 2D Pixel-Art Virtual Agent Floor for Hermes Intelligence Systems",
+  "version": "6.0.0",
   "publisher": "charisna",
   "engines": {
     "vscode": "^1.80.0"

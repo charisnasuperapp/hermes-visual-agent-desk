@@ -236,6 +236,11 @@
                 <i class="fa-solid fa-volume-high text-amber-400" id="sound-icon"></i>
             </button>
 
+            <!-- Atmosphere / Lighting Mode Toggle -->
+            <button id="btn-theme" class="pixel-btn px-2 py-1 text-[10px] text-amber-300" title="Ganti Suasana (Cyberpunk / Senja / Siang)">
+                <i class="fa-solid fa-moon text-indigo-400" id="theme-icon"></i> <span id="theme-text" class="hidden sm:inline ml-1 text-[9px]">Malam</span>
+            </button>
+
             <!-- Worksheets Drawer Toggle -->
             <button id="btn-toggle-drawer" class="pixel-btn px-2 py-1 text-[10px] text-amber-300" title="Buka Lembar Kerja & Log">
                 <i class="fa-solid fa-file-lines mr-1"></i> Catatan
@@ -350,7 +355,46 @@
         </div>
     </div>
 
-    <!-- WORKSHEETS & TELEMETRY SLIDE-OUT DRAWER (RIGHT) -->
+    <!-- ARCHITECTURE WHITEBOARD MODAL (CLICK ON BOARDROOM WHITEBOARD) -->
+    <div id="whiteboard-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/75 backdrop-blur-sm hidden">
+        <div class="pixel-box w-full max-w-2xl p-5 rounded-xl bg-[#181126] border-2 border-[#543b82] relative text-[#e2dcf2] shadow-2xl">
+            <button id="btn-close-whiteboard" class="absolute top-3 right-3 pixel-btn w-7 h-7 text-xs text-rose-400 hover:text-white">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <div class="flex items-center space-x-2 mb-3">
+                <i class="fa-solid fa-diagram-project text-amber-400"></i>
+                <h3 class="font-pixel text-[11px] text-amber-300">CHARISNA DECOUPLED ARCHITECTURE & MULTI-BUSINESS</h3>
+            </div>
+            <div class="p-4 bg-[#0d0916] rounded-lg border border-[#3b2a59] font-mono text-xs space-y-3">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-2.5 text-center text-[11px]">
+                    <div class="p-3 rounded bg-[#162235] border border-blue-500/40">
+                        <div class="text-blue-400 font-bold mb-1">🛒 Bumi Makmur POS</div>
+                        <div class="text-[9px] text-slate-300">Authoritative Source of Truth: Transaksi, Stok Barang & Kasir Toko</div>
+                    </div>
+                    <div class="p-3 rounded bg-[#2a1736] border border-purple-500/40">
+                        <div class="text-purple-400 font-bold mb-1">🏠 CHARISNA Homestay</div>
+                        <div class="text-[9px] text-slate-300">Authoritative Source of Truth: Unit Kamar, Penyewa & Sewa Bulanan</div>
+                    </div>
+                    <div class="p-3 rounded bg-[#162d22] border border-emerald-500/40">
+                        <div class="text-emerald-400 font-bold mb-1">💰 Money Management</div>
+                        <div class="text-[9px] text-slate-300">Authoritative Source of Truth: Pembukuan & Rekening Pribadi/Keluarga</div>
+                    </div>
+                </div>
+                <div class="flex items-center justify-center space-x-2 text-amber-400 text-xs py-1 font-bold">
+                    <span>⬇</span> <span>Event Stream & Normalized Ledgers with Full Data Provenance</span> <span>⬇</span>
+                </div>
+                <div class="p-3 rounded-lg bg-[#271a3e] border-2 border-amber-400/60 text-center">
+                    <div class="text-amber-300 font-bold text-xs mb-1">🧠 CHARISNA Core Intelligence Hub & Holographic Memory</div>
+                    <div class="text-[10px] text-slate-300">SQLite FTS5 Incremental Indexing • Hybrid Storage (Lokal + Arsip Google Drive) • Audit Ledgers</div>
+                </div>
+            </div>
+            <div class="mt-3 flex justify-end">
+                <button id="btn-done-whiteboard" class="pixel-btn pixel-btn-gold px-4 py-1.5 text-xs">
+                    Tutup Papan Tulis
+                </button>
+            </div>
+        </div>
+    </div>
     <div id="side-drawer" class="fixed top-0 bottom-0 right-0 w-full max-w-md z-40 bg-[#161024f8] border-l-2 border-[#412e63] shadow-2xl backdrop-blur-md transform translate-x-full transition-transform duration-200 ease-in-out flex flex-col">
         <!-- Drawer Header -->
         <div class="p-3 bg-[#110c1c] border-b border-[#362654] flex items-center justify-between">
@@ -621,6 +665,32 @@
                     osc.start(now + idx * 0.09);
                     osc.stop(now + idx * 0.09 + 0.22);
                 });
+            } else if (type === "cat") {
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.type = "sine";
+                osc.frequency.setValueAtTime(620, now);
+                osc.frequency.linearRampToValueAtTime(920, now + 0.09);
+                osc.frequency.exponentialRampToValueAtTime(680, now + 0.22);
+                gain.gain.setValueAtTime(0.08, now);
+                gain.gain.exponentialRampToValueAtTime(0.001, now + 0.24);
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.start(now);
+                osc.stop(now + 0.25);
+            } else if (type === "arcade") {
+                [330, 440, 554, 659, 880].forEach((freq, idx) => {
+                    const osc = audioCtx.createOscillator();
+                    const gain = audioCtx.createGain();
+                    osc.type = "square";
+                    osc.frequency.setValueAtTime(freq, now + idx * 0.06);
+                    gain.gain.setValueAtTime(0.08, now + idx * 0.06);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.06 + 0.12);
+                    osc.connect(gain);
+                    gain.connect(audioCtx.destination);
+                    osc.start(now + idx * 0.06);
+                    osc.stop(now + idx * 0.06 + 0.14);
+                });
             }
         } catch(e) {}
     }
@@ -779,7 +849,137 @@
     });
 
     /* =========================================================================
-       WORLD / SCREEN COORD CONVERSION & CLICK DETECTION
+       ATMOSPHERE & LIGHTING MODES (Cyberpunk Night, Golden Twilight, Studio Day)
+       ========================================================================= */
+    let currentTheme = "night";
+    function cycleTheme() {
+        const icon = document.getElementById("theme-icon");
+        const text = document.getElementById("theme-text");
+        if (currentTheme === "night") {
+            currentTheme = "twilight";
+            icon.className = "fa-solid fa-sun text-amber-400";
+            text.textContent = "Senja";
+            showToast("🌅 Suasana Senja Keemasan Diaktifkan");
+        } else if (currentTheme === "twilight") {
+            currentTheme = "day";
+            icon.className = "fa-solid fa-cloud-sun text-sky-400";
+            text.textContent = "Siang";
+            showToast("☀️ Suasana Siang Studio Diaktifkan");
+        } else {
+            currentTheme = "night";
+            icon.className = "fa-solid fa-moon text-indigo-400";
+            text.textContent = "Malam";
+            showToast("🌙 Suasana Malam Cyberpunk Diaktifkan");
+        }
+        playSfx("click");
+    }
+    document.getElementById("btn-theme").addEventListener("click", cycleTheme);
+
+    // Architecture Whiteboard Modal Controls
+    document.getElementById("btn-close-whiteboard").addEventListener("click", () => {
+        document.getElementById("whiteboard-modal").classList.add("hidden");
+        playSfx("click");
+    });
+    document.getElementById("btn-done-whiteboard").addEventListener("click", () => {
+        document.getElementById("whiteboard-modal").classList.add("hidden");
+        playSfx("click");
+    });
+
+    /* =========================================================================
+       OFFICE PET: MOCHI THE CALICO CAT
+       ========================================================================= */
+    const pet = {
+        x: 740,
+        y: 510,
+        targetX: 740,
+        targetY: 510,
+        state: "sleep", // "sleep", "walk", "sit"
+        facing: "right",
+        heartTimer: 0,
+        actionTimer: 180
+    };
+
+    function updatePet() {
+        pet.actionTimer--;
+        if (pet.heartTimer > 0) pet.heartTimer--;
+
+        if (pet.actionTimer <= 0) {
+            pet.actionTimer = 220 + Math.floor(Math.random() * 260);
+            const r = Math.random();
+            if (r < 0.40) {
+                pet.state = "sleep";
+                pet.targetX = 730 + Math.random() * 50;
+                pet.targetY = 505 + Math.random() * 25;
+            } else if (r < 0.75) {
+                pet.state = "walk";
+                if (Math.random() > 0.5) {
+                    pet.targetX = 640 + Math.random() * 260;
+                    pet.targetY = 430 + Math.random() * 110;
+                } else {
+                    pet.targetX = 170 + Math.random() * 110;
+                    pet.targetY = 460 + Math.random() * 60;
+                }
+            } else {
+                pet.state = "sit";
+            }
+        }
+
+        const dx = pet.targetX - pet.x;
+        const dy = pet.targetY - pet.y;
+        const dist = Math.hypot(dx, dy);
+        if (dist > 1.2) {
+            pet.x += (dx / dist) * 0.75;
+            pet.y += (dy / dist) * 0.75;
+            pet.facing = dx > 0 ? "right" : "left";
+        }
+    }
+
+    function drawPet() {
+        const px = Math.round(pet.x);
+        const py = Math.round(pet.y);
+
+        if (pet.state === "sleep") {
+            // Curled sleeping calico cat
+            pxRect(px + 1, py + 3, 11, 7, "#e67e22");
+            pxRect(px + 3, py + 2, 7, 2, "#d35400"); // stripe
+            pxRect(px + 8, py + 4, 5, 5, "#f39c12"); // head
+            pxRect(px + 10, py + 2, 2, 2, "#d35400"); // ear
+            // Floating 'z' sleeping particles
+            const zPhase = (frame % 60);
+            if (zPhase < 32) {
+                pxRect(px + 15, py - 4 - zPhase * 0.2, 3, 3, "rgba(223, 230, 233, 0.7)");
+            }
+        } else {
+            const walkBob = (pet.state === "walk" && (Math.floor(frame / 6) % 2)) ? 1 : 0;
+            pxRect(px + 2, py + 2 + walkBob, 11, 6, "#e67e22");
+            pxRect(px + 4, py + 1 + walkBob, 2, 2, "#d35400");
+            pxRect(px + 7, py + 1 + walkBob, 2, 2, "#d35400");
+            // Head
+            const hx = pet.facing === "right" ? px + 10 : px - 2;
+            pxRect(hx, py + walkBob, 5, 5, "#f39c12");
+            pxRect(hx + 1, py - 2 + walkBob, 2, 2, "#d35400");
+            pxRect(hx + 3, py - 2 + walkBob, 2, 2, "#d35400");
+            // Green Eyes
+            pxRect(hx + (pet.facing === "right" ? 3 : 1), py + 2 + walkBob, 1, 1, "#2ecc71");
+            // Legs
+            pxRect(px + 3, py + 8, 2, 3, "#d35400");
+            pxRect(px + 9, py + 8, 2, 3, "#d35400");
+            // Tail
+            const tx = pet.facing === "right" ? px : px + 12;
+            const tailWag = Math.sin(frame * 0.15) * 2;
+            pxRect(tx, py + 1 + tailWag, 2, 4, "#e67e22");
+        }
+
+        // Floating Heart Bubble if Petted
+        if (pet.heartTimer > 0) {
+            const hy = py - 14 - (60 - pet.heartTimer) * 0.25;
+            pxRect(px + 2, hy, 10, 8, "#ffffff");
+            pxRect(px + 4, hy + 2, 6, 4, "#e74c3c");
+        }
+    }
+
+    /* =========================================================================
+       WORLD / SCREEN COORD CONVERSION & INTERACTIVE CLICK DETECTION
        ========================================================================= */
     function toWorld(screenX, screenY) {
         return {
@@ -788,12 +988,77 @@
         };
     }
 
+    // Dynamic Cursor Hover
+    cv.addEventListener("mousemove", (e) => {
+        if (isDragging) return;
+        const wp = toWorld(e.clientX, e.clientY);
+        let isHovering = false;
+
+        // Check Mochi the cat
+        if (wp.x >= pet.x - 6 && wp.x <= pet.x + 20 && wp.y >= pet.y - 6 && wp.y <= pet.y + 18) isHovering = true;
+        // Check Espresso
+        else if (wp.x >= 75 && wp.x <= 118 && wp.y >= 410 && wp.y <= 445) isHovering = true;
+        // Check Arcade
+        else if (wp.x >= 150 && wp.x <= 190 && wp.y >= 390 && wp.y <= 448) isHovering = true;
+        // Check Whiteboard
+        else if (wp.x >= 505 && wp.x <= 645 && wp.y >= 24 && wp.y <= 60) isHovering = true;
+        // Check Server Vault
+        else if (wp.x >= 735 && wp.x <= 950 && wp.y >= 44 && wp.y <= 188) isHovering = true;
+        // Check Agents
+        else {
+            for (const [id, vis] of agentVisuals.entries()) {
+                if (wp.x >= vis.x - 8 && wp.x <= vis.x + 24 && wp.y >= vis.y - 12 && wp.y <= vis.y + 32) {
+                    isHovering = true;
+                    break;
+                }
+            }
+        }
+        cv.style.cursor = isHovering ? "pointer" : "grab";
+    });
+
     function handleCanvasClick(screenX, screenY) {
         const wp = toWorld(screenX, screenY);
-        // Find if clicked on any agent
+
+        // 1. Check Pet (Mochi the Cat)
+        if (wp.x >= pet.x - 6 && wp.x <= pet.x + 20 &&
+            wp.y >= pet.y - 6 && wp.y <= pet.y + 18) {
+            pet.heartTimer = 60;
+            playSfx("cat");
+            showToast("🐱 Mochi senang dielus! (+15 Team Morale)");
+            return;
+        }
+
+        // 2. Check Espresso Machine
+        if (wp.x >= 75 && wp.x <= 118 && wp.y >= 410 && wp.y <= 445) {
+            playSfx("coffee");
+            showToast("☕ Seduhan Espresso Panas Siap! Harum semerbak di coffee lounge.");
+            return;
+        }
+
+        // 3. Check Arcade Machine "HERMES-88"
+        if (wp.x >= 150 && wp.x <= 190 && wp.y >= 390 && wp.y <= 448) {
+            playSfx("arcade");
+            showToast("🕹️ HERMES-88: 1-UP! High score 99,420 PTS tercatat!");
+            return;
+        }
+
+        // 4. Check Whiteboard (Open Architecture Modal)
+        if (wp.x >= 505 && wp.x <= 645 && wp.y >= 24 && wp.y <= 60) {
+            playSfx("blip");
+            document.getElementById("whiteboard-modal").classList.remove("hidden");
+            return;
+        }
+
+        // 5. Check Server Vault Racks
+        if (wp.x >= 735 && wp.x <= 950 && wp.y >= 44 && wp.y <= 188) {
+            playSfx("blip");
+            showToast("🗄️ SERVER VAULT: Status Prima | IPv6/IPv4 Dual-Stack | Latensi 1ms");
+            return;
+        }
+
+        // 6. Check Agents
         let clicked = null;
         for (const [id, vis] of agentVisuals.entries()) {
-            // Hitbox around agent: ~24x30 pixels
             if (wp.x >= vis.x - 8 && wp.x <= vis.x + 24 &&
                 wp.y >= vis.y - 12 && wp.y <= vis.y + 32) {
                 clicked = agents.find(a => a.id === id);
@@ -1347,7 +1612,11 @@
         // 2. Draw Floating Sakura Petals
         drawSakuraPetals();
 
-        // 3. Update & Draw Animated Agents
+        // 3. Update & Draw Mochi the Office Cat
+        updatePet();
+        drawPet();
+
+        // 4. Update & Draw Animated Agents
         updateAgentPositions();
 
         // Sort agents by Y coordinate for correct depth layering
@@ -1363,6 +1632,15 @@
                 drawPixelAgent(vis, agent, vis.isSeated);
             }
         });
+
+        // 5. Atmospheric Ambient Lighting
+        if (currentTheme === "twilight") {
+            ctx.fillStyle = "rgba(230, 126, 34, 0.09)";
+            ctx.fillRect(0, 0, WORLD_W, WORLD_H);
+        } else if (currentTheme === "day") {
+            ctx.fillStyle = "rgba(255, 255, 255, 0.07)";
+            ctx.fillRect(0, 0, WORLD_W, WORLD_H);
+        }
 
         ctx.restore();
 

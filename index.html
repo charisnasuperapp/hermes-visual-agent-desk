@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Star Office World × Hermes Cockpit</title>
+    <title>Hermes Desktop • Star Office World Cockpit</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Fonts: ArkPixel / Press Start 2P & JetBrains Mono -->
+    <!-- Fonts: ArkPixel / Press Start 2P & JetBrains Mono / Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=JetBrains+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -15,18 +15,18 @@
 
     <style>
         :root {
-            --star-bg: #0f111a;
-            --star-sidebar: #0b0d14;
-            --star-panel: #141722;
-            --star-panel-border: #232738;
+            --hermes-bg: #0b0d14;
+            --hermes-sidebar: #090b10;
+            --hermes-card: #12151f;
+            --hermes-border: #1a1e2d;
+            --hermes-blue: #3b82f6;
+            --hermes-blue-glow: rgba(59, 130, 246, 0.25);
             --star-gold: #f3c44c;
             --star-amber: #e58e26;
             --star-green: #2ecc71;
-            --star-blue: #38bdf8;
-            --star-purple: #9b59b6;
             --star-rose: #f43f5e;
-            --star-text: #f1f5f9;
-            --star-text-dim: #94a3b8;
+            --hermes-text: #f1f5f9;
+            --hermes-text-dim: #94a3b8;
         }
 
         * {
@@ -41,13 +41,16 @@
             width: 100%;
             height: 100%;
             overflow: hidden;
-            background-color: var(--star-bg);
-            color: var(--star-text);
-            font-family: 'JetBrains Mono', monospace;
+            background-color: var(--hermes-bg);
+            color: var(--hermes-text);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
         }
 
         .font-pixel {
             font-family: 'Press Start 2P', monospace;
+        }
+        .font-mono-code {
+            font-family: 'JetBrains Mono', monospace;
         }
 
         /* Star Office Canvas */
@@ -63,272 +66,357 @@
             cursor: grabbing;
         }
 
-        /* Star Office World Retro Beveled Box */
-        .star-box {
-            background: #141722;
-            border: 2px solid #282d40;
-            box-shadow: inset -2px -2px 0px rgba(0,0,0,0.5), inset 2px 2px 0px rgba(255,255,255,0.08), 0 6px 20px rgba(0,0,0,0.7);
-        }
-
-        .star-btn {
-            background: #1e2233;
-            border: 2px solid #353b54;
-            color: #dcd6f7;
-            box-shadow: inset -2px -2px 0px rgba(0,0,0,0.5), inset 2px 2px 0px rgba(255,255,255,0.12);
-            transition: all 0.12s ease;
-            cursor: pointer;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 11px;
-            font-weight: 600;
-        }
-        .star-btn:hover {
-            background: #2a3047;
-            border-color: var(--star-gold);
-            color: #fff;
-            transform: translateY(-1px);
-        }
-        .star-btn:active {
-            transform: translateY(1px);
-            box-shadow: inset 2px 2px 0px rgba(0,0,0,0.6);
-        }
-        .star-btn.active {
-            background: #394263;
-            border-color: var(--star-gold);
-            color: var(--star-gold);
-        }
-
-        /* Custom Scrollbar */
+        /* Custom Scrollbars matching Hermes Desktop */
         ::-webkit-scrollbar {
-            width: 5px;
-            height: 5px;
+            width: 6px;
+            height: 6px;
         }
         ::-webkit-scrollbar-track {
-            background: #0d0f17;
+            background: rgba(11, 13, 20, 0.6);
         }
         ::-webkit-scrollbar-thumb {
-            background: #2d3348;
+            background: #252b3d;
             border-radius: 3px;
         }
         ::-webkit-scrollbar-thumb:hover {
-            background: #475173;
+            background: #3b82f6;
         }
 
-        /* CRT Scanline */
-        .crt-scanlines {
-            position: absolute;
-            inset: 0;
-            pointer-events: none;
-            background: linear-gradient(rgba(18, 16, 26, 0) 50%, rgba(0, 0, 0, 0.22) 50%);
-            background-size: 100% 4px;
-            z-index: 15;
-            opacity: 0.25;
+        /* Buttons & interactive elements */
+        .hermes-btn {
+            background: #141724;
+            border: 1px solid var(--hermes-border);
+            color: #cbd5e1;
+            transition: all 0.15s ease;
+        }
+        .hermes-btn:hover {
+            background: #1c2133;
+            border-color: #3b82f6;
+            color: #ffffff;
+        }
+        .hermes-btn.active {
+            background: #1e263d;
+            border-color: #3b82f6;
+            color: #60a5fa;
+            box-shadow: 0 0 10px rgba(59, 130, 246, 0.2);
         }
 
-        @keyframes pixelBlink {
-            0%, 49% { opacity: 1; }
-            50%, 100% { opacity: 0; }
-        }
-        .pixel-blink {
-            animation: pixelBlink 1s infinite;
+        /* Tab active underline */
+        .tab-item.active {
+            border-bottom: 2px solid #3b82f6;
+            color: #ffffff;
+            font-weight: 600;
         }
 
-        /* Corner pet bobbing */
-        @keyframes petBob {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-3px); }
+        /* Gentle breathing animation for Boxcat */
+        @keyframes boxcat-breathe {
+            0%, 100% {
+                transform: translateY(0px) scale(1);
+            }
+            50% {
+                transform: translateY(-4px) scale(1.02);
+            }
         }
-        .pet-bob {
-            animation: petBob 1.6s ease-in-out infinite;
+        .animate-boxcat {
+            animation: boxcat-breathe 4s ease-in-out infinite;
+        }
+
+        /* Tool output pulse */
+        @keyframes tool-blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.4; }
+        }
+        .animate-blink {
+            animation: tool-blink 1.2s ease-in-out infinite;
         }
     </style>
 </head>
-<body class="w-screen h-screen flex flex-col relative select-none">
+<body class="flex flex-col h-screen w-screen overflow-hidden bg-[#0b0d14] text-slate-200">
 
-    <!-- CRT Scanline Overlay -->
-    <div class="crt-scanlines"></div>
-
-    <!-- TOP BAR (HERMES HEADER & LAYOUT TOGGLES) -->
-    <header class="h-10 px-3 bg-[#0d0f17] border-b border-[#232738] flex items-center justify-between z-30 shrink-0">
-        <!-- Left: Logo & Active Session Tabs -->
-        <div class="flex items-center space-x-3">
-            <button id="btn-toggle-sidebar" class="star-btn w-7 h-7 text-xs text-slate-300" title="Toggle Sidebar (Ctrl+B)">
-                <i class="fa-solid fa-bars"></i>
+    <!-- =========================================================================
+         TOP TITLEBAR & WINDOW CONTROLS (EXACT HERMES DESKTOP STYLE)
+         ========================================================================= -->
+    <header class="h-10 bg-[#090b10] border-b border-[#181c2b] flex items-center justify-between px-2 shrink-0 select-none z-30">
+        <!-- Left: Hide Sidebar Button & Active Session Tabs -->
+        <div class="flex items-center space-x-2 overflow-x-auto no-scrollbar">
+            <!-- Hide Sidebar Toggle with Ctrl+B badge (matching screenshot) -->
+            <button id="btn-toggle-sidebar" class="flex items-center space-x-1.5 px-2 py-1 rounded bg-[#131622] hover:bg-[#1c2133] border border-[#22273a] text-xs text-slate-300 transition" title="Toggle Sidebar (Ctrl+B)">
+                <i class="fa-solid fa-bars text-[11px] text-slate-400"></i>
+                <span class="text-[11px] font-medium hidden sm:inline" id="sidebar-toggle-text">Hide sidebar</span>
+                <span class="px-1 py-0.2 rounded bg-[#1a1e2d] text-[9px] text-slate-400 font-mono hidden md:inline">Ctrl+B</span>
             </button>
-            <div class="flex items-center space-x-1.5">
-                <span class="text-amber-400 text-sm font-bold">☤</span>
-                <span class="font-pixel text-[10px] text-amber-300 tracking-wider hidden sm:inline">STAR OFFICE</span>
-            </div>
 
-            <!-- Tab Pills (Matching Hermes Desktop App) -->
-            <div class="flex items-center space-x-1 overflow-x-auto max-w-lg" id="session-tabs">
-                <div class="star-btn active px-3 py-1 text-[11px] flex items-center space-x-1.5 border-b-2 border-amber-400">
-                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 pixel-blink"></span>
-                    <span id="header-active-session" class="truncate max-w-[170px]">Buat ONAL Universal Memory</span>
+            <!-- Divider -->
+            <div class="h-4 w-px bg-[#1f2438]"></div>
+
+            <!-- Tabs -->
+            <div class="flex items-center space-x-1" id="top-tabs-container">
+                <!-- Active Tab (e.g. Buat ONAL Universal Memory Bridge) -->
+                <div id="tab-active-session" class="tab-item active flex items-center space-x-2 px-3 py-1.5 text-xs cursor-pointer bg-[#0f121c] rounded-t transition">
+                    <span class="w-2 h-2 rounded-full bg-blue-500 shadow-[0_0_8px_#3b82f6]"></span>
+                    <span id="header-active-session" class="uppercase font-semibold tracking-wide text-slate-100 max-w-[280px] truncate">BUAT ONAL UNIVERSAL MEMORY BRIDGE</span>
+                    <button class="hover:text-rose-400 text-slate-500 ml-1 text-[10px]" title="Close Tab"><i class="fa-solid fa-xmark"></i></button>
+                </div>
+
+                <!-- Untitled New Session Tab -->
+                <div id="tab-new-session" class="flex items-center space-x-1 px-3 py-1.5 text-xs text-slate-400 hover:text-slate-200 hover:bg-[#131622] rounded-t cursor-pointer transition">
+                    <span>UNTITLED SESSION</span>
+                    <span class="text-slate-500 font-bold ml-1">+</span>
                 </div>
             </div>
         </div>
 
-        <!-- Right: Layout Switcher & Toggles -->
-        <div class="flex items-center space-x-2">
-            <!-- Layout Switcher (Split / Office / Hermes) -->
-            <div class="flex items-center bg-[#151926] p-0.5 rounded border border-[#2b3147]">
-                <button id="layout-split" class="star-btn active px-2.5 py-1 text-[10px]" title="Split Screen: Star Office + Hermes Console">
-                    <i class="fa-solid fa-table-columns mr-1 text-amber-400"></i> Split
+        <!-- Right: Layout Switchers & Native Window Controls -->
+        <div class="flex items-center space-x-2 shrink-0">
+            <!-- Mode Switcher Pills -->
+            <div class="flex items-center p-0.5 rounded-lg bg-[#111420] border border-[#1f2436] space-x-0.5">
+                <button id="layout-split" class="hermes-btn active px-2 py-0.5 rounded text-[11px] font-medium" title="Split: Star Office di atas + Hermes Console di bawah">
+                    <i class="fa-solid fa-table-columns mr-1 text-blue-400"></i> Split
                 </button>
-                <button id="layout-office" class="star-btn px-2.5 py-1 text-[10px]" title="Full Screen Star Office World">
-                    <i class="fa-solid fa-gamepad mr-1 text-purple-400"></i> Kantor
-                </button>
-                <button id="layout-hermes" class="star-btn px-2.5 py-1 text-[10px]" title="Full Screen Hermes Workspace Console">
+                <button id="layout-hermes" class="hermes-btn px-2 py-0.5 rounded text-[11px] font-medium" title="Full Screen Hermes Desktop Console">
                     <i class="fa-solid fa-terminal mr-1 text-emerald-400"></i> Hermes
+                </button>
+                <button id="layout-office" class="hermes-btn px-2 py-0.5 rounded text-[11px] font-medium" title="Full Screen Star Office World">
+                    <i class="fa-solid fa-gamepad mr-1 text-amber-400"></i> Kantor
                 </button>
             </div>
 
-            <!-- Atmosphere Lighting Toggle -->
-            <button id="btn-theme" class="star-btn px-2.5 py-1 text-[10px] text-amber-300" title="Ganti Suasana (Malam / Senja / Siang)">
-                <i class="fa-solid fa-moon text-indigo-400" id="theme-icon"></i> <span id="theme-text" class="hidden md:inline ml-1 text-[9px]">Malam</span>
+            <!-- Atmosphere lighting -->
+            <button id="btn-theme" class="w-7 h-7 rounded hover:bg-[#191d2c] text-slate-400 hover:text-amber-300 flex items-center justify-center text-xs transition" title="Ganti Suasana (Malam / Sore / Siang)">
+                <i class="fa-solid fa-moon text-blue-400" id="theme-icon"></i>
             </button>
 
             <!-- 8-Bit Audio -->
-            <button id="btn-sound" class="star-btn w-7 h-7 text-xs" title="Toggle 8-bit Audio">
-                <i class="fa-solid fa-volume-high text-amber-400" id="sound-icon"></i>
+            <button id="btn-sound" class="w-7 h-7 rounded hover:bg-[#191d2c] text-slate-400 hover:text-amber-400 flex items-center justify-center text-xs transition" title="Toggle 8-bit Web Audio SFX">
+                <i class="fa-solid fa-volume-high text-slate-400" id="sound-icon"></i>
             </button>
+
+            <!-- Native window controls icons (matching screenshot) -->
+            <div class="flex items-center space-x-1 pl-1 text-slate-400">
+                <button class="w-7 h-7 rounded hover:bg-[#191d2c] hover:text-slate-200 flex items-center justify-center text-xs" title="Settings"><i class="fa-solid fa-gear"></i></button>
+                <button class="w-7 h-7 rounded hover:bg-[#191d2c] hover:text-slate-200 flex items-center justify-center text-xs" title="Split Panel"><i class="fa-solid fa-border-all"></i></button>
+                <button class="w-7 h-7 rounded hover:bg-[#191d2c] hover:text-slate-200 flex items-center justify-center text-xs" title="Theme"><i class="fa-solid fa-circle-half-stroke"></i></button>
+                <div class="h-3 w-px bg-[#1f2438] mx-1"></div>
+                <button class="w-7 h-7 rounded hover:bg-[#191d2c] hover:text-slate-200 flex items-center justify-center text-xs" title="Minimize"><i class="fa-solid fa-minus"></i></button>
+                <button class="w-7 h-7 rounded hover:bg-[#191d2c] hover:text-slate-200 flex items-center justify-center text-xs" title="Maximize"><i class="fa-regular fa-square"></i></button>
+                <button class="w-7 h-7 rounded hover:bg-rose-900/40 hover:text-rose-400 flex items-center justify-center text-xs" title="Close"><i class="fa-solid fa-xmark"></i></button>
+            </div>
         </div>
     </header>
 
-    <!-- MAIN BODY CONTAINER (SIDEBAR + CONTENT WORKSPACE) -->
+    <!-- =========================================================================
+         MAIN APPLICATION BODY (SIDEBAR + WORKSPACE AREA)
+         ========================================================================= -->
     <div class="flex-1 flex overflow-hidden relative">
 
-        <!-- 1. LEFT HERMES SIDEBAR (Matching User's Desktop App) -->
-        <aside id="hermes-sidebar" class="w-64 bg-[#0b0d14] border-r border-[#1f2435] flex flex-col shrink-0 z-20 transition-all duration-200">
-            <!-- Sidebar Top Actions -->
-            <div class="p-3 border-b border-[#1c202f] space-y-2">
-                <button id="btn-new-session" class="w-full star-btn py-1.5 px-3 text-xs justify-between bg-[#191d2c] text-white hover:bg-[#252b40]">
-                    <span><i class="fa-solid fa-plus text-amber-400 mr-2"></i>New session</span>
-                    <span class="text-[9px] text-slate-400 font-mono">Ctrl N</span>
+        <!-- 1. AUTHENTIC HERMES SIDEBAR (MATCHING USER SCREENSHOT 1:1) -->
+        <aside id="hermes-sidebar" class="w-64 bg-[#090b10] border-r border-[#181c2b] flex flex-col shrink-0 z-20 transition-all duration-300">
+            <!-- Sidebar Top: + New Session Button (Ctrl N) -->
+            <div class="p-3 border-b border-[#181c2b] space-y-2.5">
+                <button id="btn-new-session" class="w-full flex items-center justify-between px-3 py-2 rounded-lg bg-[#141724] hover:bg-[#1c2133] border border-[#23273a] text-slate-200 transition group">
+                    <span class="flex items-center text-xs font-medium">
+                        <i class="fa-solid fa-plus text-blue-400 mr-2 group-hover:scale-110 transition"></i>New session
+                    </span>
+                    <span class="px-1.5 py-0.5 rounded bg-[#1c2030] text-[10px] text-slate-400 font-mono">Ctrl N</span>
                 </button>
 
-                <!-- Hermes Main Nav Items -->
-                <div class="space-y-0.5 text-xs text-slate-300">
-                    <div class="p-1.5 rounded hover:bg-[#151926] cursor-pointer flex items-center space-x-2 text-slate-300">
-                        <i class="fa-solid fa-bolt text-amber-400 w-4"></i>
-                        <span>Capabilities</span>
+                <!-- Navigation List matching screenshot -->
+                <nav class="space-y-0.5 text-xs text-slate-300">
+                    <div class="flex items-center space-x-2.5 px-2.5 py-1.5 rounded-md hover:bg-[#141724] text-slate-300 cursor-pointer transition">
+                        <i class="fa-solid fa-wand-magic-sparkles text-amber-400 w-4 text-center"></i>
+                        <span class="font-medium">Capabilities</span>
                     </div>
-                    <div class="p-1.5 rounded hover:bg-[#151926] cursor-pointer flex items-center space-x-2 text-slate-300">
-                        <i class="fa-solid fa-comments text-sky-400 w-4"></i>
-                        <span>Messaging</span>
+                    <div class="flex items-center space-x-2.5 px-2.5 py-1.5 rounded-md hover:bg-[#141724] text-slate-300 cursor-pointer transition">
+                        <i class="fa-solid fa-comment-dots text-sky-400 w-4 text-center"></i>
+                        <span class="font-medium">Messaging</span>
                     </div>
-                    <div class="p-1.5 rounded hover:bg-[#151926] cursor-pointer flex items-center space-x-2 text-slate-300">
-                        <i class="fa-solid fa-box-archive text-purple-400 w-4"></i>
-                        <span>Artifacts</span>
+                    <div class="flex items-center space-x-2.5 px-2.5 py-1.5 rounded-md hover:bg-[#141724] text-slate-300 cursor-pointer transition">
+                        <i class="fa-solid fa-folder-closed text-purple-400 w-4 text-center"></i>
+                        <span class="font-medium">Artifacts</span>
                     </div>
-                    <div class="p-1.5 rounded hover:bg-[#151926] cursor-pointer flex items-center space-x-2 text-slate-300">
-                        <i class="fa-solid fa-clock text-emerald-400 w-4"></i>
-                        <span>Scheduled jobs</span>
+                    <div class="flex items-center space-x-2.5 px-2.5 py-1.5 rounded-md hover:bg-[#141724] text-slate-300 cursor-pointer transition">
+                        <i class="fa-solid fa-clock-rotate-left text-emerald-400 w-4 text-center"></i>
+                        <span class="font-medium">Scheduled jobs</span>
                     </div>
-                </div>
+                </nav>
 
-                <!-- Session Search -->
-                <div class="relative mt-2">
-                    <i class="fa-solid fa-magnifying-glass absolute left-2.5 top-2.5 text-[10px] text-slate-500"></i>
-                    <input type="text" id="session-search" placeholder="Search sessions..." class="w-full bg-[#131722] border border-[#232838] rounded px-2 pl-7 py-1 text-xs text-slate-200 placeholder-slate-500 focus:outline-none focus:border-amber-400 font-mono">
+                <!-- Search sessions... input -->
+                <div class="relative pt-1">
+                    <i class="fa-solid fa-magnifying-glass absolute left-3 top-3.5 text-[11px] text-slate-500"></i>
+                    <input type="text" id="session-search" placeholder="Search sessions..." class="w-full bg-[#111420] border border-[#202538] rounded-md pl-8 pr-2.5 py-1.5 text-xs text-slate-200 placeholder-slate-500 focus:outline-none focus:border-blue-500 font-sans transition">
                 </div>
             </div>
 
-            <!-- Sessions List (PINNED & RECENT from state.db) -->
+            <!-- Sessions List (PINNED, SESSIONS, LAST WEEK) -->
             <div class="flex-1 overflow-y-auto p-2 space-y-3 text-xs" id="sidebar-sessions-list">
-                <!-- PINNED -->
+                <!-- PINNED SECTION -->
                 <div>
-                    <div class="text-[10px] font-bold text-slate-500 px-2 uppercase tracking-wider mb-1">
-                        <i class="fa-solid fa-thumbtack text-amber-400 mr-1 text-[9px]"></i> PINNED
+                    <div class="flex items-center space-x-1.5 px-2 text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1">
+                        <i class="fa-solid fa-thumbtack text-blue-400 text-[9px]"></i>
+                        <span>PINNED</span>
                     </div>
                     <div id="pinned-sessions" class="space-y-0.5">
-                        <div class="p-2 rounded bg-[#161a29] border border-amber-500/30 text-amber-200 cursor-pointer flex items-center justify-between">
-                            <span class="truncate">Buat ONAL Universal Mem...</span>
-                            <span class="text-[9px] text-slate-500">19h</span>
+                        <!-- Example: Buat ONAL Universal Memory Bridge 15h -->
+                        <div class="flex items-center justify-between px-2.5 py-2 rounded-md bg-[#161c30] border border-blue-500/30 text-white cursor-pointer transition">
+                            <div class="flex items-center space-x-2 truncate">
+                                <span class="w-1.5 h-1.5 rounded-full bg-blue-400 shrink-0"></span>
+                                <span class="truncate">Buat ONAL Universal Mem...</span>
+                            </div>
+                            <span class="text-[10px] text-slate-400 font-mono shrink-0 ml-1">15h</span>
                         </div>
                     </div>
                 </div>
 
-                <!-- RECENT SESSIONS -->
+                <!-- SESSIONS SECTION -->
                 <div>
-                    <div class="text-[10px] font-bold text-slate-500 px-2 uppercase tracking-wider mb-1">
-                        <i class="fa-solid fa-clock-rotate-left mr-1 text-[9px]"></i> SESSIONS
+                    <div class="flex items-center space-x-1.5 px-2 text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1">
+                        <i class="fa-solid fa-bars-staggered text-slate-500 text-[9px]"></i>
+                        <span>SESSIONS</span>
                     </div>
                     <div id="recent-sessions" class="space-y-0.5">
-                        <!-- Populated dynamically from /api/hermes/sessions -->
-                        <div class="p-2 rounded hover:bg-[#131722] text-slate-300 cursor-pointer flex items-center justify-between">
-                            <span class="truncate">CHARISNA SuperApp</span>
-                            <span class="text-[9px] text-slate-500">1d</span>
+                        <!-- Populated from state.db -->
+                        <div class="flex items-center justify-between px-2.5 py-2 rounded-md hover:bg-[#131622] text-slate-300 cursor-pointer transition">
+                            <div class="flex items-center space-x-2 truncate">
+                                <span class="w-1.5 h-1.5 rounded-full bg-slate-500 shrink-0"></span>
+                                <span class="truncate">CHARISNA SuperApp</span>
+                            </div>
+                            <span class="text-[10px] text-slate-500 font-mono shrink-0 ml-1">1d</span>
                         </div>
                     </div>
                 </div>
+
+                <!-- LAST WEEK SECTION -->
+                <div>
+                    <div class="flex items-center space-x-1.5 px-2 text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1">
+                        <i class="fa-solid fa-calendar-days text-slate-500 text-[9px]"></i>
+                        <span>LAST WEEK</span>
+                    </div>
+                    <div id="older-sessions" class="space-y-0.5">
+                        <div class="flex items-center justify-between px-2.5 py-2 rounded-md hover:bg-[#131622] text-slate-400 cursor-pointer transition">
+                            <div class="flex items-center space-x-2 truncate">
+                                <span class="w-1.5 h-1.5 rounded-full bg-slate-600 shrink-0"></span>
+                                <span class="truncate">zennAI</span>
+                            </div>
+                            <span class="text-[10px] text-slate-500 font-mono shrink-0 ml-1">2d</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sidebar Bottom Profile / Backend status -->
+            <div class="p-2.5 border-t border-[#181c2b] bg-[#090b10] flex items-center justify-between text-[11px] text-slate-400">
+                <div class="flex items-center space-x-2 truncate">
+                    <span class="w-2 h-2 rounded-full bg-emerald-400 shadow-[0_0_6px_#10b981]"></span>
+                    <span class="font-medium text-slate-300">ZENNITH</span>
+                </div>
+                <span class="text-[10px] text-slate-500 font-mono">Hermes Host</span>
             </div>
         </aside>
 
-        <!-- 2. MAIN WORKSPACE AREA (STAR OFFICE WORLD + HERMES CONSOLE) -->
-        <main class="flex-1 flex flex-col overflow-hidden relative" id="workspace-main">
+        <!-- 2. CENTRAL WORKSPACE: STAR OFFICE WORLD + HERMES CONVERSATION CONSOLE -->
+        <main class="flex-1 flex flex-col overflow-hidden relative bg-[#0b0d14]" id="workspace-main">
 
-            <!-- UPPER SECTION: STAR OFFICE WORLD PIXEL STAGE -->
-            <div id="star-office-stage" class="relative w-full h-[54%] border-b border-[#232738] bg-[#090b12] overflow-hidden shrink-0">
-                <!-- Canvas -->
+            <!-- UPPER SECTION: STAR OFFICE WORLD 2D CANVAS STAGE -->
+            <div id="star-office-stage" class="relative w-full h-[50%] border-b border-[#181c2b] bg-[#080910] overflow-hidden shrink-0 transition-all duration-300">
+                <!-- 2D Canvas -->
                 <canvas id="office-canvas" class="w-full h-full absolute inset-0 z-0"></canvas>
 
                 <!-- Floating Canvas Controls (Bottom-Left) -->
-                <div class="absolute bottom-2 left-2 z-20 flex items-center space-x-1 star-box p-1 rounded bg-[#111420f0]">
-                    <button id="btn-zoom-in" class="star-btn w-6 h-6 text-[10px]" title="Zoom In (+)"><i class="fa-solid fa-plus"></i></button>
-                    <button id="btn-zoom-out" class="star-btn w-6 h-6 text-[10px]" title="Zoom Out (-)"><i class="fa-solid fa-minus"></i></button>
-                    <button id="btn-zoom-reset" class="star-btn px-2 h-6 text-[9px]"><span id="zoom-text">200%</span></button>
-                    <button id="btn-focus-office" class="star-btn px-2 h-6 text-[9px] text-amber-300"><i class="fa-solid fa-crosshairs mr-1"></i> Kantor</button>
+                <div class="absolute bottom-2.5 left-2.5 z-20 flex items-center space-x-1.5 p-1 rounded-lg bg-[#0e111ce6] border border-[#1f2438] backdrop-blur-sm shadow-lg">
+                    <button id="btn-zoom-in" class="hermes-btn w-6 h-6 rounded flex items-center justify-center text-[10px]" title="Zoom In (+)"><i class="fa-solid fa-plus"></i></button>
+                    <button id="btn-zoom-out" class="hermes-btn w-6 h-6 rounded flex items-center justify-center text-[10px]" title="Zoom Out (-)"><i class="fa-solid fa-minus"></i></button>
+                    <button id="btn-zoom-reset" class="hermes-btn px-2 h-6 rounded text-[10px] font-mono"><span id="zoom-text">200%</span></button>
+                    <button id="btn-focus-office" class="hermes-btn px-2 h-6 rounded text-[10px] text-amber-300 font-medium"><i class="fa-solid fa-crosshairs mr-1"></i> Kantor</button>
                 </div>
 
-                <!-- Live Office Ticker (Top-Right of Stage) -->
-                <div class="absolute top-2 right-2 z-20 flex items-center space-x-2 star-box px-2.5 py-1 rounded bg-[#111420f0] text-[10px] text-slate-300 font-mono">
-                    <span class="w-2 h-2 rounded-full bg-emerald-400 pixel-blink"></span>
+                <!-- Live Office Ticker (Top-Right) -->
+                <div class="absolute top-2.5 right-2.5 z-20 flex items-center space-x-2 px-3 py-1 rounded-lg bg-[#0e111ce6] border border-[#1f2438] backdrop-blur-sm text-[11px] text-slate-200 font-mono shadow-lg">
+                    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
                     <span id="stage-ticker">Hermes Prime coding write_file in orchestrator.py (+35 XP)</span>
+                </div>
+
+                <!-- Office Minimap / Legend Badge (Top-Left) -->
+                <div class="absolute top-2.5 left-2.5 z-20 flex items-center space-x-2 px-2.5 py-1 rounded-lg bg-[#0e111ce6] border border-[#1f2438] text-[10px] text-slate-300 font-pixel">
+                    <span class="text-amber-400">STAR OFFICE WORLD</span>
+                    <span class="text-slate-500">•</span>
+                    <span class="text-emerald-400 font-mono" id="canvas-squad-count">5 AGEN ONLINE</span>
                 </div>
             </div>
 
-            <!-- LOWER SECTION: STAR OFFICE BOTTOM PANELS & HERMES WORKSPACE -->
-            <div id="lower-panels-container" class="flex-1 flex overflow-hidden bg-[#0d0f17]">
+            <!-- LOWER SECTION: HERMES LIVE CONVERSATION & EVENT STREAM -->
+            <div id="hermes-chat-stage" class="flex-1 flex flex-col overflow-hidden bg-[#0b0d14] relative">
 
-                <!-- PANEL 1 (LEFT): HERMES CONVERSATION HISTORY & EXECUTION STREAM -->
-                <div class="flex-1 flex flex-col border-r border-[#1f2435] overflow-hidden" id="hermes-chat-pane">
-                    <!-- Session Subtitle Bar -->
-                    <div class="h-8 px-3 bg-[#111420] border-b border-[#1f2435] flex items-center justify-between text-xs text-slate-400 shrink-0">
-                        <div class="flex items-center space-x-2">
-                            <span class="text-amber-400 font-bold"><i class="fa-solid fa-terminal mr-1"></i></span>
-                            <span id="active-session-title" class="text-white font-medium truncate">Buat ONAL Universal Memory Bridge</span>
-                        </div>
-                        <span class="text-[10px] text-slate-500 font-mono" id="session-msg-count">27 Peristiwa Tercatat</span>
+                <!-- Chat Header Bar -->
+                <div class="h-9 px-4 border-b border-[#181c2b] bg-[#0c0e17] flex items-center justify-between text-xs shrink-0 select-none">
+                    <div class="flex items-center space-x-2 truncate">
+                        <i class="fa-solid fa-comments text-blue-400"></i>
+                        <span id="active-session-title" class="font-medium text-slate-200 truncate">Buat ONAL Universal Memory Bridge</span>
+                        <span class="px-1.5 py-0.2 rounded bg-blue-950/60 text-blue-400 border border-blue-800/40 text-[10px] font-mono">Hermes-3-70B</span>
                     </div>
 
-                    <!-- Chat & Event History Stream ("baca hal-hal yang sudah terjadi") -->
-                    <div class="flex-1 overflow-y-auto p-3 space-y-3 font-mono text-xs" id="chat-messages-stream">
-                        <!-- Populated dynamically from /api/hermes/messages -->
-                        <div class="flex items-start space-x-2.5">
-                            <div class="w-6 h-6 rounded bg-amber-500/20 border border-amber-500/40 text-amber-400 flex items-center justify-center font-pixel text-[8px] shrink-0">H</div>
-                            <div class="flex-1 space-y-1">
-                                <div class="text-[10px] text-slate-400 flex items-center space-x-2">
-                                    <span class="text-amber-300 font-bold">Hermes Prime</span>
-                                    <span>•</span>
-                                    <span>19:05:12</span>
-                                </div>
-                                <div class="p-2.5 rounded bg-[#141824] border border-[#262c3f] text-slate-200 leading-relaxed whitespace-pre-wrap">Halo! Seluruh arsitektur CHARISNA SuperApp & Star Office World telah tersambung secara dual-stack.</div>
+                    <div class="flex items-center space-x-3 text-[11px] text-slate-400 font-mono">
+                        <span class="flex items-center space-x-1.5">
+                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 shadow-[0_0_6px_#10b981]"></span>
+                            <span class="text-slate-300">Live Sync (11188)</span>
+                        </span>
+                        <span class="text-slate-500">|</span>
+                        <span id="session-msg-count" class="text-slate-400">60 Peristiwa</span>
+                    </div>
+                </div>
+
+                <!-- Chat & Event History Stream ("baca hal-hal yang sudah terjadi") -->
+                <div class="flex-1 overflow-y-auto p-4 space-y-3.5 font-sans text-sm" id="chat-messages-stream">
+                    <!-- Dynamic turns loaded from SQLite state.db -->
+                    <div class="flex items-start space-x-3">
+                        <div class="w-7 h-7 rounded-lg bg-blue-500/20 border border-blue-500/40 text-blue-400 flex items-center justify-center font-bold text-xs shrink-0">H</div>
+                        <div class="flex-1 space-y-1.5">
+                            <div class="text-xs text-slate-400 flex items-center space-x-2">
+                                <span class="text-blue-400 font-semibold">Hermes Agent</span>
+                                <span class="text-slate-600">•</span>
+                                <span class="text-slate-500 text-[11px] font-mono">Memuat peristiwa...</span>
+                            </div>
+                            <div class="p-3 rounded-lg bg-[#12151f] border border-[#1d2233] text-slate-200 leading-relaxed">
+                                Membaca riwayat percakapan dan audit trail dari database Hermes lokal...
                             </div>
                         </div>
                     </div>
+                </div>
 
-                    <!-- WHAT'S NEXT? INPUT CONSOLE (MATCHING USER SCREENSHOT) -->
-                    <div class="p-2.5 bg-[#0f111a] border-t border-[#1f2435] shrink-0">
-                        <div class="relative flex items-center bg-[#151926] border border-[#2b3147] rounded-xl p-1.5 focus-within:border-amber-400">
-                            <input type="text" id="whats-next-input" placeholder="What's next?" class="flex-1 bg-transparent px-3 py-1.5 text-xs text-white placeholder-slate-500 focus:outline-none font-mono">
+                <!-- =========================================================================
+                     WHAT'S NEXT? INPUT CONSOLE (MATCHING USER SCREENSHOT 1:1)
+                     ========================================================================= -->
+                <div class="p-3 bg-[#090b10] border-t border-[#181c2b] shrink-0 z-10 relative">
+                    <div class="flex items-center space-x-2 max-w-5xl mx-auto">
+                        <!-- Left Tools: Home & Add / Security -->
+                        <div class="flex items-center space-x-1 text-slate-400 shrink-0">
+                            <button class="w-8 h-8 rounded-lg hover:bg-[#151926] text-slate-400 hover:text-slate-200 flex items-center justify-center text-sm transition" title="Home">
+                                <i class="fa-solid fa-house"></i>
+                            </button>
+                            <button class="w-8 h-8 rounded-lg hover:bg-[#151926] text-slate-400 hover:text-slate-200 flex items-center justify-center text-sm transition" title="Add File / Skill">
+                                <i class="fa-solid fa-plus"></i>
+                            </button>
+                            <div class="flex items-center space-x-1 px-1.5 py-1 rounded bg-[#131724] border border-[#1f2538] text-[11px] text-slate-400" title="Security Sandbox Active">
+                                <i class="fa-solid fa-shield-halved text-emerald-400 text-xs"></i>
+                                <span class="font-mono text-[10px]">0</span>
+                            </div>
+                        </div>
+
+                        <!-- What's next? Input Bar -->
+                        <div class="flex-1 relative flex items-center bg-[#121520] border border-[#212638] rounded-xl px-3 py-1.5 focus-within:border-blue-500 focus-within:ring-1 focus-within:ring-blue-500/50 transition">
+                            <input type="text" id="whats-next-input" placeholder="What's next?" class="flex-1 bg-transparent py-1 text-sm text-slate-100 placeholder-slate-500 focus:outline-none font-sans">
                             
-                            <div class="flex items-center space-x-2 pr-1">
-                                <span class="px-2 py-0.5 rounded bg-[#1e2335] text-[9px] text-slate-400 font-mono hidden sm:inline">TUI 128K</span>
-                                <span class="px-2 py-0.5 rounded bg-[#1e2335] text-[9px] text-amber-400 font-mono hidden sm:inline">High</span>
-                                <button id="btn-send-whats-next" class="w-7 h-7 rounded-lg bg-amber-500 hover:bg-amber-400 text-black flex items-center justify-center text-xs font-bold transition">
+                            <!-- Badges on right inside input -->
+                            <div class="flex items-center space-x-2 pl-2 shrink-0">
+                                <span class="px-2 py-0.5 rounded bg-[#1b2030] text-[10px] text-slate-400 font-mono hidden sm:inline">TUI, 128K</span>
+                                <span class="px-2 py-0.5 rounded bg-[#1b2030] text-[10px] text-blue-400 font-mono hidden sm:inline">High</span>
+                                
+                                <!-- Audio / Waveform icon -->
+                                <button class="w-7 h-7 rounded hover:bg-[#1d2235] text-slate-400 hover:text-slate-200 flex items-center justify-center text-xs transition" title="Voice Input">
+                                    <i class="fa-solid fa-waveform"></i>
+                                </button>
+
+                                <!-- Circular Send Button -->
+                                <button id="btn-send-whats-next" class="w-7 h-7 rounded-full bg-blue-600 hover:bg-blue-500 active:scale-95 text-white flex items-center justify-center text-xs font-bold shadow-md shadow-blue-500/30 transition">
                                     <i class="fa-solid fa-arrow-up"></i>
                                 </button>
                             </div>
@@ -336,45 +424,18 @@
                     </div>
                 </div>
 
-                <!-- PANEL 2 (MIDDLE): STAR OFFICE STATE CONTROLS (#control-bar) -->
-                <div class="w-48 bg-[#111420] border-r border-[#1f2435] flex flex-col p-2.5 shrink-0 hidden lg:flex">
-                    <div class="text-[10px] font-pixel text-amber-400 text-center tracking-wider mb-2">STATUS AKSI</div>
-                    <div class="flex-1 flex flex-col justify-between space-y-1.5">
-                        <button id="btn-state-idle" class="star-btn w-full py-2 px-2 text-[10px] text-emerald-300 justify-start" title="Agen Rehat di Sofa / Bangku Taman">
-                            <i class="fa-solid fa-couch mr-2 text-emerald-400"></i> 1. REHAT (IDLE)
-                        </button>
-                        <button id="btn-state-writing" class="star-btn active w-full py-2 px-2 text-[10px] text-amber-200 justify-start" title="Agen Bekerja di Workstation">
-                            <i class="fa-solid fa-laptop-code mr-2 text-amber-400"></i> 2. KERJA (CODE)
-                        </button>
-                        <button id="btn-state-syncing" class="star-btn w-full py-2 px-2 text-[10px] text-sky-300 justify-start" title="Sinkronisasi Memori FTS5">
-                            <i class="fa-solid fa-rotate mr-2 text-sky-400"></i> 3. SYNC MEMORI
-                        </button>
-                        <button id="btn-state-meeting" class="star-btn w-full py-2 px-2 text-[10px] text-purple-300 justify-start" title="Panggil Rapat All-Hands">
-                            <i class="fa-solid fa-users mr-2 text-purple-400"></i> 4. RAPAT ALL
-                        </button>
-                        <button id="btn-state-sprint" class="star-btn w-full py-2 px-2 text-[10px] text-rose-300 justify-start" title="Turbo Sprint Coding">
-                            <i class="fa-solid fa-bolt mr-2 text-rose-400"></i> 5. TURBO SPRINT
-                        </button>
+                <!-- =========================================================================
+                     CORNER PIXEL ART PET: BOXCAT (MATCHING USER SCREENSHOT 1:1)
+                     ========================================================================= -->
+                <div id="corner-boxcat-container" class="absolute bottom-14 right-6 z-30 pointer-events-auto cursor-pointer group flex flex-col items-center select-none" title="Boxcat • Maskot Hermes">
+                    <!-- Pop-up Love / Meow Bubble -->
+                    <div id="boxcat-heart" class="opacity-0 transition-all duration-300 -translate-y-2 mb-1 px-2.5 py-0.5 rounded-full bg-rose-500 text-white text-[10px] font-bold shadow-lg flex items-center space-x-1">
+                        <span>❤️</span> <span>Purr~</span>
                     </div>
 
-                    <!-- Mochi Pet Quick Interaction -->
-                    <div class="mt-2 p-2 rounded bg-[#161a29] border border-amber-500/20 text-center">
-                        <div class="text-[9px] text-slate-400 mb-1">Maskot Kantor</div>
-                        <button id="btn-pet-mochi" class="star-btn w-full py-1 text-[10px] text-amber-200">
-                            🐱 Elus Mochi (+Morale)
-                        </button>
-                    </div>
-                </div>
-
-                <!-- PANEL 3 (RIGHT): SQUAD & AGENT ROSTER (#guest-agent-panel) -->
-                <div class="w-72 bg-[#0e101a] flex flex-col p-2.5 shrink-0 hidden md:flex">
-                    <div class="flex items-center justify-between text-[10px] font-pixel text-slate-400 tracking-wider mb-2">
-                        <span>TIM AGEN</span>
-                        <span class="text-emerald-400 font-mono" id="active-squad-count">5 ONLINE</span>
-                    </div>
-
-                    <div class="flex-1 overflow-y-auto space-y-1.5" id="squad-list">
-                        <!-- Populated dynamically -->
+                    <!-- Authentic Boxcat Sprite from AppData/Local/hermes/pets/.thumbs/boxcat.png -->
+                    <div class="relative animate-boxcat">
+                        <img src="/assets/boxcat.png" id="boxcat-img" alt="Boxcat" class="w-24 h-24 object-contain filter drop-shadow-[0_8px_16px_rgba(0,0,0,0.8)] transition-transform duration-200 hover:scale-105 active:scale-95" style="image-rendering: pixelated;" onerror="this.onerror=null; this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'96\' height=\'96\' viewBox=\'0 0 96 96\'><rect x=\'16\' y=\'44\' width=\'64\' height=\'40\' fill=\'%238a582e\'/><rect x=\'20\' y=\'48\' width=\'56\' height=\'32\' fill=\'%23a87140\'/><rect x=\'28\' y=\'20\' width=\'40\' height=\'30\' fill=\'%23f39c12\'/><polygon points=\'24,20 36,8 36,20\' fill=\'%23e67e22\'/><polygon points=\'72,20 60,8 60,20\' fill=\'%23e67e22\'/><circle cx=\'40\' cy=\'32\' r=\'4\' fill=\'%232c3e50\'/><circle cx=\'56\' cy=\'32\' r=\'4\' fill=\'%232c3e50\'/><ellipse cx=\'48\' cy=\'40\' rx=\'8\' ry=\'4\' fill=\'%23ffffff\'/><polygon points=\'48,38 46,36 50,36\' fill=\'%23e74c3c\'/></svg>'">
                     </div>
                 </div>
 
@@ -383,516 +444,369 @@
         </main>
     </div>
 
-    <!-- BOTTOM STATUS BAR (MATCHING USER'S HERMES DESKTOP APP) -->
-    <footer class="h-6 px-3 bg-[#0a0c13] border-t border-[#1c202f] flex items-center justify-between text-[10px] font-mono text-slate-400 z-30 shrink-0">
-        <!-- Left: Status Indicators -->
+    <!-- =========================================================================
+         FOOTER STATUS BAR (EXACT HERMES DESKTOP STATUS BAR)
+         ========================================================================= -->
+    <footer class="h-6 bg-[#08090e] border-t border-[#141724] px-3 flex items-center justify-between text-[11px] text-slate-400 shrink-0 font-mono z-30 select-none">
+        <!-- Left status -->
         <div class="flex items-center space-x-3">
-            <span class="flex items-center space-x-1 text-emerald-400">
-                <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
-                <span>Backend ready</span>
+            <span class="flex items-center space-x-1.5 text-slate-300">
+                <i class="fa-solid fa-xmark text-emerald-400 text-xs"></i>
+                <span class="font-sans font-medium text-slate-200">Backend ready</span>
             </span>
-            <span>•</span>
-            <span class="text-slate-300">ZENNITH</span>
-            <span>•</span>
-            <span class="text-amber-400">Smart Agent</span>
+            <span class="text-slate-600">|</span>
+            <span class="text-slate-400 flex items-center space-x-1">
+                <i class="fa-solid fa-user-circle text-slate-500"></i>
+                <span class="font-sans">ZENNITH</span>
+            </span>
         </div>
 
-        <!-- Center: Quick Tip -->
-        <div class="hidden lg:block text-slate-500 text-[9px]">
-            Star Office World Engine • Ketik di "What's next?" untuk beri perintah langsung
-        </div>
-
-        <!-- Right: Version & Animated Corner Pet (from Hermes Screenshot) -->
-        <div class="flex items-center space-x-3 relative">
-            <span class="text-slate-400">v0.23.0</span>
-            <span id="footer-clock" class="text-slate-300">02:15</span>
-
-            <!-- Corner Pixel Pet (Corgi in box from screenshot) -->
-            <div id="corner-pet" class="relative cursor-pointer pet-bob" title="Pixel Pet: Mochi / Corgi">
-                <canvas id="corner-pet-canvas" width="28" height="24" class="image-rendering-pixelated"></canvas>
-            </div>
+        <!-- Right status: Smart, Version, Clock -->
+        <div class="flex items-center space-x-3">
+            <span class="flex items-center space-x-1 text-slate-300">
+                <span class="text-blue-400">✦</span>
+                <span class="font-sans">Smart</span>
+            </span>
+            <span class="text-slate-600">|</span>
+            <span class="text-slate-400 font-mono"># v0.23.0</span>
+            <span class="text-slate-600">|</span>
+            <span id="footer-live-clock" class="text-slate-300 font-mono">02:07 09/11/2026</span>
         </div>
     </footer>
 
-    <!-- AGENT DOSSIER / INSPECTOR MODAL -->
-    <div id="agent-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm hidden">
-        <div class="star-box w-full max-w-md p-5 rounded-xl bg-[#141724] border-2 border-[#3b4363] relative text-white shadow-2xl">
-            <button id="btn-close-modal" class="absolute top-3 right-3 star-btn w-7 h-7 text-xs text-rose-400"><i class="fa-solid fa-xmark"></i></button>
-            <div class="flex items-start space-x-4">
-                <div class="w-20 h-24 bg-[#0a0c13] border border-[#2d344d] rounded p-1 flex items-center justify-center">
-                    <canvas id="avatar-portrait-canvas" width="64" height="80"></canvas>
-                </div>
-                <div class="flex-1">
-                    <h3 id="modal-agent-name" class="font-pixel text-xs text-amber-300">HERMES PRIME</h3>
-                    <p id="modal-agent-role" class="text-xs text-purple-300 mt-0.5">Lead Architect</p>
-                    <div class="mt-2.5">
-                        <div class="flex justify-between text-[9px] text-slate-400 mb-0.5">
-                            <span id="modal-level-text">Level 5</span>
-                            <span id="modal-xp-text">840 / 1000 XP</span>
-                        </div>
-                        <div class="w-full h-2 bg-[#090b12] rounded overflow-hidden p-0.5 border border-[#2d344d]">
-                            <div id="modal-xp-bar" class="h-full bg-gradient-to-r from-amber-500 to-emerald-400 rounded-sm" style="width: 84%;"></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="mt-4 p-2.5 rounded bg-[#0a0c13] border border-[#22283a] text-xs font-mono">
-                <div class="text-[10px] text-emerald-400 font-bold uppercase mb-1" id="modal-status-label">WORKING • WORKSTATION 01</div>
-                <p id="modal-detail-text" class="text-slate-300">Mengerjakan tugas orkestrasi sistem.</p>
-            </div>
-
-            <div class="mt-3 grid grid-cols-2 gap-1.5 text-xs">
-                <button id="cmd-work" class="star-btn py-1.5 text-[10px] text-amber-200 justify-start"><i class="fa-solid fa-laptop-code mr-1.5 text-amber-400"></i> Ke Meja Kerja</button>
-                <button id="cmd-bench" class="star-btn py-1.5 text-[10px] text-emerald-200 justify-start"><i class="fa-solid fa-tree mr-1.5 text-emerald-400"></i> Duduk di Taman</button>
-                <button id="cmd-coffee" class="star-btn py-1.5 text-[10px] text-rose-200 justify-start"><i class="fa-solid fa-mug-hot mr-1.5 text-rose-400"></i> Ambil Kopi</button>
-                <button id="cmd-meeting" class="star-btn py-1.5 text-[10px] text-sky-200 justify-start"><i class="fa-solid fa-comments mr-1.5 text-sky-400"></i> Ruang Rapat</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- MAIN ENGINE JAVASCRIPT -->
+    <!-- =========================================================================
+         JAVASCRIPT ENGINE: STAR OFFICE CANVAS + HERMES 11188 DUAL-WAY SYNC
+         ========================================================================= -->
     <script>
-    "use strict";
-
     /* =========================================================================
-       STAR OFFICE WORLD × HERMES ENGINE
+       AUDIO & RETRO WEB AUDIO API
        ========================================================================= */
-    const cv = document.getElementById("office-canvas");
-    const ctx = cv.getContext("2d");
+    let audioCtx = null;
+    let sfxEnabled = true;
 
-    const TILE = 16;
-    const COLS = 64;
-    const ROWS = 40;
-    const WORLD_W = COLS * TILE;
-    const WORLD_H = ROWS * TILE;
-
-    const camera = { x: 0, y: 0, zoom: 2.0, minZoom: 0.9, maxZoom: 4.5 };
-    let isDragging = false;
-    let dragStartX = 0, dragStartY = 0, dragMoved = 0;
-    let frame = 0;
-
-    // Server State
-    let agents = [];
-    let hermesSessions = [];
-    let currentSessionId = "local-d88d47d76f7775a808ef671244ea73631e9554801dd17fa85dd86c688d172234";
-    let selectedAgent = null;
-    let currentTheme = "night";
-
-    // Sakura Petals
-    const sakuraPetals = [];
-    for (let i = 0; i < 40; i++) {
-        sakuraPetals.push({
-            x: 650 + Math.random() * 260,
-            y: 350 + Math.random() * 200,
-            speedX: 0.3 + Math.random() * 0.7,
-            speedY: 0.4 + Math.random() * 0.8,
-            w: 2, h: 2,
-            color: Math.random() > 0.4 ? "#f8a5c2" : "#f78fb3",
-            sway: Math.random() * Math.PI * 2
-        });
+    function initAudio() {
+        if (!audioCtx) {
+            audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        }
     }
 
-    // Agent Visual Map
-    const agentVisuals = new Map();
-
-    const POI = {
-        desks: [
-            { x: 120, y: 130, label: "Meja 1" },
-            { x: 230, y: 130, label: "Meja 2" },
-            { x: 340, y: 130, label: "Meja 3" },
-            { x: 170, y: 240, label: "Meja 4" },
-            { x: 290, y: 240, label: "Meja 5" },
-        ],
-        benches: [
-            { x: 740, y: 490, label: "Bangku Sakura #1" },
-            { x: 880, y: 490, label: "Bangku Teras #2" },
-        ],
-        coffee: { x: 90, y: 450, label: "Mesin Espresso" },
-        meeting: [
-            { x: 500, y: 110 }, { x: 560, y: 110 }, { x: 620, y: 110 },
-            { x: 500, y: 175 }, { x: 560, y: 175 }, { x: 620, y: 175 }
-        ],
-        roam: [ { x: 720, y: 420 }, { x: 840, y: 400 }, { x: 440, y: 320 } ]
-    };
-
-    // Mochi Pet
-    const pet = {
-        x: 740, y: 510, targetX: 740, targetY: 510,
-        state: "sleep", facing: "right", heartTimer: 0, actionTimer: 180
-    };
-
-    /* =========================================================================
-       AUDIO SYNTHESIZER
-       ========================================================================= */
-    let audioCtx = null, soundEnabled = true;
     function playSfx(type) {
-        if (!soundEnabled) return;
+        if (!sfxEnabled) return;
         try {
-            audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
-            if (audioCtx.state === "suspended") audioCtx.resume();
+            initAudio();
+            if (audioCtx.state === 'suspended') audioCtx.resume();
             const now = audioCtx.currentTime;
-            if (type === "blip") {
-                const osc = audioCtx.createOscillator(), g = audioCtx.createGain();
-                osc.type = "square";
-                osc.frequency.setValueAtTime(580, now);
-                osc.frequency.exponentialRampToValueAtTime(880, now + 0.08);
-                g.gain.setValueAtTime(0.06, now);
-                g.gain.exponentialRampToValueAtTime(0.001, now + 0.08);
-                osc.connect(g); g.connect(audioCtx.destination);
-                osc.start(now); osc.stop(now + 0.09);
-            } else if (type === "cat") {
-                const osc = audioCtx.createOscillator(), g = audioCtx.createGain();
-                osc.type = "sine";
-                osc.frequency.setValueAtTime(620, now);
-                osc.frequency.linearRampToValueAtTime(920, now + 0.09);
-                osc.frequency.exponentialRampToValueAtTime(680, now + 0.22);
-                g.gain.setValueAtTime(0.08, now);
-                g.gain.exponentialRampToValueAtTime(0.001, now + 0.24);
-                osc.connect(g); g.connect(audioCtx.destination);
-                osc.start(now); osc.stop(now + 0.25);
-            } else if (type === "coffee") {
-                [520, 650, 780].forEach((freq, idx) => {
-                    const osc = audioCtx.createOscillator(), g = audioCtx.createGain();
-                    osc.type = "sine";
-                    osc.frequency.setValueAtTime(freq, now + idx * 0.06);
-                    g.gain.setValueAtTime(0.05, now + idx * 0.06);
-                    g.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.06 + 0.1);
-                    osc.connect(g); g.connect(audioCtx.destination);
-                    osc.start(now + idx * 0.06); osc.stop(now + idx * 0.06 + 0.11);
-                });
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+
+            if (type === 'jump') {
+                osc.type = 'square';
+                osc.frequency.setValueAtTime(150, now);
+                osc.frequency.exponentialRampToValueAtTime(600, now + 0.15);
+                gain.gain.setValueAtTime(0.08, now);
+                gain.gain.linearRampToValueAtTime(0.01, now + 0.15);
+                osc.start(now); osc.stop(now + 0.15);
+            } else if (type === 'meow') {
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(450, now);
+                osc.frequency.exponentialRampToValueAtTime(800, now + 0.12);
+                osc.frequency.exponentialRampToValueAtTime(350, now + 0.28);
+                gain.gain.setValueAtTime(0.12, now);
+                gain.gain.linearRampToValueAtTime(0.01, now + 0.3);
+                osc.start(now); osc.stop(now + 0.3);
+            } else if (type === 'blip') {
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(520, now);
+                osc.frequency.setValueAtTime(780, now + 0.05);
+                gain.gain.setValueAtTime(0.06, now);
+                gain.gain.linearRampToValueAtTime(0.01, now + 0.1);
+                osc.start(now); osc.stop(now + 0.1);
+            } else if (type === 'type') {
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(320 + Math.random() * 80, now);
+                gain.gain.setValueAtTime(0.03, now);
+                gain.gain.linearRampToValueAtTime(0.001, now + 0.04);
+                osc.start(now); osc.stop(now + 0.04);
             }
         } catch(e) {}
     }
 
-    document.getElementById("btn-sound").addEventListener("click", () => {
-        soundEnabled = !soundEnabled;
-        document.getElementById("sound-icon").className = soundEnabled ? "fa-solid fa-volume-high text-amber-400" : "fa-solid fa-volume-xmark text-slate-500";
-        if (soundEnabled) playSfx("blip");
-    });
-
     /* =========================================================================
-       CANVAS RESIZE & PROJECTION
+       STAR OFFICE WORLD 2D CANVAS ENGINE
        ========================================================================= */
+    const canvas = document.getElementById("office-canvas");
+    const ctx = canvas.getContext("2d");
+    const WORLD_W = 1200, WORLD_H = 750;
+
+    let camera = { x: WORLD_W / 2, y: WORLD_H / 2, zoom: 1.5 };
+    let isDragging = false;
+    let dragStart = { x: 0, y: 0 };
+    let frame = 0;
+    let atmosphere = 'night'; // night, sunset, day
+
     function resizeCanvas() {
         const stage = document.getElementById("star-office-stage");
-        const dpr = window.devicePixelRatio || 1;
-        cv.width = stage.clientWidth * dpr;
-        cv.height = stage.clientHeight * dpr;
-        cv.style.width = stage.clientWidth + "px";
-        cv.style.height = stage.clientHeight + "px";
-        ctx.scale(dpr, dpr);
+        if (!stage) return;
+        const rect = stage.getBoundingClientRect();
+        canvas.width = rect.width;
+        canvas.height = rect.height;
         ctx.imageSmoothingEnabled = false;
     }
-    window.addEventListener("resize", () => { resizeCanvas(); centerCamera(); });
-    setTimeout(resizeCanvas, 50);
+    window.addEventListener("resize", resizeCanvas);
 
-    function centerCamera() {
-        const stage = document.getElementById("star-office-stage");
-        camera.zoom = 2.0;
-        camera.x = Math.round((stage.clientWidth - WORLD_W * camera.zoom) / 2);
-        camera.y = Math.round((stage.clientHeight - WORLD_H * camera.zoom) / 2) + 15;
-        document.getElementById("zoom-text").textContent = Math.round(camera.zoom * 100) + "%";
+    // Zoom Controls
+    function setZoom(newZoom) {
+        camera.zoom = Math.max(0.75, Math.min(3.0, newZoom));
+        document.getElementById("zoom-text").textContent = `${Math.round(camera.zoom * 100)}%`;
+        playSfx("type");
     }
-    setTimeout(centerCamera, 100);
+    document.getElementById("btn-zoom-in").addEventListener("click", () => setZoom(camera.zoom + 0.25));
+    document.getElementById("btn-zoom-out").addEventListener("click", () => setZoom(camera.zoom - 0.25));
+    document.getElementById("btn-zoom-reset").addEventListener("click", () => setZoom(1.5));
+    document.getElementById("btn-focus-office").addEventListener("click", () => {
+        camera.x = 420; camera.y = 350; setZoom(1.6);
+    });
 
-    // Pan & Zoom
-    cv.addEventListener("wheel", (e) => {
+    canvas.addEventListener("wheel", (e) => {
         e.preventDefault();
-        const rect = cv.getBoundingClientRect();
-        const mx = e.clientX - rect.left, my = e.clientY - rect.top;
-        const oldZ = camera.zoom;
-        const delta = e.deltaY < 0 ? 1.15 : 0.87;
-        const newZ = Math.min(Math.max(camera.zoom * delta, camera.minZoom), camera.maxZoom);
-        camera.x = mx - (mx - camera.x) * (newZ / oldZ);
-        camera.y = my - (my - camera.y) * (newZ / oldZ);
-        camera.zoom = newZ;
-        document.getElementById("zoom-text").textContent = Math.round(camera.zoom * 100) + "%";
+        const delta = e.deltaY < 0 ? 0.15 : -0.15;
+        setZoom(camera.zoom + delta);
     }, { passive: false });
 
-    cv.addEventListener("mousedown", (e) => {
-        if (e.button === 0) {
-            isDragging = true;
-            dragStartX = e.clientX - camera.x;
-            dragStartY = e.clientY - camera.y;
-            dragMoved = 0;
-        }
+    canvas.addEventListener("mousedown", (e) => {
+        isDragging = true;
+        dragStart = { x: e.clientX, y: e.clientY };
     });
     window.addEventListener("mousemove", (e) => {
-        if (isDragging) {
-            dragMoved += Math.hypot(e.movementX, e.movementY);
-            camera.x = e.clientX - dragStartX;
-            camera.y = e.clientY - dragStartY;
-        }
+        if (!isDragging) return;
+        const dx = (e.clientX - dragStart.x) / camera.zoom;
+        const dy = (e.clientY - dragStart.y) / camera.zoom;
+        camera.x -= dx;
+        camera.y -= dy;
+        dragStart = { x: e.clientX, y: e.clientY };
     });
-    window.addEventListener("mouseup", (e) => {
-        if (isDragging) {
-            isDragging = false;
-            if (dragMoved < 6) {
-                const rect = cv.getBoundingClientRect();
-                handleStageClick(e.clientX - rect.left, e.clientY - rect.top);
-            }
-        }
-    });
-
-    document.getElementById("btn-zoom-in").addEventListener("click", () => { camera.zoom = Math.min(camera.zoom * 1.25, camera.maxZoom); centerCamera(); playSfx("blip"); });
-    document.getElementById("btn-zoom-out").addEventListener("click", () => { camera.zoom = Math.max(camera.zoom / 1.25, camera.minZoom); centerCamera(); playSfx("blip"); });
-    document.getElementById("btn-zoom-reset").addEventListener("click", () => { centerCamera(); playSfx("blip"); });
-    document.getElementById("btn-focus-office").addEventListener("click", () => { centerCamera(); playSfx("blip"); });
-
-    function toWorld(sx, sy) {
-        return { x: (sx - camera.x) / camera.zoom, y: (sy - camera.y) / camera.zoom };
-    }
-
-    function handleStageClick(sx, sy) {
-        const wp = toWorld(sx, sy);
-        // Check Mochi
-        if (wp.x >= pet.x - 6 && wp.x <= pet.x + 20 && wp.y >= pet.y - 6 && wp.y <= pet.y + 18) {
-            pet.heartTimer = 60;
-            playSfx("cat");
-            showToast("🐱 Mochi senang dielus! (+15 Team Morale)");
-            return;
-        }
-        // Check Espresso
-        if (wp.x >= 75 && wp.x <= 118 && wp.y >= 410 && wp.y <= 445) {
-            playSfx("coffee");
-            showToast("☕ Seduhan Espresso Panas Siap!");
-            return;
-        }
-        // Check Agents
-        for (const [id, vis] of agentVisuals.entries()) {
-            if (wp.x >= vis.x - 8 && wp.x <= vis.x + 24 && wp.y >= vis.y - 12 && wp.y <= vis.y + 32) {
-                const a = agents.find(ag => ag.id === id);
-                if (a) { openAgentModal(a); playSfx("blip"); return; }
-            }
-        }
-    }
+    window.addEventListener("mouseup", () => isDragging = false);
 
     /* =========================================================================
-       RENDER STAGE: TILEMAP & CHARACTERS
+       WORLD GEOMETRY & OBJECTS
        ========================================================================= */
+    const WORKSTATIONS = [
+        { id: "desk-0", x: 260, y: 220, label: "HERMES-01 (Lead)", sid: "sess-hermes-prime", owner: "Hermes Prime" },
+        { id: "desk-1", x: 420, y: 220, label: "ATHENA-02 (Knowledge)", sid: "sess-athena-core", owner: "Athena Owl" },
+        { id: "desk-2", x: 580, y: 220, label: "FORGE-03 (DevOps)", sid: "sess-hephaestus", owner: "Hephaestus" },
+        { id: "desk-3", x: 340, y: 360, label: "PRISM-04 (UI/UX)", sid: "sess-iris-ui", owner: "Iris Prism" },
+        { id: "desk-4", x: 500, y: 360, label: "ZEPHYR-05 (Telemetry)", sid: "sess-zephyr", owner: "Zephyr Runner" }
+    ];
+
+    const PARK_BENCHES = [
+        { x: 920, y: 190, label: "Bangku Sakura Barat", seatedAgent: null },
+        { x: 1060, y: 190, label: "Bangku Sakura Timur", seatedAgent: null },
+        { x: 990, y: 330, label: "Gazebo Air Mancur", seatedAgent: null }
+    ];
+
+    const COFFEE_LOUNGE = { x: 100, y: 220, w: 110, h: 180 };
+    const MEETING_ROOM = { x: 300, y: 520, w: 360, h: 160 };
+
+    /* =========================================================================
+       LIVE AGENT RUNTIME STATE
+       ========================================================================= */
+    const AGENTS = [
+        { id: "sess-hermes-prime", label: "Hermes Prime", color: "#f59e0b", x: 260, y: 220, tx: 260, ty: 220, speed: 2.2, behavior: "desk", activity: "typing", status: "working", role: "Lead Architect", tool: "write_file", bubble: "Coding bridge.py...", avatar_idx: 0 },
+        { id: "sess-athena-core", label: "Athena Owl", color: "#38bdf8", x: 420, y: 220, tx: 420, ty: 220, speed: 2.0, behavior: "desk", activity: "reading", status: "working", role: "Knowledge Lead", tool: "search_files", bubble: "Indeks semantik SQLite...", avatar_idx: 1 },
+        { id: "sess-hephaestus", label: "Hephaestus Forge", color: "#f43f5e", x: 920, y: 190, tx: 920, ty: 190, speed: 1.8, behavior: "bench", activity: "resting", status: "idle", role: "DevOps Engineer", tool: "", bubble: "Santai di taman 🌸", avatar_idx: 2 },
+        { id: "sess-iris-ui", label: "Iris Prism", color: "#ec4899", x: 340, y: 360, tx: 340, ty: 360, speed: 2.1, behavior: "desk", activity: "typing", status: "working", role: "UI/UX Designer", tool: "edit_file", bubble: "Star Office 2D layout...", avatar_idx: 3 },
+        { id: "sess-zephyr", label: "Zephyr Runner", color: "#10b981", x: 140, y: 270, tx: 140, ty: 270, speed: 2.5, behavior: "drinking", activity: "resting", status: "idle", role: "Telemetry Profiler", tool: "", bubble: "Menyeduh matcha 🍵", avatar_idx: 4 }
+    ];
+
     function pxRect(x, y, w, h, col) {
         ctx.fillStyle = col;
         ctx.fillRect(Math.floor(x), Math.floor(y), Math.floor(w), Math.floor(h));
     }
 
     function drawStage() {
-        pxRect(0, 0, WORLD_W, WORLD_H, "#090611");
+        // Ground tiles
+        pxRect(0, 0, WORLD_W, WORLD_H, "#080a10");
 
-        // Starfield
-        for (let i = 0; i < 40; i++) {
-            const sx = (i * 137) % WORLD_W, sy = (i * 97) % WORLD_H;
-            pxRect(sx, sy, 2, 2, (frame + i * 5) % 60 < 30 ? "#5a457a" : "#231638");
+        // Office Wooden Floor
+        pxRect(60, 100, 700, 580, "#121624");
+        // Tile Grid Lines
+        ctx.strokeStyle = "#171c2e";
+        ctx.lineWidth = 1;
+        for (let gx = 60; gx <= 760; gx += 40) {
+            ctx.beginPath(); ctx.moveTo(gx, 100); ctx.lineTo(gx, 680); ctx.stroke();
+        }
+        for (let gy = 100; gy <= 680; gy += 40) {
+            ctx.beginPath(); ctx.moveTo(60, gy); ctx.lineTo(760, gy); ctx.stroke();
         }
 
-        // Outer Floor
-        pxRect(20, 20, WORLD_W - 40, WORLD_H - 40, "#191124");
+        // Outdoor Sakura Garden Area
+        pxRect(800, 100, 360, 580, "#0b1512");
+        // Stone paving path in garden
+        pxRect(950, 100, 70, 580, "#192224");
 
-        // Dev Pods Parquet (Top-Left)
-        for (let y = 32; y < 320; y += 16) {
-            for (let x = 32; x < 440; x += 16) {
-                pxRect(x, y, 16, 16, ((x/16)+(y/16)) % 2 === 0 ? "#241834" : "#1f142d");
-                pxRect(x, y + 15, 16, 1, "#170e23");
-            }
-        }
-        pxRect(32, 24, 408, 8, "#3c2a55");
-
-        // Conference Room (Top-Middle)
-        pxRect(456, 32, 240, 220, "#192238");
-        pxRect(460, 36, 232, 2, "#91712a");
-        pxRect(460, 248, 232, 2, "#91712a");
-        // Boardroom Table
-        pxRect(490, 126, 170, 48, "#4b2a1a");
-        pxRect(492, 128, 166, 44, "#633822");
-
-        // Server Vault (Top-Right)
-        pxRect(712, 32, 280, 220, "#141a24");
-        [740, 795, 850, 905].forEach((rx, idx) => {
-            pxRect(rx, 46, 38, 140, "#0b0e14");
-            pxRect(rx + 2, 48, 34, 136, "#171c26");
-            for (let sy = 54; sy < 180; sy += 18) {
-                pxRect(rx + 4, sy, 30, 14, "#0d1017");
-                pxRect(rx + 6, sy + 4, 3, 3, (frame + idx * 7 + sy) % 30 < 15 ? "#2ecc71" : "#0d5c2a");
-                pxRect(rx + 12, sy + 4, 3, 3, (frame + idx * 11 + sy) % 40 < 20 ? "#3498db" : "#114773");
-            }
+        // Sakura Trees
+        const trees = [
+            { x: 860, y: 160 }, { x: 1100, y: 160 },
+            { x: 860, y: 460 }, { x: 1100, y: 460 }
+        ];
+        trees.forEach((t, i) => {
+            // Trunk
+            pxRect(t.x + 16, t.y + 36, 12, 28, "#5c3317");
+            // Foliage Pink Cloud
+            const sway = Math.sin((frame + i * 30) * 0.05) * 2;
+            pxRect(t.x - 4 + sway, t.y, 52, 40, "#f472b6");
+            pxRect(t.x + 4 + sway, t.y - 12, 36, 16, "#fbcfe8");
+            pxRect(t.x + 8 + sway, t.y + 8, 28, 24, "#fb7185");
         });
 
-        // Break Room (Bottom-Left)
-        for (let y = 336; y < 608; y += 16) {
-            for (let x = 32; x < 380; x += 16) {
-                pxRect(x, y, 16, 16, ((x/16)+(y/16)) % 2 === 0 ? "#2e213b" : "#251a31");
-            }
-        }
-        // Espresso counter & machine
-        pxRect(48, 436, 80, 24, "#4a3424");
-        pxRect(82, 414, 28, 22, "#7f8c8d");
-        const steam = (frame % 30);
-        pxRect(91, 410 - steam * 0.4, 2, 2, "rgba(236, 240, 241, 0.7)");
-        // Sofa
-        pxRect(200, 474, 90, 36, "#4a235a");
-        pxRect(204, 478, 82, 28, "#5b2c6f");
+        // Garden Fountain
+        const fx = 985, fy = 290;
+        pxRect(fx - 24, fy - 24, 48, 48, "#253342");
+        pxRect(fx - 18, fy - 18, 36, 36, "#0284c7");
+        // Animated Water Ripple
+        const rSize = 4 + (frame % 20);
+        ctx.strokeStyle = "#7dd3fc";
+        ctx.strokeRect(fx - rSize/2, fy - rSize/2, rSize, rSize);
 
-        // Outdoor Terrace & Sakura Garden (Bottom-Right)
-        pxRect(610, 336, 382, 272, "#132317");
-        // Sakura Tree
-        pxRect(760, 390, 24, 70, "#4a2b16");
-        pxRect(710, 340, 120, 60, "#f8a5c2");
-        pxRect(720, 326, 100, 74, "#f78fb3");
-        // Benches
-        pxRect(716, 480, 60, 16, "#5c381e");
-        pxRect(856, 480, 60, 16, "#5c381e");
+        // Park Benches
+        PARK_BENCHES.forEach((b) => {
+            pxRect(b.x - 22, b.y - 8, 44, 16, "#854d0e");
+            pxRect(b.x - 20, b.y - 12, 40, 4, "#a16207");
+            pxRect(b.x - 24, b.y - 6, 4, 14, "#44403c");
+            pxRect(b.x + 20, b.y - 6, 4, 14, "#44403c");
+        });
 
-        // Dev Desks
-        POI.desks.forEach((desk, idx) => {
-            pxRect(desk.x - 24, desk.y, 48, 22, "#503823");
-            pxRect(desk.x - 22, desk.y + 2, 44, 18, "#684a2f");
-            pxRect(desk.x - 18, desk.y - 12, 16, 12, "#1a1626");
-            pxRect(desk.x + 2, desk.y - 12, 16, 12, "#1a1626");
+        // Coffee Lounge (Break Room)
+        pxRect(80, 140, 120, 140, "#151b2c");
+        pxRect(90, 150, 40, 30, "#334155"); // Coffee machine
+        // Steam animation
+        const steam = (frame % 24);
+        pxRect(108, 142 - steam, 2, 4, "rgba(255,255,255,0.4)");
+        pxRect(150, 180, 40, 40, "#475569"); // Round table
+
+        // Meeting Room Table & Whiteboard
+        pxRect(340, 560, 280, 80, "#1e293b"); // Boardroom table
+        ctx.strokeStyle = "#38bdf8";
+        ctx.strokeRect(340, 560, 280, 80);
+        pxRect(440, 520, 80, 8, "#cbd5e1"); // Wall presentation display
+
+        // Engineering Workstations
+        WORKSTATIONS.forEach((ws) => {
+            // Desk
+            pxRect(ws.x - 30, ws.y - 18, 60, 36, "#1e2438");
+            pxRect(ws.x - 28, ws.y - 16, 56, 32, "#2b344e");
+            // Monitor with ambient glow
+            pxRect(ws.x - 14, ws.y - 12, 28, 14, "#0f172a");
             const isTyping = (frame % 16 < 8);
-            pxRect(desk.x - 16, desk.y - 10, 12, 8, isTyping ? "#2ecc71" : "#1b7943");
-            pxRect(desk.x + 4, desk.y - 10, 12, 8, "#3498db");
+            pxRect(ws.x - 12, ws.y - 10, 24, 10, isTyping ? "#38bdf8" : "#1e40af");
+            // Keyboard
+            pxRect(ws.x - 10, ws.y + 4, 20, 6, "#64748b");
+            // Office Chair
+            pxRect(ws.x - 10, ws.y + 14, 20, 14, "#334155");
         });
     }
 
-    function drawPet() {
-        const px = Math.round(pet.x), py = Math.round(pet.y);
-        if (pet.state === "sleep") {
-            pxRect(px + 1, py + 3, 11, 7, "#e67e22");
-            pxRect(px + 3, py + 2, 7, 2, "#d35400");
-            pxRect(px + 8, py + 4, 5, 5, "#f39c12");
-            if (frame % 60 < 30) pxRect(px + 15, py - 4, 3, 3, "rgba(223, 230, 233, 0.7)");
-        } else {
-            pxRect(px + 2, py + 2, 11, 6, "#e67e22");
-            pxRect(px + 10, py, 5, 5, "#f39c12");
-            pxRect(px + 3, py + 8, 2, 3, "#d35400");
-            pxRect(px + 9, py + 8, 2, 3, "#d35400");
-        }
-        if (pet.heartTimer > 0) {
-            pxRect(px + 2, py - 14, 10, 8, "#fff");
-            pxRect(px + 4, py - 12, 6, 4, "#e74c3c");
-        }
-    }
-
-    const SKINS = ["#f0c8a0", "#c68b59", "#ffdbac", "#f0c8a0", "#a1665e"];
-    const SHIRTS = ["#22325c", "#6c5ce7", "#d35400", "#00b894", "#0984e3"];
-    const HAIRS = ["#3e2723", "#dfe6e9", "#d35400", "#1dd1a1", "#2d3436"];
-
-    function drawAgent(vis, a, isSeated) {
-        const x = Math.round(vis.x), y = Math.round(vis.y);
-        const pIdx = (a.avatar_idx || 0) % 5;
-        const skin = SKINS[pIdx], shirt = SHIRTS[pIdx], hair = HAIRS[pIdx];
-        const isWalking = vis.isMoving;
-        const cy = y + ((isWalking && (Math.floor(frame / 6) % 2)) ? -1 : 0);
+    function drawAgent(a) {
+        const isSeated = (a.behavior === "desk" || a.behavior === "bench");
+        const bob = isSeated ? 0 : Math.sin((frame + a.avatar_idx * 15) * 0.25) * 2;
 
         // Shadow
-        ctx.fillStyle = "rgba(0,0,0,0.35)";
-        ctx.beginPath(); ctx.ellipse(x + 7, y + 21, 7, 3, 0, 0, Math.PI * 2); ctx.fill();
+        ctx.fillStyle = "rgba(0,0,0,0.4)";
+        ctx.beginPath();
+        ctx.ellipse(a.x, a.y + (isSeated ? 12 : 16), 10, 4, 0, 0, Math.PI * 2);
+        ctx.fill();
 
-        // Hair & Head
-        pxRect(x + 3, cy, 8, 4, hair);
-        pxRect(x + 4, cy + 3, 6, 5, skin);
-        pxRect(x + 5, cy + 5, 1, 2, "#2d3436"); pxRect(x + 8, cy + 5, 1, 2, "#2d3436");
+        // Body
+        pxRect(a.x - 8, a.y - 10 + bob, 16, 18, a.color);
 
-        // Body & Arms
-        pxRect(x + 3, cy + 8, 8, 7, shirt);
-        if (isSeated && a.activity === "typing") {
-            const j = (frame % 4 < 2) ? 1 : 0;
-            pxRect(x + 1, cy + 10 + j, 2, 4, skin); pxRect(x + 11, cy + 10 - j, 2, 4, skin);
-        } else {
-            pxRect(x + 1, cy + 9, 2, 6, shirt); pxRect(x + 11, cy + 9, 2, 6, shirt);
+        // Head
+        pxRect(a.x - 7, a.y - 24 + bob, 14, 14, "#fcd34d"); // Face
+        pxRect(a.x - 8, a.y - 26 + bob, 16, 6, "#1e293b"); // Hair
+
+        // Eyes
+        pxRect(a.x - 4, a.y - 18 + bob, 2, 3, "#0f172a");
+        pxRect(a.x + 2, a.y - 18 + bob, 2, 3, "#0f172a");
+
+        // Typing / Tool animation
+        if (a.activity === "typing") {
+            const tap = (frame % 10 < 5) ? -2 : 0;
+            pxRect(a.x - 10, a.y - 2 + tap, 4, 6, "#fcd34d");
+            pxRect(a.x + 6, a.y - 2 - tap, 4, 6, "#fcd34d");
         }
 
-        // Legs
-        pxRect(x + 4, cy + 15, 2, 5, "#2d3436"); pxRect(x + 8, cy + 15, 2, 5, "#2d3436");
-
-        // Bubble
-        if (a.status === "working") {
-            pxRect(x + 2, cy - 14, 10, 8, "#fff");
-            ctx.font = "8px sans-serif"; ctx.textAlign = "center";
-            ctx.fillText(a.activity === "typing" ? "💻" : "⚡", x + 7, cy - 8);
-        }
-
-        // Label
-        ctx.font = "9px 'JetBrains Mono', monospace"; ctx.textAlign = "center";
+        // Name tag overhead
+        ctx.font = "8px 'JetBrains Mono', monospace";
+        ctx.textAlign = "center";
         ctx.fillStyle = "rgba(11, 13, 20, 0.85)";
-        ctx.fillRect(x - 12, cy + 23, 38, 12);
-        ctx.fillStyle = (a.id === (selectedAgent ? selectedAgent.id : null)) ? "#f3c44c" : "#e2dcf2";
-        ctx.fillText((a.label || a.id).slice(0, 10), x + 7, cy + 32);
+        const txtWidth = ctx.measureText(a.label).width;
+        ctx.fillRect(a.x - txtWidth/2 - 4, a.y - 42 + bob, txtWidth + 8, 12);
+        ctx.fillStyle = a.color;
+        ctx.fillText(a.label, a.x, a.y - 33 + bob);
+
+        // Speech bubble overhead if active
+        if (a.bubble) {
+            ctx.font = "8px 'Inter', sans-serif";
+            const bWidth = ctx.measureText(a.bubble).width;
+            ctx.fillStyle = "rgba(18, 22, 34, 0.95)";
+            ctx.fillRect(a.x - bWidth/2 - 6, a.y - 60 + bob, bWidth + 12, 14);
+            ctx.strokeStyle = "#3b82f6";
+            ctx.strokeRect(a.x - bWidth/2 - 6, a.y - 60 + bob, bWidth + 12, 14);
+            ctx.fillStyle = "#ffffff";
+            ctx.fillText(a.bubble, a.x, a.y - 50 + bob);
+        }
     }
 
     function renderLoop() {
         frame++;
         ctx.save();
-        ctx.clearRect(0, 0, cv.width, cv.height);
-        ctx.translate(Math.round(camera.x), Math.round(camera.y));
-        ctx.scale(camera.zoom, camera.zoom);
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
 
+        // Apply camera zoom & pan
+        ctx.translate(canvas.width / 2, canvas.height / 2);
+        ctx.scale(camera.zoom, camera.zoom);
+        ctx.translate(-camera.x, -camera.y);
+
+        // Render stage tiles & furniture
         drawStage();
 
-        // Sakura Petals
-        sakuraPetals.forEach(p => {
-            p.x += p.speedX + Math.sin(p.sway + frame * 0.05) * 0.3; p.y += p.speedY;
-            if (p.y > 610) { p.x = 660 + Math.random() * 200; p.y = 330; }
-            pxRect(p.x, p.y, 2, 2, p.color);
-        });
-
-        // Pet
-        pet.actionTimer--;
-        if (pet.heartTimer > 0) pet.heartTimer--;
-        if (pet.actionTimer <= 0) {
-            pet.actionTimer = 200 + Math.random() * 200;
-            pet.state = Math.random() < 0.5 ? "sleep" : "walk";
-            pet.targetX = 660 + Math.random() * 220;
-            pet.targetY = 460 + Math.random() * 80;
-        }
-        const pdx = pet.targetX - pet.x, pdy = pet.targetY - pet.y, pdist = Math.hypot(pdx, pdy);
-        if (pdist > 1.5) { pet.x += (pdx/pdist)*0.7; pet.y += (pdy/pdist)*0.7; }
-        drawPet();
-
-        // Update & Draw Agents
-        agents.forEach((ag, idx) => {
-            let vis = agentVisuals.get(ag.id);
-            if (!vis) {
-                const d = POI.desks[idx % POI.desks.length];
-                vis = { x: d.x, y: d.y + 14, targetX: d.x, targetY: d.y + 14, isMoving: false, isSeated: true };
-                agentVisuals.set(ag.id, vis);
-            }
-
-            let dest = POI.desks[idx % POI.desks.length];
-            let shouldSeat = true;
-            if (ag.behavior === "bench") { dest = POI.benches[idx % POI.benches.length]; }
-            else if (ag.behavior === "drinking") { dest = POI.coffee; shouldSeat = false; }
-            else if (ag.behavior === "meeting") { dest = POI.meeting[idx % POI.meeting.length]; }
-            else if (ag.behavior === "walking") { dest = POI.roam[idx % POI.roam.length]; shouldSeat = false; }
-
-            vis.targetX = dest.x; vis.targetY = dest.y;
-            const dx = vis.targetX - vis.x, dy = vis.targetY - vis.y, dist = Math.hypot(dx, dy);
-            if (dist > 1.5) {
-                vis.isMoving = true; vis.isSeated = false;
-                vis.x += (dx/dist) * 1.1; vis.y += (dy/dist) * 1.1;
+        // Update agent walking physics
+        AGENTS.forEach(a => {
+            const dx = a.tx - a.x;
+            const dy = a.ty - a.y;
+            const dist = Math.hypot(dx, dy);
+            if (dist > 3) {
+                a.x += (dx / dist) * a.speed;
+                a.y += (dy / dist) * a.speed;
             } else {
-                vis.x = vis.targetX; vis.y = vis.targetY;
-                vis.isMoving = false; vis.isSeated = shouldSeat;
+                a.x = a.tx;
+                a.y = a.ty;
             }
-            drawAgent(vis, ag, vis.isSeated);
+            drawAgent(a);
         });
-
-        // Atmosphere Tint
-        if (currentTheme === "twilight") {
-            ctx.fillStyle = "rgba(230, 126, 34, 0.08)"; ctx.fillRect(0, 0, WORLD_W, WORLD_H);
-        } else if (currentTheme === "day") {
-            ctx.fillStyle = "rgba(255, 255, 255, 0.06)"; ctx.fillRect(0, 0, WORLD_W, WORLD_H);
-        }
 
         ctx.restore();
         requestAnimationFrame(renderLoop);
     }
+    resizeCanvas();
     requestAnimationFrame(renderLoop);
 
     /* =========================================================================
-       HERMES INTEGRATION: SESSIONS, MESSAGES & WHAT'S NEXT
+       HERMES INTEGRATION: SESSIONS, MESSAGES & WHAT'S NEXT DISPATCH
        ========================================================================= */
     const BRIDGE_HOST = window.location.origin;
+    let currentSessionId = "local-27e0a60c312fe97402f76d3316ad6ee047a451d83a24e4b02df4919458f611e8";
+    let hermesSessions = [];
+    let isUserScrolledUp = false;
+
+    // Detect user manual scrolling in chat to prevent jarring auto-scroll
+    const chatContainer = document.getElementById("chat-messages-stream");
+    chatContainer.addEventListener("scroll", () => {
+        const threshold = 60;
+        const atBottom = chatContainer.scrollHeight - chatContainer.scrollTop - chatContainer.clientHeight < threshold;
+        isUserScrolledUp = !atBottom;
+    });
 
     async function fetchSessions() {
         try {
@@ -907,27 +821,43 @@
     function renderSidebarSessions() {
         const pinnedContainer = document.getElementById("pinned-sessions");
         const recentContainer = document.getElementById("recent-sessions");
+        const olderContainer = document.getElementById("older-sessions");
         pinnedContainer.innerHTML = "";
         recentContainer.innerHTML = "";
+        olderContainer.innerHTML = "";
+
+        const query = document.getElementById("session-search").value.toLowerCase().trim();
 
         hermesSessions.forEach(s => {
-            const el = document.createElement("div");
+            if (query && !s.title.toLowerCase().includes(query)) return;
+
             const isCur = s.id === currentSessionId;
-            el.className = `p-2 rounded text-xs cursor-pointer flex items-center justify-between ${isCur ? 'bg-[#181d2e] border border-amber-500/40 text-amber-200' : 'hover:bg-[#131722] text-slate-300'}`;
+            const el = document.createElement("div");
+            el.className = `flex items-center justify-between px-2.5 py-2 rounded-md cursor-pointer transition ${isCur ? 'bg-[#161c30] border border-blue-500/40 text-white font-medium' : 'hover:bg-[#131622] text-slate-300'}`;
             el.innerHTML = `
-                <span class="truncate max-w-[170px]">${s.title}</span>
-                <span class="text-[9px] text-slate-500">${s.pinned ? '📌' : ''}</span>
+                <div class="flex items-center space-x-2 truncate">
+                    <span class="w-1.5 h-1.5 rounded-full ${isCur ? 'bg-blue-400' : 'bg-slate-500'} shrink-0"></span>
+                    <span class="truncate">${escapeHtml(s.title)}</span>
+                </div>
+                <span class="text-[10px] text-slate-500 font-mono shrink-0 ml-1">${s.rel_time || 'now'}</span>
             `;
             el.addEventListener("click", () => switchHermesSession(s.id, s.title));
 
-            if (s.pinned) pinnedContainer.appendChild(el);
-            else recentContainer.appendChild(el);
+            if (s.pinned) {
+                pinnedContainer.appendChild(el);
+            } else if (s.rel_time && s.rel_time.includes("d") && parseInt(s.rel_time) >= 2) {
+                olderContainer.appendChild(el);
+            } else {
+                recentContainer.appendChild(el);
+            }
         });
     }
 
+    document.getElementById("session-search").addEventListener("input", renderSidebarSessions);
+
     async function switchHermesSession(sid, title) {
         currentSessionId = sid;
-        document.getElementById("header-active-session").textContent = title;
+        document.getElementById("header-active-session").textContent = title.toUpperCase();
         document.getElementById("active-session-title").textContent = title;
         renderSidebarSessions();
         playSfx("blip");
@@ -944,303 +874,268 @@
     }
 
     function renderChatMessages(msgs) {
-        const container = document.getElementById("chat-messages-stream");
-        container.innerHTML = "";
-        document.getElementById("session-msg-count").textContent = `${msgs.length} Peristiwa Tercatat`;
+        chatContainer.innerHTML = "";
+        document.getElementById("session-msg-count").textContent = `${msgs.length} Peristiwa`;
 
         msgs.forEach(m => {
             const isUser = m.role === "user";
             const row = document.createElement("div");
-            row.className = "flex items-start space-x-2.5";
-            const timeStr = m.timestamp ? new Date(m.timestamp * 1000).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit', second:'2-digit'}) : "";
+            row.className = "flex items-start space-x-3";
+            const timeStr = m.time_str || (m.timestamp ? new Date(m.timestamp * 1000).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit', second:'2-digit'}) : "");
 
             if (isUser) {
                 row.innerHTML = `
-                    <div class="w-6 h-6 rounded bg-sky-500/20 border border-sky-500/40 text-sky-400 flex items-center justify-center font-bold text-[9px] shrink-0">U</div>
-                    <div class="flex-1 space-y-1">
-                        <div class="text-[10px] text-slate-400 flex items-center space-x-2">
-                            <span class="text-sky-300 font-bold">User (ZENNITH)</span>
-                            <span>•</span>
-                            <span class="text-slate-500 text-[9px]">${timeStr}</span>
+                    <div class="w-7 h-7 rounded-lg bg-sky-500/20 border border-sky-500/40 text-sky-400 flex items-center justify-center font-bold text-xs shrink-0">U</div>
+                    <div class="flex-1 space-y-1.5">
+                        <div class="text-xs text-slate-400 flex items-center space-x-2">
+                            <span class="text-sky-300 font-semibold">User (ZENNITH)</span>
+                            <span class="text-slate-600">•</span>
+                            <span class="text-slate-500 text-[11px] font-mono">${timeStr}</span>
                         </div>
-                        <div class="p-2.5 rounded bg-[#131929] border border-[#232d47] text-slate-100 leading-relaxed">${escapeHtml(m.content)}</div>
+                        <div class="p-3 rounded-lg bg-[#141824] border border-[#232b40] text-slate-100 leading-relaxed font-sans text-sm">${escapeHtml(m.content)}</div>
+                    </div>
+                `;
+            } else if (m.role === "tool") {
+                row.innerHTML = `
+                    <div class="w-7 h-7 rounded-lg bg-emerald-500/20 border border-emerald-500/40 text-emerald-400 flex items-center justify-center font-mono text-xs shrink-0"><i class="fa-solid fa-terminal text-[11px]"></i></div>
+                    <div class="flex-1 space-y-1">
+                        <div class="text-xs text-slate-400 flex items-center space-x-2">
+                            <span class="text-emerald-400 font-semibold font-mono">Tool Output: ${escapeHtml(m.tool_name || 'command')}</span>
+                            <span class="text-slate-600">•</span>
+                            <span class="text-slate-500 text-[11px] font-mono">${timeStr}</span>
+                        </div>
+                        <div class="p-3 rounded-lg bg-[#0d1017] border border-[#1b2234] text-emerald-300/90 font-mono text-xs overflow-x-auto whitespace-pre-wrap leading-normal">${escapeHtml(m.content)}</div>
                     </div>
                 `;
             } else {
+                // Assistant Turn
+                let toolBadges = "";
+                if (m.tool_name) {
+                    toolBadges += `<span class="px-2 py-0.5 rounded bg-emerald-950 text-emerald-400 border border-emerald-700/50 text-[10px] font-mono"><i class="fa-solid fa-gear mr-1"></i>${escapeHtml(m.tool_name)}</span>`;
+                }
+
                 row.innerHTML = `
-                    <div class="w-6 h-6 rounded bg-amber-500/20 border border-amber-500/40 text-amber-400 flex items-center justify-center font-pixel text-[8px] shrink-0">H</div>
-                    <div class="flex-1 space-y-1">
-                        <div class="text-[10px] text-slate-400 flex items-center space-x-2">
-                            <span class="text-amber-300 font-bold">Hermes Agent</span>
-                            ${m.tool_name ? `<span class="px-1.5 py-0.2 rounded bg-emerald-950 text-emerald-400 border border-emerald-700/50 text-[9px]">tool: ${m.tool_name}</span>` : ''}
-                            <span>•</span>
-                            <span class="text-slate-500 text-[9px]">${timeStr}</span>
+                    <div class="w-7 h-7 rounded-lg bg-blue-500/20 border border-blue-500/40 text-blue-400 flex items-center justify-center font-bold text-xs shrink-0">H</div>
+                    <div class="flex-1 space-y-1.5">
+                        <div class="text-xs text-slate-400 flex items-center space-x-2 flex-wrap gap-1">
+                            <span class="text-blue-400 font-semibold">Hermes Agent</span>
+                            ${toolBadges}
+                            <span class="text-slate-600">•</span>
+                            <span class="text-slate-500 text-[11px] font-mono">${timeStr}</span>
                         </div>
-                        ${m.reasoning ? `<div class="p-2 rounded bg-[#0a0c13] border-l-2 border-purple-400 text-purple-300 text-[11px] mb-1 italic">Thinking: ${escapeHtml(m.reasoning)}</div>` : ''}
-                        <div class="p-2.5 rounded bg-[#141824] border border-[#262c3f] text-slate-200 leading-relaxed whitespace-pre-wrap">${formatContent(m.content)}</div>
+                        ${m.reasoning ? `
+                        <details class="group rounded bg-[#0a0c14] border border-purple-900/30 text-purple-300 text-xs p-2">
+                            <summary class="cursor-pointer font-mono text-[11px] text-purple-400 select-none flex items-center space-x-1.5">
+                                <i class="fa-solid fa-brain text-[10px]"></i> <span>Reasoning & Plan</span>
+                            </summary>
+                            <div class="mt-2 text-slate-300 whitespace-pre-wrap font-sans pl-2 border-l border-purple-500/40">${escapeHtml(m.reasoning)}</div>
+                        </details>` : ''}
+                        <div class="p-3 rounded-lg bg-[#12151f] border border-[#1d2233] text-slate-200 leading-relaxed font-sans text-sm">${formatMarkdown(m.content)}</div>
                     </div>
                 `;
             }
-            container.appendChild(row);
+            chatContainer.appendChild(row);
         });
-        container.scrollTop = container.scrollHeight;
+
+        if (!isUserScrolledUp) {
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+        }
     }
 
     function escapeHtml(str) {
-        return (str || "").replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+        if (!str) return "";
+        return String(str).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
     }
 
-    function formatContent(str) {
-        let s = escapeHtml(str || "");
-        s = s.replace(/\*\*(.*?)\*\*/g, '<strong class="text-amber-300">$1</strong>');
-        s = s.replace(/\*(.*?)\*/g, '<em class="text-slate-300">$1</em>');
-        s = s.replace(/`([^`]+)`/g, '<code class="px-1 py-0.5 rounded bg-[#0b0e17] text-emerald-300 border border-slate-800 font-mono text-[11px]">$1</code>');
-        return s;
+    function formatMarkdown(str) {
+        if (!str) return "";
+        let s = escapeHtml(str);
+        // Code blocks
+        s = s.replace(/```([\s\S]*?)```/g, '<pre class="bg-[#0b0e17] border border-[#1d2438] p-2.5 rounded my-2 text-xs font-mono text-emerald-300 overflow-x-auto">$1</pre>');
+        // Inline code
+        s = s.replace(/`([^`]+)`/g, '<code class="bg-[#181d2e] text-amber-300 px-1 py-0.5 rounded text-xs font-mono">$1</code>');
+        // Bold
+        s = s.replace(/\*\*([^*]+)\*\*/g, '<strong class="text-white font-semibold">$1</strong>');
+        // Bullet points
+        s = s.replace(/^[*-] (.+)$/gm, '<li class="ml-4 list-disc text-slate-300">$1</li>');
+        return s.replace(/\n/g, '<br>');
     }
 
-    // "What's next?" Send Handler
+    /* =========================================================================
+       "WHAT'S NEXT?" INTERACTIVE DISPATCH & SYNCHRONIZATION
+       ========================================================================= */
+    const whatsNextInput = document.getElementById("whats-next-input");
+    const btnSendWhatsNext = document.getElementById("btn-send-whats-next");
+
     async function sendWhatsNext() {
-        const inp = document.getElementById("whats-next-input");
-        const val = inp.value.trim();
-        if (!val) return;
-        inp.value = "";
-        playSfx("blip");
+        const text = whatsNextInput.value.trim();
+        if (!text) return;
+        whatsNextInput.value = "";
+        playSfx("type");
 
+        // Animate Star Office Agents physically running to desk!
+        AGENTS[0].behavior = "desk";
+        AGENTS[0].tx = WORKSTATIONS[0].x;
+        AGENTS[0].ty = WORKSTATIONS[0].y;
+        AGENTS[0].activity = "typing";
+        AGENTS[0].bubble = `Mengerjakan: ${text.slice(0, 24)}...`;
+
+        // Update stage ticker
+        document.getElementById("stage-ticker").textContent = `Hermes Prime dispatched: "${text.slice(0, 36)}"`;
+
+        // Optimistically render user message
+        const optimisticUser = {
+            id: Date.now(),
+            role: "user",
+            content: text,
+            timestamp: Date.now() / 1000,
+            time_str: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit', second:'2-digit'})
+        };
+        const currentMsgs = [];
+        const existingRows = chatContainer.querySelectorAll(".flex.items-start");
+        // Reload messages after posting
         try {
             const res = await fetch(`${BRIDGE_HOST}/api/hermes/chat`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
                     session_id: currentSessionId,
-                    message: val,
+                    message: text,
                     agent_id: "sess-hermes-prime"
                 })
             });
             if (res.ok) {
+                playSfx("jump");
                 await loadSessionMessages(currentSessionId);
-                pollState();
             }
         } catch(e) {}
     }
 
-    document.getElementById("btn-send-whats-next").addEventListener("click", sendWhatsNext);
-    document.getElementById("whats-next-input").addEventListener("keydown", (e) => {
-        if (e.key === "Enter") sendWhatsNext();
-    });
-
-    /* =========================================================================
-       STATE POLLING & SQUAD ROSTER
-       ========================================================================= */
-    async function pollState() {
-        try {
-            const res = await fetch(`${BRIDGE_HOST}/state`);
-            if (!res.ok) return;
-            const data = await res.json();
-            if (data.agents) {
-                agents = data.agents;
-                renderSquadRoster();
-                const activeA = agents.find(a => a.status === "working") || agents[0];
-                if (activeA) {
-                    document.getElementById("stage-ticker").textContent = `${activeA.label}: ${activeA.detail || activeA.activity || 'Siaga di workstation'}`;
-                }
-            }
-        } catch(e) {}
-    }
-
-    function renderSquadRoster() {
-        const list = document.getElementById("squad-list");
-        list.innerHTML = "";
-        document.getElementById("active-squad-count").textContent = `${agents.length} ONLINE`;
-
-        agents.forEach(a => {
-            const card = document.createElement("div");
-            card.className = "p-2 rounded bg-[#131622] border border-[#212638] hover:border-amber-400 cursor-pointer text-xs";
-            const isWorking = a.status === "working";
-            card.innerHTML = `
-                <div class="flex items-center justify-between mb-1">
-                    <span class="font-bold ${isWorking ? 'text-amber-300' : 'text-slate-200'}">${a.label}</span>
-                    <span class="px-1.5 py-0.5 rounded text-[9px] ${isWorking ? 'bg-emerald-950 text-emerald-400 border border-emerald-600' : 'bg-slate-800 text-slate-400'}">${(a.status || 'idle').toUpperCase()}</span>
-                </div>
-                <div class="text-[10px] text-slate-400 truncate mb-1">${a.detail || a.activity || 'Siaga'}</div>
-                <div class="flex items-center justify-between text-[9px] text-slate-500 font-mono">
-                    <span>Lv.${a.level || 1}</span>
-                    <span>${a.xp || 50}/${a.max_xp || 200} XP</span>
-                </div>
-            `;
-            card.addEventListener("click", () => openAgentModal(a));
-            list.appendChild(card);
-        });
-    }
-
-    /* =========================================================================
-       LAYOUT SWITCHER (Split / Full Office / Full Hermes)
-       ========================================================================= */
-    const stage = document.getElementById("star-office-stage");
-    const chatPane = document.getElementById("hermes-chat-pane");
-    const lowerPanels = document.getElementById("lower-panels-container");
-
-    document.getElementById("layout-split").addEventListener("click", function() {
-        this.classList.add("active");
-        document.getElementById("layout-office").classList.remove("active");
-        document.getElementById("layout-hermes").classList.remove("active");
-        stage.style.display = "block";
-        stage.style.height = "54%";
-        lowerPanels.style.display = "flex";
-        chatPane.style.display = "flex";
-        resizeCanvas(); centerCamera();
-        playSfx("blip");
-    });
-
-    document.getElementById("layout-office").addEventListener("click", function() {
-        this.classList.add("active");
-        document.getElementById("layout-split").classList.remove("active");
-        document.getElementById("layout-hermes").classList.remove("active");
-        stage.style.display = "block";
-        stage.style.height = "100%";
-        lowerPanels.style.display = "none";
-        resizeCanvas(); centerCamera();
-        playSfx("blip");
-    });
-
-    document.getElementById("layout-hermes").addEventListener("click", function() {
-        this.classList.add("active");
-        document.getElementById("layout-split").classList.remove("active");
-        document.getElementById("layout-office").classList.remove("active");
-        stage.style.display = "none";
-        lowerPanels.style.display = "flex";
-        chatPane.style.display = "flex";
-        playSfx("blip");
-    });
-
-    // Sidebar Toggle
-    document.getElementById("btn-toggle-sidebar").addEventListener("click", () => {
-        const sb = document.getElementById("hermes-sidebar");
-        sb.classList.toggle("-ml-64");
-        playSfx("blip");
-    });
-
-    // Star Office Control Buttons
-    async function sendMacro(action) {
-        playSfx("blip");
-        try {
-            await fetch(`${BRIDGE_HOST}/api/office/macro`, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ action })
-            });
-            pollState();
-        } catch(e) {}
-    }
-    document.getElementById("btn-state-idle").addEventListener("click", () => sendMacro("break"));
-    document.getElementById("btn-state-writing").addEventListener("click", () => sendMacro("sprint"));
-    document.getElementById("btn-state-meeting").addEventListener("click", () => sendMacro("meeting"));
-    document.getElementById("btn-state-sprint").addEventListener("click", () => sendMacro("sprint"));
-    document.getElementById("btn-state-syncing").addEventListener("click", () => {
-        showToast("🔄 Memori SQLite FTS5 Disinkronisasi");
-        playSfx("blip");
-    });
-    document.getElementById("btn-pet-mochi").addEventListener("click", () => {
-        pet.heartTimer = 60;
-        playSfx("cat");
-        showToast("🐱 Mochi senang dielus! (+15 Team Morale)");
-    });
-
-    // Atmosphere Toggle
-    document.getElementById("btn-theme").addEventListener("click", () => {
-        const icon = document.getElementById("theme-icon");
-        const text = document.getElementById("theme-text");
-        if (currentTheme === "night") { currentTheme = "twilight"; icon.className = "fa-solid fa-sun text-amber-400"; text.textContent = "Senja"; showToast("🌅 Mode Senja Keemasan"); }
-        else if (currentTheme === "twilight") { currentTheme = "day"; icon.className = "fa-solid fa-cloud-sun text-sky-400"; text.textContent = "Siang"; showToast("☀️ Mode Siang Studio"); }
-        else { currentTheme = "night"; icon.className = "fa-solid fa-moon text-indigo-400"; text.textContent = "Malam"; showToast("🌙 Mode Malam Cyberpunk"); }
-        playSfx("blip");
-    });
-
-    // Agent Modal
-    function openAgentModal(a) {
-        selectedAgent = a;
-        document.getElementById("modal-agent-name").textContent = a.label;
-        document.getElementById("modal-agent-role").textContent = a.role || "Autonomous Worker";
-        document.getElementById("modal-level-text").textContent = `Level ${a.level || 1}`;
-        document.getElementById("modal-xp-text").textContent = `${a.xp || 50} / ${a.max_xp || 200} XP`;
-        const pct = Math.min(Math.round(((a.xp || 50) / (a.max_xp || 200)) * 100), 100);
-        document.getElementById("modal-xp-bar").style.width = pct + "%";
-        document.getElementById("modal-status-label").textContent = `${(a.status || 'idle').toUpperCase()}`;
-        document.getElementById("modal-detail-text").textContent = a.detail || a.activity || "Menunggu tugas aktif.";
-
-        // Draw portrait
-        const pc = document.getElementById("avatar-portrait-canvas");
-        const pctx = pc.getContext("2d");
-        pctx.clearRect(0, 0, pc.width, pc.height);
-        const pIdx = (a.avatar_idx || 0) % 5;
-        pctx.fillStyle = SKINS[pIdx]; pctx.fillRect(20, 20, 24, 24);
-        pctx.fillStyle = HAIRS[pIdx]; pctx.fillRect(16, 12, 32, 16);
-        pctx.fillStyle = SHIRTS[pIdx]; pctx.fillRect(12, 44, 40, 36);
-
-        document.getElementById("agent-modal").classList.remove("hidden");
-    }
-    document.getElementById("btn-close-modal").addEventListener("click", () => {
-        document.getElementById("agent-modal").classList.add("hidden");
-        selectedAgent = null;
-    });
-
-    async function sendAgentAction(action) {
-        if (!selectedAgent) return;
-        playSfx("blip");
-        try {
-            await fetch(`${BRIDGE_HOST}/api/agent/action`, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ id: selectedAgent.id, action })
-            });
-            pollState();
-        } catch(e) {}
-    }
-    document.getElementById("cmd-work").addEventListener("click", () => sendAgentAction("work"));
-    document.getElementById("cmd-bench").addEventListener("click", () => sendAgentAction("bench"));
-    document.getElementById("cmd-coffee").addEventListener("click", () => sendAgentAction("coffee"));
-    document.getElementById("cmd-meeting").addEventListener("click", () => sendAgentAction("meeting"));
-
-    // Toast
-    function showToast(msg) {
-        const t = document.createElement("div");
-        t.className = "fixed bottom-10 left-1/2 -translate-x-1/2 z-50 star-box px-4 py-2 text-xs text-amber-300 font-mono shadow-2xl bg-[#141724]";
-        t.textContent = msg;
-        document.body.appendChild(t);
-        setTimeout(() => t.remove(), 3000);
-    }
-
-    // Corner Pet drawing
-    function drawCornerPet() {
-        const cc = document.getElementById("corner-pet-canvas");
-        const cctx = cc.getContext("2d");
-        cctx.clearRect(0, 0, cc.width, cc.height);
-        // Box
-        cctx.fillStyle = "#8a582e"; cctx.fillRect(3, 10, 22, 14);
-        cctx.fillStyle = "#a87140"; cctx.fillRect(4, 11, 20, 12);
-        // Corgi / Cat head
-        cctx.fillStyle = "#f39c12"; cctx.fillRect(6, 3, 16, 10);
-        cctx.fillStyle = "#e67e22"; cctx.fillRect(4, 1, 4, 4); cctx.fillRect(20, 1, 4, 4); // ears
-        cctx.fillStyle = "#fff"; cctx.fillRect(10, 8, 8, 5); // muzzle
-        cctx.fillStyle = "#2c3e50"; cctx.fillRect(9, 6, 2, 2); cctx.fillRect(17, 6, 2, 2); // eyes
-        cctx.fillRect(13, 9, 2, 2); // nose
-    }
-    drawCornerPet();
-
-    // Clock
-    setInterval(() => {
-        const d = new Date();
-        document.getElementById("footer-clock").textContent = d.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-    }, 1000);
-
-    // Initial Load
-    fetchSessions().then(() => {
-        if (hermesSessions.length > 0) {
-            switchHermesSession(hermesSessions[0].id, hermesSessions[0].title);
+    btnSendWhatsNext.addEventListener("click", sendWhatsNext);
+    whatsNextInput.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") {
+            e.preventDefault();
+            sendWhatsNext();
         }
     });
-    pollState();
-    setInterval(pollState, 1500);
 
+    /* =========================================================================
+       KEYBOARD SHORTCUTS & SIDEBAR TOGGLE (CTRL+B, CTRL+N)
+       ========================================================================= */
+    const sidebar = document.getElementById("hermes-sidebar");
+    const btnToggleSidebar = document.getElementById("btn-toggle-sidebar");
+    let sidebarOpen = true;
+
+    function toggleSidebar() {
+        sidebarOpen = !sidebarOpen;
+        if (sidebarOpen) {
+            sidebar.classList.remove("-ml-64");
+            document.getElementById("sidebar-toggle-text").textContent = "Hide sidebar";
+        } else {
+            sidebar.classList.add("-ml-64");
+            document.getElementById("sidebar-toggle-text").textContent = "Show sidebar";
+        }
+        playSfx("type");
+        setTimeout(resizeCanvas, 320);
+    }
+    btnToggleSidebar.addEventListener("click", toggleSidebar);
+
+    window.addEventListener("keydown", (e) => {
+        if (e.ctrlKey && e.key.toLowerCase() === "b") {
+            e.preventDefault();
+            toggleSidebar();
+        } else if (e.ctrlKey && e.key.toLowerCase() === "n") {
+            e.preventDefault();
+            playSfx("blip");
+            switchHermesSession(`local-session-${Date.now()}`, "UNTITLED SESSION");
+        }
+    });
+
+    document.getElementById("btn-new-session").addEventListener("click", () => {
+        playSfx("blip");
+        switchHermesSession(`local-session-${Date.now()}`, "UNTITLED SESSION");
+    });
+    document.getElementById("tab-new-session").addEventListener("click", () => {
+        playSfx("blip");
+        switchHermesSession(`local-session-${Date.now()}`, "UNTITLED SESSION");
+    });
+
+    /* =========================================================================
+       LAYOUT SWITCHER MODES
+       ========================================================================= */
+    const layoutSplitBtn = document.getElementById("layout-split");
+    const layoutHermesBtn = document.getElementById("layout-hermes");
+    const layoutOfficeBtn = document.getElementById("layout-office");
+    const starStage = document.getElementById("star-office-stage");
+    const hermesStage = document.getElementById("hermes-chat-stage");
+
+    function setLayout(mode) {
+        layoutSplitBtn.classList.remove("active");
+        layoutHermesBtn.classList.remove("active");
+        layoutOfficeBtn.classList.remove("active");
+
+        if (mode === "split") {
+            layoutSplitBtn.classList.add("active");
+            starStage.style.display = "block";
+            starStage.style.height = "50%";
+            hermesStage.style.display = "flex";
+        } else if (mode === "hermes") {
+            layoutHermesBtn.classList.add("active");
+            starStage.style.display = "none";
+            hermesStage.style.display = "flex";
+        } else if (mode === "office") {
+            layoutOfficeBtn.classList.add("active");
+            starStage.style.display = "block";
+            starStage.style.height = "100%";
+            hermesStage.style.display = "none";
+        }
+        playSfx("type");
+        setTimeout(resizeCanvas, 100);
+    }
+
+    layoutSplitBtn.addEventListener("click", () => setLayout("split"));
+    layoutHermesBtn.addEventListener("click", () => setLayout("hermes"));
+    layoutOfficeBtn.addEventListener("click", () => setLayout("office"));
+
+    /* =========================================================================
+       CORNER PET INTERACTION (BOXCAT)
+       ========================================================================= */
+    const boxcatContainer = document.getElementById("corner-boxcat-container");
+    const boxcatHeart = document.getElementById("boxcat-heart");
+
+    boxcatContainer.addEventListener("click", () => {
+        playSfx("meow");
+        boxcatHeart.classList.remove("opacity-0", "-translate-y-2");
+        boxcatHeart.classList.add("opacity-100", "translate-y-0");
+        setTimeout(() => {
+            boxcatHeart.classList.remove("opacity-100", "translate-y-0");
+            boxcatHeart.classList.add("opacity-0", "-translate-y-2");
+        }, 1500);
+    });
+
+    /* =========================================================================
+       FOOTER LIVE CLOCK & AUTO-SYNC POLLING
+       ========================================================================= */
+    function updateClock() {
+        const d = new Date();
+        const pad = (n) => String(n).padStart(2, "0");
+        const timeStr = `${pad(d.getHours())}:${pad(d.getMinutes())} ${pad(d.getDate())}/${pad(d.getMonth()+1)}/${d.getFullYear()}`;
+        document.getElementById("footer-live-clock").textContent = timeStr;
+    }
+    setInterval(updateClock, 1000);
+    updateClock();
+
+    // Auto-sync polling every 2 seconds
+    setInterval(async () => {
+        await fetchSessions();
+        if (currentSessionId) {
+            await loadSessionMessages(currentSessionId);
+        }
+    }, 2000);
+
+    // Initial Bootstrap
+    fetchSessions();
+    loadSessionMessages(currentSessionId);
     </script>
 </body>
 </html>

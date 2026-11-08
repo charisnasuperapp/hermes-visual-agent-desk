@@ -56,6 +56,20 @@ _in_memory_agents = {}
 _hermes_memory_chat = {}
 
 HERMES_STATE_DB = os.path.expanduser('~\\AppData\\Local\\hermes\\state.db')
+HERMES_BOXCAT_PNG = os.path.expanduser('~\\AppData\\Local\\hermes\\pets\\.thumbs\\boxcat.png')
+HERMES_AVATAR_PNG = os.path.expanduser('~\\AppData\\Local\\hermes\\assets\\avatar.png')
+
+def _calc_relative_time(epoch_ts):
+    if not epoch_ts:
+        return "now"
+    diff = max(0, time.time() - float(epoch_ts))
+    if diff < 60:
+        return f"{int(diff)}s"
+    if diff < 3600:
+        return f"{int(diff//60)}m"
+    if diff < 86400:
+        return f"{int(diff//3600)}h"
+    return f"{int(diff//86400)}d"
 
 def get_hermes_sessions():
     """Retrieve real Hermes sessions from AppData/Local/hermes/state.db."""
@@ -67,7 +81,7 @@ def get_hermes_sessions():
                 SELECT id, title, started_at, last_activity_at, pinned 
                 FROM sessions 
                 ORDER BY pinned DESC, last_activity_at DESC 
-                LIMIT 20
+                LIMIT 30
             """).fetchall()
             conn.close()
             sessions = []
@@ -78,7 +92,8 @@ def get_hermes_sessions():
                     "title": title or f"Session {sid[:12]}",
                     "started_at": started,
                     "last_activity_at": last_act,
-                    "pinned": bool(pinned)
+                    "pinned": bool(pinned),
+                    "rel_time": _calc_relative_time(last_act)
                 })
             if sessions:
                 return sessions
@@ -86,10 +101,10 @@ def get_hermes_sessions():
             print(f"[!] Error reading hermes state.db: {e}")
 
     return [
-        {"id": "local-27e0a60c312fe97402f76d3316ad6ee047a451d83a24e4b02df4919458f611e8", "title": "Buat ONAL Universal Memory Bridge", "pinned": True, "last_activity_at": time.time() - 3600*19},
-        {"id": "local-d88d47d76f7775a808ef671244ea73631e9554801dd17fa85dd86c688d172234", "title": "CHARISNA SuperApp", "pinned": False, "last_activity_at": time.time() - 3600*24},
-        {"id": "sess-zennai-lab", "title": "zennAI Intelligence Architecture", "pinned": False, "last_activity_at": time.time() - 3600*48},
-        {"id": "sess-star-office", "title": "Star Office World Cockpit", "pinned": False, "last_activity_at": time.time() - 3600*72}
+        {"id": "local-27e0a60c312fe97402f76d3316ad6ee047a451d83a24e4b02df4919458f611e8", "title": "Buat ONAL Universal Memory Bridge", "pinned": True, "last_activity_at": time.time() - 3600*15, "rel_time": "15h"},
+        {"id": "local-d88d47d76f7775a808ef671244ea73631e9554801dd17fa85dd86c688d172234", "title": "CHARISNA SuperApp", "pinned": False, "last_activity_at": time.time() - 3600*24, "rel_time": "1d"},
+        {"id": "sess-zennai-lab", "title": "zennAI", "pinned": False, "last_activity_at": time.time() - 3600*48, "rel_time": "2d"},
+        {"id": "sess-star-office", "title": "Star Office World Cockpit", "pinned": False, "last_activity_at": time.time() - 3600*72, "rel_time": "3d"}
     ]
 
 def get_hermes_messages(session_id):
@@ -100,38 +115,60 @@ def get_hermes_messages(session_id):
             conn = sqlite3.connect(f"file:{HERMES_STATE_DB}?mode=ro", uri=True)
             cur = conn.cursor()
             rows = cur.execute("""
-                SELECT id, role, content, tool_name, reasoning, timestamp 
+                SELECT id, role, content, tool_name, tool_calls, reasoning, timestamp 
                 FROM messages 
                 WHERE session_id = ? 
                 ORDER BY id ASC 
-                LIMIT 40
+                LIMIT 60
             """, (session_id,)).fetchall()
             conn.close()
             for r in rows:
-                mid, role, content, tool, reasoning, ts = r
-                if content or tool or reasoning:
+                mid, role, content, tool, tool_calls_raw, reasoning, ts = r
+                
+                # If tool_name is empty but tool_calls exist, parse them
+                parsed_tools = []
+                if tool_calls_raw:
+                    try:
+                        parsed = json.loads(tool_calls_raw)
+                        if isinstance(parsed, list):
+                            for tc in parsed:
+                                fn = tc.get("function", {})
+                                fname = fn.get("name") or tc.get("name")
+                                fargs = fn.get("arguments") or tc.get("arguments")
+                                if fname:
+                                    parsed_tools.append({"name": fname, "args": fargs})
+                                    if not tool:
+                                        tool = fname
+                    except Exception:
+                        pass
+
+                if content or tool or reasoning or parsed_tools:
                     msgs.append({
                         "id": mid,
                         "role": role,
                         "content": content or "",
                         "tool_name": tool,
+                        "tool_calls": parsed_tools,
                         "reasoning": reasoning,
-                        "timestamp": ts
+                        "timestamp": ts,
+                        "time_str": datetime.fromtimestamp(ts).strftime("%H:%M:%S") if ts else ""
                     })
         except Exception as e:
             print(f"[!] Error reading hermes messages: {e}")
 
-    # Append any dynamic messages sent in current session
+    # Append dynamic in-memory turns
     if session_id in _hermes_memory_chat:
         msgs.extend(_hermes_memory_chat[session_id])
 
     if not msgs:
+        now = time.time()
         msgs = [
             {
                 "id": 1,
                 "role": "user",
                 "content": "Halo Hermes, tolong laporkan status arsitektur CHARISNA SuperApp dan integrasi Star Office.",
-                "timestamp": time.time() - 120
+                "timestamp": now - 120,
+                "time_str": datetime.fromtimestamp(now - 120).strftime("%H:%M:%S")
             },
             {
                 "id": 2,
@@ -139,7 +176,8 @@ def get_hermes_messages(session_id):
                 "reasoning": "Mengecek status dual-stack bridge dan multi-business databases...",
                 "tool_name": "inspect_system_health",
                 "content": "Siap! Seluruh sistem beroperasi optimal:\n- **Star Office World**: Aktif di `http://localhost:8765`.\n- **Bumi Makmur POS**: Source of truth transaksi dan stok barang.\n- **CHARISNA Homestay**: Source of truth unit kamar & penyewa.\n- **Money Management**: Laporan pembukuan keluarga terdata dengan provenance penuh.",
-                "timestamp": time.time() - 60
+                "timestamp": now - 60,
+                "time_str": datetime.fromtimestamp(now - 60).strftime("%H:%M:%S")
             }
         ]
     return msgs
@@ -666,6 +704,34 @@ class DeskBridgeHandler(SimpleHTTPRequestHandler):
             state = build_office_state()
             self._send_json_response(state)
             return
+
+        if parsed.path == "/assets/boxcat.png":
+            if os.path.exists(HERMES_BOXCAT_PNG):
+                try:
+                    with open(HERMES_BOXCAT_PNG, "rb") as f:
+                        data = f.read()
+                    self.send_response(200)
+                    self.send_header("Content-Type", "image/png")
+                    self.send_header("Content-Length", str(len(data)))
+                    self.end_headers()
+                    self.wfile.write(data)
+                    return
+                except Exception:
+                    pass
+
+        if parsed.path == "/assets/avatar.png":
+            if os.path.exists(HERMES_AVATAR_PNG):
+                try:
+                    with open(HERMES_AVATAR_PNG, "rb") as f:
+                        data = f.read()
+                    self.send_response(200)
+                    self.send_header("Content-Type", "image/png")
+                    self.send_header("Content-Length", str(len(data)))
+                    self.end_headers()
+                    self.wfile.write(data)
+                    return
+                except Exception:
+                    pass
 
         if parsed.path == "/api/status":
             status_data = {

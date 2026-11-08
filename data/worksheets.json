@@ -1,0 +1,46 @@
+[
+  {
+    "id": "ws-topic-a",
+    "code": "A",
+    "title": "CHARISNA Intelligence System & Holographic Memory",
+    "category": "Architecture & Long-Term Memory",
+    "status": "active",
+    "assigned": [
+      "hermes",
+      "athena"
+    ],
+    "goal": "Implementasi hybrid storage: aktif = lokal (AppData/Local/hermes), arsip = Drive I:/My Drive/Charisna SuperApp. Holographic memory SQLite FTS5.",
+    "deliverable": "# Lembar Kerja A: CHARISNA Intelligence System & Long-Term Memory\n**Status**: Sedang Berlangsung (Hermes Prime & Athena Owl)\n**Arsip**: `Reports/2026-11-08-intelligence-system-implementation.md`\n\n## 1. Komponen Utama\n- **Hybrid Storage**: Aktif lokal di `AppData/Local/hermes`, sinkronisasi keputusan ke Google Drive.\n- **Holographic Provider**: SQLite FTS5 incremental indexing (`charisna_indexer.py`).\n- **Seed Pengetahuan**: DEC-0001 (decoupled multi-business: Bumi Makmur POS, Homestay, MoniFlow).\n\n## 2. Status Agen\n- `hermes`: Mengorkestrasi event stream & verifikasi postconditions.\n- `athena`: Menelusuri indeks semantik FTS5 & review queue.",
+    "created_at": "2026-11-08T06:00:00",
+    "updated_at": "2026-11-08T08:47:23.920295"
+  },
+  {
+    "id": "ws-topic-b",
+    "code": "B",
+    "title": "CHARISNA AI Office Installation & Multi-Business Hub",
+    "category": "Infrastructure & Deployment",
+    "status": "ready",
+    "assigned": [
+      "hephaestus"
+    ],
+    "goal": "Integrasi CLI Hermes lokal (hermes.exe), kanban sync, dual-stack HTTP bridge (anti-crash), dan desktop UI.",
+    "deliverable": "# Lembar Kerja B: AI Office Installation & Local Bridge\n**Status**: Siap Ditinjau (Hephaestus Forge)\n**Catatan**: `Reports/2026-11-08-charisna-ai-office-installation.md`\n\n## 1. Spesifikasi Teknis\n- Port: `http://localhost:8765` & `http://127.0.0.1:8765` (Dual-Stack IPv6/IPv4).\n- CLI Hermes: `AppData/Local/hermes/bin/hermes.exe` (`hermes kanban list --json`).\n- Zero-crash threading model dengan daemon threads.\n\n## 2. Status Agen\n- `hephaestus`: Sandboxing & build tool verification.",
+    "created_at": "2026-11-08T07:15:00",
+    "updated_at": "2026-11-08T08:47:23.920329"
+  },
+  {
+    "id": "ws-topic-c",
+    "code": "C",
+    "title": "Modern Smooth 3D Campus & Interactive Visualizer",
+    "category": "UI / UX Redesign",
+    "status": "active",
+    "assigned": [
+      "iris",
+      "hermes"
+    ],
+    "goal": "Rombak total desain kuno/kotak-kotak menjadi smooth 3D campus, bangku taman interaktif, zoom in/out 2D, dan worksheet switcher.",
+    "deliverable": "# Lembar Kerja C: Modern Smooth Visual Campus & Dynamic Life\n**Status**: Sprint Aktif (Iris Prism & Hermes Core)\n\n## 1. Poin Transformasi Desain\n- **Buang Voxel Kotak-kotak**: Ganti dengan smooth 3D geometry (rounded terrain, stylized trees, curved benches, floating glass OLED displays).\n- **Bangku Taman Interaktif**: Agen santai dan duduk di bangku taman saat idle/break, dan hanya kembali ke meja kerja saat ada tugas aktif.\n- **Kontrol 2D Pan & Zoom**: Kanvas 2D kini mendukung zoom in/out halus (mouse wheel) dan drag geser bebas.\n- **Sinkronisasi Lembar Kerja**: Pindah fokus kerja antar pembahasan A, B, dan C dengan 1 klik.",
+    "created_at": "2026-11-08T08:00:00",
+    "updated_at": "2026-11-08T08:47:23.920332"
+  }
+]

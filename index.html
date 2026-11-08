@@ -1,0 +1,2101 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hermes Visual Agent Desk — 3D Pixel Cheerful Garden</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Three.js r128 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <!-- Google Fonts: Pixel & Modern Readable UI -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Fredoka:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <style>
+        :root {
+            --pixel-border: #2d3748;
+            --cheer-gold: #fbbf24;
+            --cheer-sky: #38bdf8;
+            --cheer-leaf: #4ade80;
+            --cheer-coral: #fb7185;
+        }
+
+        * {
+            box-sizing: border-box;
+            user-select: none;
+        }
+
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            font-family: 'Fredoka', sans-serif;
+            background-color: #7dd3fc;
+        }
+
+        .font-pixel {
+            font-family: 'Press Start 2P', monospace;
+            letter-spacing: -0.5px;
+        }
+
+        .font-mono-code {
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        /* Crisp Pixel Card Styling */
+        .pixel-card {
+            background: rgba(255, 253, 245, 0.92);
+            backdrop-filter: blur(8px);
+            border: 3px solid #1e293b;
+            box-shadow: 0 6px 0 #1e293b, 0 10px 20px rgba(0,0,0,0.18);
+            border-radius: 14px;
+        }
+
+        .pixel-card-dark {
+            background: rgba(15, 23, 42, 0.90);
+            backdrop-filter: blur(10px);
+            border: 3px solid #334155;
+            box-shadow: 0 6px 0 #0f172a, 0 12px 24px rgba(0,0,0,0.35);
+            border-radius: 14px;
+            color: #f8fafc;
+        }
+
+        .pixel-btn {
+            border: 3px solid #1e293b;
+            box-shadow: 0 4px 0 #1e293b;
+            transition: all 0.1s ease;
+            border-radius: 10px;
+            cursor: pointer;
+        }
+
+        .pixel-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 0 #1e293b;
+        }
+
+        .pixel-btn:active {
+            transform: translateY(3px);
+            box-shadow: 0 1px 0 #1e293b;
+        }
+
+        /* Retro Pixel Canvas Filter when enabled */
+        #canvas-container {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+
+        canvas {
+            display: block;
+            width: 100%;
+            height: 100%;
+            image-rendering: pixelated;
+            image-rendering: crisp-edges;
+        }
+
+        /* 3D Floating World Labels */
+        .world-label {
+            position: absolute;
+            transform: translate(-50%, -100%);
+            pointer-events: auto;
+            cursor: pointer;
+            transition: transform 0.15s ease;
+            z-index: 10;
+        }
+
+        .world-label:hover {
+            transform: translate(-50%, -106%) scale(1.05);
+            z-index: 25;
+        }
+
+        /* Speech Bubble Animation */
+        @keyframes floatBubble {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-4px); }
+        }
+
+        .speech-bubble {
+            animation: floatBubble 2.4s ease-in-out infinite;
+            position: relative;
+        }
+
+        .speech-bubble::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-width: 8px 7px 0;
+            border-style: solid;
+            border-color: #1e293b transparent;
+            display: block;
+            width: 0;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.06);
+            border-radius: 8px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #64748b;
+            border-radius: 8px;
+        }
+
+        /* Scanline subtle overlay for pixel charm */
+        .scanlines {
+            background: linear-gradient(
+                to bottom,
+                rgba(255,255,255,0),
+                rgba(255,255,255,0) 50%,
+                rgba(0, 0, 0, 0.03) 50%,
+                rgba(0, 0, 0, 0.03)
+            );
+            background-size: 100% 4px;
+            pointer-events: none;
+        }
+
+        @keyframes pulseRing {
+            0% { transform: scale(0.95); opacity: 0.9; }
+            70% { transform: scale(1.25); opacity: 0; }
+            100% { transform: scale(1.25); opacity: 0; }
+        }
+        .pulse-dot::before {
+            content: '';
+            position: absolute;
+            inset: -4px;
+            border-radius: 9999px;
+            background-color: inherit;
+            animation: pulseRing 1.6s infinite;
+            z-index: -1;
+        }
+    </style>
+</head>
+<body class="relative select-none overflow-hidden">
+
+    <!-- 3D Three.js Scene Container -->
+    <div id="canvas-container"></div>
+
+    <!-- Subtle Pixel Scanline Overlay -->
+    <div id="scanline-overlay" class="scanlines fixed inset-0 z-10 pointer-events-none opacity-60"></div>
+
+    <!-- Floating 3D HTML Labels Container -->
+    <div id="labels-container" class="fixed inset-0 pointer-events-none z-20 overflow-hidden"></div>
+
+    <!-- ================= TOP BAR HUD ================= -->
+    <header class="fixed top-3 left-3 right-3 z-30 flex flex-wrap items-center justify-between gap-2 pointer-events-none">
+        
+        <!-- Brand & Garden Status -->
+        <div class="pixel-card px-4 py-2.5 flex items-center gap-3 pointer-events-auto">
+            <div class="w-11 h-11 rounded-xl bg-gradient-to-br from-amber-300 via-yellow-400 to-orange-400 border-2 border-slate-800 flex items-center justify-center shadow-inner relative">
+                <i class="fa-solid fa-feather-pointed text-slate-900 text-xl"></i>
+                <span class="absolute -top-1 -right-1 w-3.5 h-3.5 bg-emerald-400 border-2 border-slate-900 rounded-full pulse-dot"></span>
+            </div>
+            <div>
+                <div class="flex items-center gap-2">
+                    <h1 class="font-pixel text-xs sm:text-sm text-slate-900 tracking-tight">HERMES GARDEN DESK</h1>
+                    <span class="bg-amber-300 text-slate-900 border-2 border-slate-800 text-[10px] font-bold px-2 py-0.5 rounded-full">v3.8 PIXEL HD</span>
+                </div>
+                <p class="text-xs text-slate-600 font-medium flex items-center gap-2 mt-0.5">
+                    <span><i class="fa-solid fa-seedling text-emerald-500 mr-1"></i>Taman Otonom Aktif</span>
+                    <span class="text-slate-300">•</span>
+                    <span id="hud-clock" class="font-mono-code text-[11px] text-slate-700 font-semibold">CERAH PAGI</span>
+                </p>
+            </div>
+        </div>
+
+        <!-- Live Metrics Pills -->
+        <div class="hidden xl:flex items-center gap-2.5 pixel-card px-3.5 py-2 pointer-events-auto">
+            <div class="flex items-center gap-2 pr-3 border-r-2 border-slate-200">
+                <div class="w-8 h-8 rounded-lg bg-emerald-100 border-2 border-slate-800 flex items-center justify-center text-emerald-600">
+                    <i class="fa-solid fa-robot text-sm"></i>
+                </div>
+                <div>
+                    <div class="text-[10px] font-bold uppercase text-slate-400 leading-none">Active Agents</div>
+                    <div class="text-sm font-bold text-slate-800"><span id="metric-active-agents">4</span> / 4 Online</div>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-2 pr-3 border-r-2 border-slate-200">
+                <div class="w-8 h-8 rounded-lg bg-sky-100 border-2 border-slate-800 flex items-center justify-center text-sky-600">
+                    <i class="fa-solid fa-paper-plane text-sm"></i>
+                </div>
+                <div>
+                    <div class="text-[10px] font-bold uppercase text-slate-400 leading-none">Pesan Terkirim</div>
+                    <div class="text-sm font-bold text-slate-800" id="metric-packets">18 Paket</div>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-2">
+                <div class="w-8 h-8 rounded-lg bg-amber-100 border-2 border-slate-800 flex items-center justify-center text-amber-600">
+                    <i class="fa-solid fa-bolt text-sm"></i>
+                </div>
+                <div>
+                    <div class="text-[10px] font-bold uppercase text-slate-400 leading-none">Throughput</div>
+                    <div class="text-sm font-bold text-slate-800" id="metric-tps">142 tok/s</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Environment & Camera Controls -->
+        <div class="flex items-center gap-2 pointer-events-auto">
+            <!-- Time of Day Selector -->
+            <div class="pixel-card p-1 flex items-center gap-1">
+                <button onclick="setGardenTime('day')" id="btn-time-day" class="px-2.5 py-1.5 rounded-lg text-xs font-bold bg-sky-400 text-slate-900 border-2 border-slate-800 transition flex items-center gap-1.5" title="Pagi Cerah">
+                    <i class="fa-solid fa-sun"></i><span class="hidden sm:inline">Pagi</span>
+                </button>
+                <button onclick="setGardenTime('sunset')" id="btn-time-sunset" class="px-2.5 py-1.5 rounded-lg text-xs font-bold text-slate-700 hover:bg-amber-100 transition flex items-center gap-1.5" title="Sore Senja">
+                    <i class="fa-solid fa-cloud-sun"></i><span class="hidden sm:inline">Senja</span>
+                </button>
+                <button onclick="setGardenTime('night')" id="btn-time-night" class="px-2.5 py-1.5 rounded-lg text-xs font-bold text-slate-700 hover:bg-indigo-100 transition flex items-center gap-1.5" title="Malam Lentera">
+                    <i class="fa-solid fa-moon"></i><span class="hidden sm:inline">Malam</span>
+                </button>
+            </div>
+
+            <!-- Pixel Shader Scale Toggle -->
+            <button onclick="togglePixelMode()" id="btn-pixel-mode" class="pixel-btn bg-lime-300 hover:bg-lime-400 text-slate-900 px-3 py-2 text-xs font-bold flex items-center gap-1.5" title="Ubah Ketajaman Pixel 3D">
+                <i class="fa-solid fa-border-all"></i>
+                <span id="pixel-mode-label" class="hidden md:inline">HD Pixel</span>
+            </button>
+
+            <!-- Camera Reset -->
+            <button onclick="resetCameraOverview()" class="pixel-btn bg-white hover:bg-slate-100 text-slate-800 px-3 py-2 text-xs font-bold flex items-center gap-1.5" title="Reset Sudut Kamera">
+                <i class="fa-solid fa-video"></i>
+                <span class="hidden sm:inline">Overview</span>
+            </button>
+
+            <!-- Sound FX Toggle -->
+            <button onclick="toggleAudio()" id="btn-audio" class="pixel-btn bg-amber-300 hover:bg-amber-400 text-slate-900 w-9 h-9 flex items-center justify-center text-sm" title="Efek Suara Chiptune">
+                <i id="icon-audio" class="fa-solid fa-volume-high"></i>
+            </button>
+
+            <!-- Drive Micro Bridge Status -->
+            <div id="bridge-status-pill" class="pixel-card px-2.5 py-1.5 flex items-center gap-1.5 text-xs font-bold text-slate-700 pointer-events-auto cursor-pointer" onclick="checkBridgeStatus(true)" title="Klik untuk refresh status Micro Bridge">
+                <span class="w-2.5 h-2.5 rounded-full bg-slate-400" id="bridge-dot"></span>
+                <span id="bridge-label" class="hidden lg:inline text-[11px] text-slate-500">Bridge Offline</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- ================= LEFT SIDEBAR: AGENT ROSTER & GARDEN STATIONS ================= -->
+    <aside class="fixed left-3 top-20 bottom-24 z-30 w-72 sm:w-80 flex flex-col gap-3 pointer-events-none transition-transform duration-300" id="left-panel">
+        
+        <!-- Squad Roster Card -->
+        <div class="pixel-card p-3.5 flex flex-col gap-2.5 pointer-events-auto max-h-[55%] overflow-y-auto">
+            <div class="flex items-center justify-between border-b-2 border-slate-200 pb-2">
+                <div class="flex items-center gap-2">
+                    <i class="fa-solid fa-users-gear text-amber-500"></i>
+                    <h2 class="font-pixel text-[11px] text-slate-800">TIM AGEN TAMAN</h2>
+                </div>
+                <span class="text-[11px] font-bold text-emerald-600 bg-emerald-100 px-2 py-0.5 rounded-md border border-emerald-300">Auto-Sync</span>
+            </div>
+
+            <!-- Agent List populated via JS -->
+            <div id="agent-roster-list" class="flex flex-col gap-2"></div>
+        </div>
+
+        <!-- Selected Agent Inspector / Desk Detail -->
+        <div id="agent-inspector" class="pixel-card p-3.5 flex-1 flex flex-col justify-between pointer-events-auto overflow-y-auto">
+            <!-- Populated dynamically when clicking an agent -->
+        </div>
+    </aside>
+
+    <!-- Toggle Left Panel Button on Mobile -->
+    <button onclick="toggleLeftPanel()" class="fixed left-3 bottom-24 z-40 lg:hidden pixel-btn bg-amber-300 text-slate-900 px-3 py-2 text-xs font-bold flex items-center gap-1.5">
+        <i class="fa-solid fa-id-card"></i> Agen
+    </button>
+
+    <!-- ================= RIGHT SIDEBAR: LIVE ACTIVITY & ARTIFACT TERMINAL ================= -->
+    <aside class="fixed right-3 top-20 bottom-24 z-30 w-80 sm:w-96 hidden md:flex flex-col gap-3 pointer-events-none" id="right-panel">
+        
+        <!-- Live Hermes Neural Bus & Deliverable Output -->
+        <div class="pixel-card-dark p-3.5 flex-1 flex flex-col gap-2.5 pointer-events-auto overflow-hidden">
+            <div class="flex items-center justify-between border-b border-slate-700 pb-2">
+                <div class="flex items-center gap-2">
+                    <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping"></span>
+                    <h2 class="font-pixel text-[10px] text-amber-300 tracking-wide">HERMES TELEMETRY & OUTPUT</h2>
+                </div>
+                <div class="flex gap-1">
+                    <button onclick="switchRightTab('stream')" id="tab-btn-stream" class="text-[11px] font-bold px-2 py-0.5 rounded bg-amber-400 text-slate-900">Log</button>
+                    <button onclick="switchRightTab('artifact')" id="tab-btn-artifact" class="text-[11px] font-bold px-2 py-0.5 rounded bg-slate-800 text-slate-300 hover:bg-slate-700">Hasil Kerja</button>
+                </div>
+            </div>
+
+            <!-- Tab 1: Live Event Stream -->
+            <div id="tab-content-stream" class="flex-1 overflow-y-auto flex flex-col gap-2 pr-1 font-mono-code text-xs">
+                <!-- Populated dynamically -->
+            </div>
+
+            <!-- Tab 2: Generated Artifact / Code Output -->
+            <div id="tab-content-artifact" class="hidden flex-1 overflow-y-auto flex flex-col gap-2 pr-1">
+                <div class="bg-slate-900/90 border border-slate-700 rounded-lg p-3 text-xs font-mono-code text-emerald-300 whitespace-pre-wrap leading-relaxed" id="artifact-viewer"></div>
+                <div class="flex justify-between items-center pt-1 gap-1">
+                    <span class="text-[11px] text-slate-400 truncate max-w-[150px]" id="artifact-meta">Disusun oleh Tim Hermes</span>
+                    <div class="flex items-center gap-1.5">
+                        <button onclick="saveArtifactToDrive()" class="pixel-btn bg-sky-400 hover:bg-sky-300 text-slate-900 px-2 py-1 text-[11px] font-bold" title="Simpan ke data/artifacts">
+                            <i class="fa-solid fa-floppy-disk mr-1"></i>Simpan
+                        </button>
+                        <button onclick="copyArtifactContent()" class="pixel-btn bg-emerald-400 hover:bg-emerald-300 text-slate-900 px-2 py-1 text-[11px] font-bold">
+                            <i class="fa-regular fa-copy mr-1"></i>Salin
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Mini Garden Quick Actions -->
+            <div class="border-t border-slate-700 pt-2.5 flex items-center justify-between gap-1.5">
+                <button onclick="triggerCoffeeBreak()" class="flex-1 pixel-btn bg-rose-400 hover:bg-rose-300 text-slate-900 py-1.5 px-2 text-xs font-bold flex items-center justify-center gap-1">
+                    <i class="fa-solid fa-mug-hot"></i> Traktir Matcha
+                </button>
+                <button onclick="triggerSpeedBoost()" class="flex-1 pixel-btn bg-cyan-400 hover:bg-cyan-300 text-slate-900 py-1.5 px-2 text-xs font-bold flex items-center justify-center gap-1">
+                    <i class="fa-solid fa-wand-magic-sparkles"></i> Turbo Mode
+                </button>
+                <button onclick="triggerFireworks()" class="pixel-btn bg-amber-300 hover:bg-amber-200 text-slate-900 py-1.5 px-2.5 text-xs font-bold" title="Rayakan di Taman!">
+                    <i class="fa-solid fa-sparkles"></i>✨
+                </button>
+            </div>
+        </div>
+    </aside>
+
+    <!-- ================= BOTTOM COMMAND BAR: DISPATCH MISSION TO HERMES ================= -->
+    <footer class="fixed bottom-3 left-3 right-3 z-30 flex flex-col items-center pointer-events-none">
+        
+        <!-- Preset Mission Chips -->
+        <div class="flex items-center gap-1.5 mb-2 overflow-x-auto max-w-full px-2 pointer-events-auto no-scrollbar">
+            <span class="pixel-card px-2.5 py-1 text-[11px] font-bold text-slate-700 flex items-center gap-1 shrink-0">
+                <i class="fa-solid fa-compass text-amber-500"></i> Misi Cepat:
+            </span>
+            <button onclick="runPresetMission(0)" class="pixel-btn bg-amber-200 hover:bg-amber-300 text-slate-900 px-3 py-1 text-xs font-bold shrink-0">
+                🚀 Buat Web App & UI Pixel
+            </button>
+            <button onclick="runPresetMission(1)" class="pixel-btn bg-emerald-200 hover:bg-emerald-300 text-slate-900 px-3 py-1 text-xs font-bold shrink-0">
+                🔍 Riset Tren AI & Ringkasan
+            </button>
+            <button onclick="runPresetMission(2)" class="pixel-btn bg-sky-200 hover:bg-sky-300 text-slate-900 px-3 py-1 text-xs font-bold shrink-0">
+                🛡️ Audit API & Optimasi Database
+            </button>
+            <button onclick="runPresetMission(3)" class="pixel-btn bg-pink-200 hover:bg-pink-300 text-slate-900 px-3 py-1 text-xs font-bold shrink-0">
+                🎨 Desain Sistem Kampanye Produk
+            </button>
+        </div>
+
+        <!-- Main Prompt Bar -->
+        <div class="pixel-card w-full max-w-3xl p-2 flex items-center gap-2 pointer-events-auto">
+            <div class="w-9 h-9 rounded-lg bg-amber-400 border-2 border-slate-800 flex items-center justify-center text-slate-900 shrink-0">
+                <i class="fa-solid fa-terminal"></i>
+            </div>
+            <input 
+                id="mission-input" 
+                type="text" 
+                placeholder="Perintahkan Hermes Agent Desk... (contoh: Rancang dashboard analitik real-time & dokumentasi)"
+                class="w-full bg-transparent text-slate-800 placeholder-slate-400 font-medium text-sm focus:outline-none px-1"
+                onkeydown="if(event.key === 'Enter') dispatchCustomMission()"
+            >
+            <button onclick="dispatchCustomMission()" class="pixel-btn bg-gradient-to-r from-amber-400 to-orange-400 hover:from-amber-300 hover:to-orange-300 text-slate-900 px-4 py-2 text-xs sm:text-sm font-bold shrink-0 flex items-center gap-2">
+                <i class="fa-solid fa-paper-plane"></i>
+                <span>Kirim Misi</span>
+            </button>
+        </div>
+    </footer>
+
+    <!-- Toast Notification Banner -->
+    <div id="toast-banner" class="fixed top-20 left-1/2 -translate-x-1/2 z-50 pointer-events-none opacity-0 transition-all duration-300 transform -translate-y-3">
+        <div class="pixel-card bg-amber-300 px-4 py-2 flex items-center gap-2.5 text-slate-900 font-bold text-xs shadow-xl">
+            <i class="fa-solid fa-bell text-slate-900"></i>
+            <span id="toast-message">Misi baru diterima oleh Hermes!</span>
+        </div>
+    </div>
+
+    <!-- ================= APPLICATION LOGIC & 3D ENGINE ================= -->
+    <script>
+        /******************************************************************
+         * 1. COZY CHIPTUNE SYNTHESIZER (WEB AUDIO API)
+         ******************************************************************/
+        let audioCtx = null;
+        let soundEnabled = true;
+
+        function initAudio() {
+            if (!audioCtx) {
+                const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+                if (AudioContextClass) audioCtx = new AudioContextClass();
+            }
+            if (audioCtx && audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+        }
+
+        function playTone(freq = 520, type = 'square', duration = 0.09, vol = 0.06, slideFreq = null) {
+            if (!soundEnabled) return;
+            try {
+                initAudio();
+                if (!audioCtx) return;
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.type = type;
+                osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+                if (slideFreq) {
+                    osc.frequency.exponentialRampToValueAtTime(slideFreq, audioCtx.currentTime + duration);
+                }
+                gain.gain.setValueAtTime(vol, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.start();
+                osc.stop(audioCtx.currentTime + duration);
+            } catch (e) {
+                // Ignore audio context restrictions before user gesture
+            }
+        }
+
+        function playChime(type = 'select') {
+            if (!soundEnabled) return;
+            if (type === 'select') {
+                playTone(587.33, 'triangle', 0.08, 0.07, 880);
+            } else if (type === 'dispatch') {
+                playTone(440, 'square', 0.08, 0.05);
+                setTimeout(() => playTone(554.37, 'square', 0.08, 0.05), 70);
+                setTimeout(() => playTone(659.25, 'square', 0.14, 0.06), 140);
+            } else if (type === 'complete') {
+                playTone(523.25, 'triangle', 0.09, 0.07);
+                setTimeout(() => playTone(659.25, 'triangle', 0.09, 0.07), 85);
+                setTimeout(() => playTone(783.99, 'triangle', 0.09, 0.07), 170);
+                setTimeout(() => playTone(1046.50, 'triangle', 0.22, 0.08), 255);
+            } else if (type === 'packet') {
+                playTone(720, 'sine', 0.06, 0.04, 980);
+            }
+        }
+
+        function toggleAudio() {
+            soundEnabled = !soundEnabled;
+            const icon = document.getElementById('icon-audio');
+            const btn = document.getElementById('btn-audio');
+            if (soundEnabled) {
+                icon.className = 'fa-solid fa-volume-high';
+                btn.classList.replace('bg-slate-300', 'bg-amber-300');
+                playChime('select');
+            } else {
+                icon.className = 'fa-solid fa-volume-xmark';
+                btn.classList.replace('bg-amber-300', 'bg-slate-300');
+            }
+        }
+
+        /******************************************************************
+         * 2. HERMES MULTI-AGENT DATA & STATE
+         ******************************************************************/
+        const AGENTS = [
+            {
+                id: 'hermes',
+                name: 'Hermes Prime',
+                role: 'Orchestrator & Router',
+                model: 'Nous-Hermes-3-405B',
+                stationName: 'Pergola Emas Pusat',
+                color: '#f59e0b',
+                hatColor: 0xfbbf24,
+                shirtColor: 0x0284c7,
+                skinColor: 0xffedd5,
+                position: { x: 0, z: -4.2 },
+                deskDir: 0,
+                status: 'WORKING',
+                mood: '⚡ Semangat 100%',
+                speech: 'Mengatur rute tugas di taman!',
+                currentTask: 'Menyinkronkan memori antar-agen & antrean misi',
+                tools: ['task_router', 'memory_graph', 'agent_handoff', 'verifier'],
+                xp: 98,
+                icon: 'fa-feather-pointed'
+            },
+            {
+                id: 'athena',
+                name: 'Athena Owl',
+                role: 'Deep Research & RAG',
+                model: 'Hermes-3-Llama-70B',
+                stationName: 'Meja Botani Pustaka',
+                color: '#10b981',
+                hatColor: 0x10b981,
+                shirtColor: 0x059669,
+                skinColor: 0xfde68a,
+                position: { x: -6.2, z: 1.5 },
+                deskDir: Math.PI / 2,
+                status: 'ANALYZING',
+                mood: '🌿 Fokus Tenang',
+                speech: 'Membaca 14 jurnal & dokumentasi...',
+                currentTask: 'Ekstraksi insight semantik & validasi fakta',
+                tools: ['web_search', 'arxiv_reader', 'vector_recall', 'citation_check'],
+                xp: 92,
+                icon: 'fa-book-open-reader'
+            },
+            {
+                id: 'hephaestus',
+                name: 'Hephaestus Forge',
+                role: 'Full-Stack Code & DevOps',
+                model: 'Hermes-3-Coder-70B',
+                stationName: 'Gazebo Bengkel Kode',
+                color: '#f43f5e',
+                hatColor: 0xf43f5e,
+                shirtColor: 0xe11d48,
+                skinColor: 0xfed7aa,
+                position: { x: 6.2, z: 1.5 },
+                deskDir: -Math.PI / 2,
+                status: 'CODING',
+                mood: '🔥 Produktif Tinggi',
+                speech: 'Menulis fungsi async & unit test!',
+                currentTask: 'Kompilasi modul API & optimasi query',
+                tools: ['code_sandbox', 'git_commit', 'ast_linter', 'docker_build'],
+                xp: 95,
+                icon: 'fa-code'
+            },
+            {
+                id: 'iris',
+                name: 'Iris Prism',
+                role: 'Visual UI & Creative Synth',
+                model: 'Hermes-Vision-Multimodal',
+                stationName: 'Teras Bunga Kanvas',
+                color: '#a855f7',
+                hatColor: 0xc084fc,
+                shirtColor: 0x9333ea,
+                skinColor: 0xffedd5,
+                position: { x: 0, z: 6.4 },
+                deskDir: Math.PI,
+                status: 'DESIGNING',
+                mood: '🌸 Inspiratif Ceria',
+                speech: 'Meracik palet pixel ceria!',
+                currentTask: 'Merender komponen desain responsif & aset SVG',
+                tools: ['svg_synth', 'tailwind_architect', 'color_harmony', 'ux_audit'],
+                xp: 90,
+                icon: 'fa-palette'
+            }
+        ];
+
+        const PRESET_MISSIONS = [
+            {
+                title: 'Buat Web App & UI Pixel',
+                prompt: 'Bangun aplikasi Web Dashboard SaaS dengan tema Pixel Art Ceria beserta komponen grafik interaktif.',
+                steps: [
+                    { agent: 'hermes', speech: 'Misi diterima! Membagi spesifikasi Web App...', log: 'Hermes memecah misi menjadi 3 sub-tugas paralel.' },
+                    { agent: 'athena', speech: 'Menganalisis UX pattern & metrik SaaS terbaik!', log: 'Athena merangkum 5 metrik utama untuk komponen dashboard.' },
+                    { agent: 'iris', speech: 'Merancang sistem token warna Pixel Garden HD!', log: 'Iris menghasilkan skema warna ceria & tata letak responsif.' },
+                    { agent: 'hephaestus', speech: 'Mengimplementasikan komponen React + Tailwind!', log: 'Hephaestus menyusun kode produksi bersih tanpa error.' }
+                ],
+                artifact: `// ==========================================
+// HERMES GARDEN ARTIFACT: Pixel SaaS Dashboard
+// Disusun oleh: Hermes, Athena, Iris & Hephaestus
+// ==========================================
+
+export const PixelGardenTheme = {
+  palette: {
+    sky: '#38bdf8',
+    meadow: '#4ade80',
+    sunbeam: '#fbbf24',
+    blossom: '#fb7185'
+  },
+  metrics: [
+    { id: 'uptime', label: 'Garden Uptime', value: '99.98%' },
+    { id: 'agents', label: 'Autonomous Workers', value: 4 },
+    { id: 'latency', label: 'Neural Bus Latency', value: '18ms' }
+  ],
+  status: 'READY_FOR_PRODUCTION ✨'
+};`
+            },
+            {
+                title: 'Riset Tren AI & Ringkasan',
+                prompt: 'Lakukan riset mendalam tentang arsitektur Multi-Agent AI 2026 dan buat laporan eksekutif.',
+                steps: [
+                    { agent: 'hermes', speech: 'Mengaktifkan protokol riset mendalam...', log: 'Hermes mengirim paket instruksi ke meja pustaka Athena.' },
+                    { agent: 'athena', speech: 'Menelusuri paper terbaru tentang Agentic Workflows!', log: 'Athena mengekstrak 12 referensi utama tentang orkestrasi agen.' },
+                    { agent: 'hephaestus', speech: 'Membuat benchmark simulasi latensi token!', log: 'Hephaestus memvalidasi efisiensi routing pesan.' },
+                    { agent: 'iris', speech: 'Memformat infografis laporan eksekutif!', log: 'Iris merapikan struktur visual laporan akhir.' }
+                ],
+                artifact: `# LAPORAN RISET EKSEKUTIF HERMES
+Topik: Orkestrasi Multi-Agen Otonom di Lingkungan Visual 3D
+
+1. TEMUAN UTAMA (Athena Owl):
+   - Spesialisasi peran (Router, Researcher, Coder, Designer) meningkatkan akurasi tugas kompleks sebesar +41.8%.
+   - Memori bersama berbasis graf mengurangi duplikasi konteks hingga 63%.
+
+2. ARSITEKTUR TEKNIS (Hephaestus Forge):
+   - Protokol: Event-Driven Message Passing
+   - Rata-rata Throughput: 145 token/detik
+
+3. REKOMENDASI VISUAL (Iris Prism):
+   - Gunakan representasi ruang 3D (Spatial Agent Desk) agar manusia dapat memantau status agen secara intuitif.`
+            },
+            {
+                title: 'Audit API & Optimasi Database',
+                prompt: 'Periksa keamanan endpoint API, tambahkan rate-limiter, dan optimasi indeks query PostgreSQL.',
+                steps: [
+                    { agent: 'hermes', speech: 'Memulai protokol keamanan & optimasi...', log: 'Hermes menginstruksikan audit menyeluruh.' },
+                    { agent: 'athena', speech: 'Memeriksa standar OWASP API Security 2026...', log: 'Athena memetakan daftar cek keamanan autentikasi JWT.' },
+                    { agent: 'hephaestus', speech: 'Menambahkan indeks komposit & Redis Rate Limiter!', log: 'Hephaestus menurunkan waktu query dari 240ms menjadi 9ms!' },
+                    { agent: 'iris', speech: 'Memperbarui tampilan badge status keamanan!', log: 'Iris memperbarui indikator visual kesehatan sistem.' }
+                ],
+                artifact: `-- HERMES SQL & SECURITY OPTIMIZATION PATCH
+-- Disusun oleh: Hephaestus Forge & Athena Owl
+
+CREATE INDEX CONCURRENTLY idx_agent_tasks_status_created 
+ON hermes_tasks (status, created_at DESC) 
+WHERE is_archived = FALSE;
+
+-- Rate Limiter Middleware Config
+export const rateLimitConfig = {
+  windowMs: 60 * 1000,
+  maxRequests: 120,
+  strategy: 'token-bucket-redis',
+  verifiedBy: 'Hermes-Security-Audit-v3'
+};`
+            },
+            {
+                title: 'Desain Sistem Kampanye Produk',
+                prompt: 'Buat konsep peluncuran produk interaktif bertema taman pixel yang ramah dan menyenangkan.',
+                steps: [
+                    { agent: 'hermes', speech: 'Mengumpulkan ide kreatif dari seluruh taman!', log: 'Hermes membuka sesi brainstorming kolaboratif.' },
+                    { agent: 'iris', speech: 'Mendesain maskot pixel & animasi bunga sakura!', log: 'Iris menyelesaikan storyboard visual 3D HD.' },
+                    { agent: 'athena', speech: 'Menyusun copywriting ramah & penuh semangat!', log: 'Athena merumuskan narasi kampanye yang menarik.' },
+                    { agent: 'hephaestus', speech: 'Menyiapkan halaman interaktif WebGL 60FPS!', log: 'Hephaestus mengoptimalkan performa render di semua perangkat.' }
+                ],
+                artifact: `{
+  "campaignName": "Cheerful Pixel Garden Launch",
+  "tagline": "Tempat Agen AI Bekerja dengan Gembira di Taman 3D!",
+  "visualStyle": "HD-2D Voxel & Crisp Pixel Art",
+  "keyFeatures": [
+    "Interaksi langsung dengan 4 Agen Spesialis",
+    "Siklus Pagi, Senja, dan Malam Lentera",
+    "Pengiriman Paket Data Visual secara Real-Time"
+  ],
+  "readinessScore": "100% Cheerful & Ready"
+}`
+            }
+        ];
+
+        let selectedAgentId = 'hermes';
+        let totalPacketsSent = 18;
+        let isTurboMode = false;
+        let pixelScaleMode = 'hd'; // 'hd' or 'retro'
+
+        /******************************************************************
+         * 3. PROCEDURAL PIXEL-ART TEXTURE GENERATOR (THREE.NearestFilter)
+         ******************************************************************/
+        function createPixelTexture(width, height, drawFn) {
+            const canvas = document.createElement('canvas');
+            canvas.width = width;
+            canvas.height = height;
+            const ctx = canvas.getContext('2d');
+            ctx.imageSmoothingEnabled = false;
+            drawFn(ctx, width, height);
+
+            const texture = new THREE.CanvasTexture(canvas);
+            texture.magFilter = THREE.NearestFilter;
+            texture.minFilter = THREE.NearestFilter;
+            texture.generateMipmaps = false;
+            texture.needsUpdate = true;
+            return texture;
+        }
+
+        // 1. Lush Pixel Grass Texture
+        const grassTexture = createPixelTexture(64, 64, (ctx, w, h) => {
+            const greens = ['#4ade80', '#22c55e', '#86efac', '#16a34a'];
+            for (let y = 0; y < h; y++) {
+                for (let x = 0; x < w; x++) {
+                    const base = ((x + y) % 2 === 0) ? '#4ade80' : '#34d399';
+                    ctx.fillStyle = base;
+                    ctx.fillRect(x, y, 1, 1);
+                    if (Math.random() < 0.14) {
+                        ctx.fillStyle = greens[Math.floor(Math.random() * greens.length)];
+                        ctx.fillRect(x, y, 1, 1);
+                    }
+                }
+            }
+        });
+        grassTexture.wrapS = THREE.RepeatWrapping;
+        grassTexture.wrapT = THREE.RepeatWrapping;
+        grassTexture.repeat.set(8, 8);
+
+        // 2. Cobblestone Garden Path Texture
+        const pathTexture = createPixelTexture(16, 16, (ctx, w, h) => {
+            ctx.fillStyle = '#fde68a';
+            ctx.fillRect(0, 0, w, h);
+            const stones = [
+                { x: 1, y: 1, w: 6, h: 6, c: '#fcd34d' },
+                { x: 8, y: 1, w: 7, h: 5, c: '#fbbf24' },
+                { x: 1, y: 8, w: 7, h: 7, c: '#fbbf24' },
+                { x: 9, y: 7, w: 6, h: 8, c: '#f59e0b' }
+            ];
+            stones.forEach(s => {
+                ctx.fillStyle = s.c;
+                ctx.fillRect(s.x, s.y, s.w, s.h);
+                ctx.fillStyle = '#fef3c7';
+                ctx.fillRect(s.x, s.y, s.w - 1, 1);
+            });
+        });
+        pathTexture.wrapS = THREE.RepeatWrapping;
+        pathTexture.wrapT = THREE.RepeatWrapping;
+
+        // 3. Pixel Wood Planks Texture
+        const woodTexture = createPixelTexture(16, 16, (ctx, w, h) => {
+            ctx.fillStyle = '#b45309';
+            ctx.fillRect(0, 0, w, h);
+            for (let y = 0; y < h; y += 4) {
+                ctx.fillStyle = (y % 8 === 0) ? '#d97706' : '#b45309';
+                ctx.fillRect(0, y, w, 3);
+                ctx.fillStyle = '#78350f';
+                ctx.fillRect(0, y + 3, w, 1);
+            }
+        });
+
+        // 4. Pixel Computer Screen Texture
+        function createScreenTexture(accentHex) {
+            return createPixelTexture(16, 12, (ctx, w, h) => {
+                ctx.fillStyle = '#0f172a';
+                ctx.fillRect(0, 0, w, h);
+                ctx.fillStyle = accentHex;
+                ctx.fillRect(2, 2, 7, 1);
+                ctx.fillStyle = '#38bdf8';
+                ctx.fillRect(2, 4, 11, 1);
+                ctx.fillStyle = '#4ade80';
+                ctx.fillRect(2, 6, 9, 1);
+                ctx.fillStyle = '#fbbf24';
+                ctx.fillRect(2, 8, 5, 1);
+                ctx.fillStyle = '#f8fafc';
+                ctx.fillRect(9, 8, 2, 1);
+            });
+        }
+
+        // 5. Pixel Character Face Texture
+        function createFaceTexture(skinHex, eyeHex = '#0f172a', blushHex = '#fb7185') {
+            return createPixelTexture(8, 8, (ctx) => {
+                ctx.fillStyle = skinHex;
+                ctx.fillRect(0, 0, 8, 8);
+                // Hair fringe top
+                ctx.fillStyle = '#334155';
+                ctx.fillRect(0, 0, 8, 2);
+                // Eyes
+                ctx.fillStyle = eyeHex;
+                ctx.fillRect(1, 3, 2, 2);
+                ctx.fillRect(5, 3, 2, 2);
+                // Eye sparkle
+                ctx.fillStyle = '#ffffff';
+                ctx.fillRect(1, 3, 1, 1);
+                ctx.fillRect(5, 3, 1, 1);
+                // Cheerful Blush
+                ctx.fillStyle = blushHex;
+                ctx.fillRect(0, 5, 2, 1);
+                ctx.fillRect(6, 5, 2, 1);
+                // Happy Smile
+                ctx.fillStyle = '#9f1239';
+                ctx.fillRect(3, 6, 2, 1);
+            });
+        }
+
+        /******************************************************************
+         * 4. THREE.JS 3D HD PIXEL GARDEN SCENE SETUP
+         ******************************************************************/
+        const container = document.getElementById('canvas-container');
+        const scene = new THREE.Scene();
+        scene.background = new THREE.Color(0x7dd3fc);
+        scene.fog = new THREE.FogExp2(0x7dd3fc, 0.018);
+
+        const camera = new THREE.PerspectiveCamera(42, window.innerWidth / window.innerHeight, 0.1, 120);
+        const renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: 'high-performance' });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+        renderer.shadowMap.enabled = true;
+        renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+        container.appendChild(renderer.domElement);
+
+        // Orbit & Focus Camera Controller (Custom Smooth Implementation)
+        const camState = {
+            theta: 0.55,
+            phi: 0.92,
+            radius: 22.5,
+            target: new THREE.Vector3(0, 0.8, 0.5),
+            desiredTarget: new THREE.Vector3(0, 0.8, 0.5),
+            desiredRadius: 22.5,
+            isDragging: false,
+            prevX: 0,
+            prevY: 0
+        };
+
+        function updateCameraPosition() {
+            camState.target.lerp(camState.desiredTarget, 0.08);
+            camState.radius += (camState.desiredRadius - camState.radius) * 0.08;
+
+            const x = camState.target.x + camState.radius * Math.sin(camState.phi) * Math.sin(camState.theta);
+            const y = camState.target.y + camState.radius * Math.cos(camState.phi);
+            const z = camState.target.z + camState.radius * Math.sin(camState.phi) * Math.cos(camState.theta);
+
+            camera.position.set(x, Math.max(2.5, y), z);
+            camera.lookAt(camState.target);
+        }
+
+        // Lighting Setup (HD-2D Warm Sunlight + Crisp Shadows)
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.72);
+        scene.add(ambientLight);
+
+        const hemiLight = new THREE.HemisphereLight(0xe0f2fe, 0x4ade80, 0.45);
+        scene.add(hemiLight);
+
+        const dirLight = new THREE.DirectionalLight(0xfffbeb, 1.15);
+        dirLight.position.set(16, 26, 14);
+        dirLight.castShadow = true;
+        dirLight.shadow.mapSize.width = 2048;
+        dirLight.shadow.mapSize.height = 2048;
+        dirLight.shadow.camera.near = 1;
+        dirLight.shadow.camera.far = 65;
+        const d = 18;
+        dirLight.shadow.camera.left = -d;
+        dirLight.shadow.camera.right = d;
+        dirLight.shadow.camera.top = d;
+        dirLight.shadow.camera.bottom = -d;
+        dirLight.shadow.bias = -0.0005;
+        scene.add(dirLight);
+
+        // Garden Lantern Point Lights (glow at sunset/night)
+        const lanternLights = [];
+        const lanternGlowMeshes = [];
+
+        /******************************************************************
+         * 5. BUILD THE 3D VOXEL / PIXEL GARDEN WORLD
+         ******************************************************************/
+        const worldGroup = new THREE.Group();
+        scene.add(worldGroup);
+
+        const interactableMeshes = [];
+
+        // Helper for crisp voxel boxes
+        function makeBox(w, h, d, colorOrMap, castShadow = true, receiveShadow = true) {
+            const geo = new THREE.BoxGeometry(w, h, d);
+            const matOpts = typeof colorOrMap === 'object'
+                ? { map: colorOrMap, roughness: 0.85 }
+                : { color: colorOrMap, roughness: 0.75 };
+            const mat = new THREE.MeshStandardMaterial(matOpts);
+            const mesh = new THREE.Mesh(geo, mat);
+            mesh.castShadow = castShadow;
+            mesh.receiveShadow = receiveShadow;
+            return mesh;
+        }
+
+        // 1. Floating Lush Pixel Island Base
+        function buildGardenIsland() {
+            // Main grass top layer
+            const topGrass = makeBox(24, 1.2, 24, grassTexture, false, true);
+            topGrass.position.y = -0.6;
+            worldGroup.add(topGrass);
+
+            // Stepped voxel dirt cliff layers underneath
+            const dirt1 = makeBox(22.6, 1.4, 22.6, 0xb45309, true, true);
+            dirt1.position.y = -1.9;
+            worldGroup.add(dirt1);
+
+            const dirt2 = makeBox(19.5, 1.6, 19.5, 0x92400e, true, true);
+            dirt2.position.y = -3.4;
+            worldGroup.add(dirt2);
+
+            const rockBase = makeBox(15, 1.8, 15, 0x64748b, true, true);
+            rockBase.position.y = -5.1;
+            worldGroup.add(rockBase);
+
+            // Corner Raised Grass Hills for depth
+            const hills = [
+                { x: -8.5, z: -8.5, w: 6, d: 6, h: 0.7 },
+                { x: 8.5, z: -8.5, w: 6, d: 6, h: 0.7 },
+                { x: -8.8, z: 8.2, w: 5.5, d: 5.5, h: 0.5 },
+            ];
+            hills.forEach(hl => {
+                const hill = makeBox(hl.w, hl.h, hl.d, 0x22c55e, true, true);
+                hill.position.set(hl.x, hl.h / 2, hl.z);
+                worldGroup.add(hill);
+            });
+
+            // Cobblestone Cross Paths connecting Central Fountain to all 4 Agent Desks
+            const pathCenter = makeBox(5.2, 0.08, 5.2, pathTexture, false, true);
+            pathCenter.position.set(0, 0.04, 1.2);
+            worldGroup.add(pathCenter);
+
+            // Path North to Hermes
+            const pathN = makeBox(2.4, 0.08, 5.5, pathTexture, false, true);
+            pathN.position.set(0, 0.04, -2.5);
+            worldGroup.add(pathN);
+
+            // Path South to Iris
+            const pathS = makeBox(2.4, 0.08, 5.0, pathTexture, false, true);
+            pathS.position.set(0, 0.04, 4.5);
+            worldGroup.add(pathS);
+
+            // Path West to Athena
+            const pathW = makeBox(6.0, 0.08, 2.4, pathTexture, false, true);
+            pathW.position.set(-4.0, 0.04, 1.5);
+            worldGroup.add(pathW);
+
+            // Path East to Hephaestus
+            const pathE = makeBox(6.0, 0.08, 2.4, pathTexture, false, true);
+            pathE.position.set(4.0, 0.04, 1.5);
+            worldGroup.add(pathE);
+        }
+
+        // 2. Central Hermes Golden Winged Fountain Hub (Message Router Node)
+        let fountainCristal = null;
+        let fountainWaterRing = null;
+        function buildCentralFountain() {
+            const hubGroup = new THREE.Group();
+            hubGroup.position.set(0, 0, 1.2);
+
+            // Stone rim
+            const rim = makeBox(3.2, 0.45, 3.2, 0xe2e8f0);
+            rim.position.y = 0.22;
+            hubGroup.add(rim);
+
+            // Animated cyan pixel water inside
+            const water = makeBox(2.6, 0.35, 2.6, 0x38bdf8, false, true);
+            water.position.y = 0.3;
+            fountainWaterRing = water;
+            hubGroup.add(water);
+
+            // Central pillar
+            const pillar = makeBox(0.8, 1.4, 0.8, 0xf8fafc);
+            pillar.position.y = 0.7;
+            hubGroup.add(pillar);
+
+            // Floating Golden Hermes Neural Crystal
+            const crystalGeo = new THREE.OctahedronGeometry(0.55, 0);
+            const crystalMat = new THREE.MeshStandardMaterial({
+                color: 0xfbbf24,
+                emissive: 0xf59e0b,
+                emissiveIntensity: 0.45,
+                roughness: 0.2,
+                metalness: 0.6
+            });
+            fountainCristal = new THREE.Mesh(crystalGeo, crystalMat);
+            fountainCristal.position.y = 2.05;
+            fountainCristal.castShadow = true;
+            hubGroup.add(fountainCristal);
+
+            // Cute Pixel Wings on the Fountain Pillar
+            const leftWing = makeBox(0.6, 0.35, 0.15, 0xfef08a);
+            leftWing.position.set(-0.6, 1.35, 0);
+            leftWing.rotation.z = 0.25;
+            hubGroup.add(leftWing);
+
+            const rightWing = makeBox(0.6, 0.35, 0.15, 0xfef08a);
+            rightWing.position.set(0.6, 1.35, 0);
+            rightWing.rotation.z = -0.25;
+            hubGroup.add(rightWing);
+
+            worldGroup.add(hubGroup);
+        }
+
+        // 3. Crystal Pond with Koi Fish, Lilypads & Wooden Bridge (South-East corner)
+        const koiFishList = [];
+        function buildGardenPond() {
+            const pondGroup = new THREE.Group();
+            pondGroup.position.set(6.8, 0, 7.2);
+
+            // Pond basin border
+            const border = makeBox(5.6, 0.18, 4.6, 0x94a3b8);
+            border.position.y = 0.05;
+            pondGroup.add(border);
+
+            // Sparkling Water
+            const waterMat = new THREE.MeshStandardMaterial({
+                color: 0x0ea5e9,
+                roughness: 0.15,
+                metalness: 0.1,
+                transparent: true,
+                opacity: 0.9
+            });
+            const water = new THREE.Mesh(new THREE.BoxGeometry(5.0, 0.2, 4.0), waterMat);
+            water.position.y = 0.08;
+            pondGroup.add(water);
+
+            // Pixel Lilypads + Lotus Flowers
+            const lilyCoords = [
+                { x: -1.4, z: -0.8 },
+                { x: 1.2, z: 0.9 },
+                { x: -0.5, z: 1.1 }
+            ];
+            lilyCoords.forEach((lc, i) => {
+                const pad = makeBox(0.65, 0.06, 0.65, 0x22c55e, false, true);
+                pad.position.set(lc.x, 0.2, lc.z);
+                pondGroup.add(pad);
+                if (i % 2 === 0) {
+                    const lotus = makeBox(0.28, 0.22, 0.28, 0xf472b6);
+                    lotus.position.set(lc.x, 0.32, lc.z);
+                    pondGroup.add(lotus);
+                }
+            });
+
+            // 2 Swimming Pixel Koi Fish
+            for (let i = 0; i < 2; i++) {
+                const koi = new THREE.Group();
+                const body = makeBox(0.38, 0.14, 0.18, i === 0 ? 0xf97316 : 0xf43f5e, false, false);
+                const tail = makeBox(0.16, 0.12, 0.12, 0xffffff, false, false);
+                tail.position.x = -0.24;
+                koi.add(body);
+                koi.add(tail);
+                koi.position.set(0, 0.16, 0);
+                pondGroup.add(koi);
+                koiFishList.push({ mesh: koi, angle: i * Math.PI, radius: 1.1 + i * 0.4, speed: 1.2 + i * 0.3 });
+            }
+
+            // Cute Red Arched Pixel Wooden Bridge over Pond
+            const bridgeGroup = new THREE.Group();
+            bridgeGroup.position.set(-2.4, 0.2, -1.2);
+            const plank = makeBox(1.8, 0.16, 1.3, woodTexture);
+            bridgeGroup.add(plank);
+            const rail1 = makeBox(1.8, 0.45, 0.12, 0xef4444);
+            rail1.position.set(0, 0.28, 0.58);
+            const rail2 = makeBox(1.8, 0.45, 0.12, 0xef4444);
+            rail2.position.set(0, 0.28, -0.58);
+            bridgeGroup.add(rail1, rail2);
+            pondGroup.add(bridgeGroup);
+
+            worldGroup.add(pondGroup);
+        }
+
+        // 4. Voxel Trees (Sakura Pink & Lush Oak Green), Flowers & Garden Lanterns
+        function createVoxelTree(x, y, z, type = 'sakura', scale = 1) {
+            const tree = new THREE.Group();
+            tree.position.set(x, y, z);
+            tree.scale.set(scale, scale, scale);
+
+            // Trunk
+            const trunk = makeBox(0.65, 2.2, 0.65, 0x78350f);
+            trunk.position.y = 1.1;
+            tree.add(trunk);
+
+            // Layered Voxel Canopy
+            const colors = type === 'sakura'
+                ? [0xf9a8d4, 0xf472b6, 0xfbcfe8]
+                : [0x22c55e, 0x16a34a, 0x4ade80];
+
+            const c1 = makeBox(2.6, 1.2, 2.6, colors[0]);
+            c1.position.y = 2.4;
+            tree.add(c1);
+
+            const c2 = makeBox(2.0, 1.0, 2.0, colors[1]);
+            c2.position.y = 3.3;
+            tree.add(c2);
+
+            const c3 = makeBox(1.2, 0.7, 1.2, colors[2]);
+            c3.position.y = 3.95;
+            tree.add(c3);
+
+            worldGroup.add(tree);
+        }
+
+        function createGardenLantern(x, z) {
+            const lantern = new THREE.Group();
+            lantern.position.set(x, 0, z);
+
+            const post = makeBox(0.24, 1.6, 0.24, 0x334155);
+            post.position.y = 0.8;
+            lantern.add(post);
+
+            const cap = makeBox(0.65, 0.16, 0.65, 0x1e293b);
+            cap.position.y = 1.95;
+            lantern.add(cap);
+
+            const glowMat = new THREE.MeshStandardMaterial({
+                color: 0xfef08a,
+                emissive: 0xfbbf24,
+                emissiveIntensity: 0.6
+            });
+            const bulb = new THREE.Mesh(new THREE.BoxGeometry(0.42, 0.42, 0.42), glowMat);
+            bulb.position.y = 1.7;
+            lantern.add(bulb);
+            lanternGlowMeshes.push(glowMat);
+
+            const ptLight = new THREE.PointLight(0xfbbf24, 0.4, 7);
+            ptLight.position.set(x, 1.8, z);
+            scene.add(ptLight);
+            lanternLights.push(ptLight);
+
+            worldGroup.add(lantern);
+        }
+
+        function decorateGardenFoliage() {
+            // Trees around perimeter
+            createVoxelTree(-8.5, 0.7, -8.5, 'sakura', 1.15);
+            createVoxelTree(8.5, 0.7, -8.5, 'oak', 1.1);
+            createVoxelTree(-9.0, 0.5, 8.0, 'sakura', 1.05);
+            createVoxelTree(-9.2, 0, -2.2, 'oak', 0.9);
+            createVoxelTree(9.2, 0, -2.2, 'sakura', 0.95);
+            createVoxelTree(-4.8, 0, -8.2, 'oak', 0.85);
+            createVoxelTree(4.8, 0, -8.2, 'sakura', 0.9);
+            createVoxelTree(-5.2, 0, 8.8, 'oak', 0.85);
+
+            // Garden Lanterns along paths
+            createGardenLantern(-2.2, -1.2);
+            createGardenLantern(2.2, -1.2);
+            createGardenLantern(-2.2, 3.8);
+            createGardenLantern(2.2, 3.8);
+
+            // White Wooden Pixel Fences on North & West edges
+            for (let i = -10; i <= 10; i += 2) {
+                if (Math.abs(i) > 3) {
+                    const post = makeBox(0.22, 0.75, 0.22, 0xf8fafc);
+                    post.position.set(i, 0.37, -11.2);
+                    const rail = makeBox(2.0, 0.14, 0.1, 0xf1f5f9);
+                    rail.position.set(i, 0.52, -11.2);
+                    worldGroup.add(post, rail);
+                }
+            }
+
+            // Scatter Cheerful Pixel Flowers & Bushes
+            const flowerColors = [0xf43f5e, 0xfbbf24, 0xa855f7, 0x38bdf8, 0xf472b6, 0xffffff];
+            for (let i = 0; i < 65; i++) {
+                const fx = (Math.random() - 0.5) * 21;
+                const fz = (Math.random() - 0.5) * 21;
+                // Avoid paths & desks & pond
+                if (Math.abs(fx) < 2.2 || (Math.abs(fz - 1.5) < 2.2)) continue;
+                if (fx > 3.5 && fz > 4.2) continue;
+
+                const stem = makeBox(0.12, 0.22, 0.12, 0x15803d, false, true);
+                stem.position.set(fx, 0.11, fz);
+                const petalColor = flowerColors[Math.floor(Math.random() * flowerColors.length)];
+                const blossom = makeBox(0.28, 0.16, 0.28, petalColor, true, true);
+                blossom.position.set(fx, 0.24, fz);
+                worldGroup.add(stem, blossom);
+            }
+        }
+
+        // 5. Build the 4 Distinct Agent Garden Desks & Characters
+        const agentMeshes = {};
+
+        function buildAgentStation(agent) {
+            const stationGroup = new THREE.Group();
+            stationGroup.position.set(agent.position.x, 0, agent.position.z);
+            stationGroup.rotation.y = agent.deskDir;
+
+            // Cozy Wooden Deck Platform under each desk
+            const deck = makeBox(3.8, 0.16, 3.4, woodTexture, true, true);
+            deck.position.y = 0.08;
+            stationGroup.add(deck);
+
+            // Corner Pergola / Parasol Pillars for charm
+            const pillarPositions = [
+                [-1.65, -1.45], [1.65, -1.45], [-1.65, 1.45], [1.65, 1.45]
+            ];
+            pillarPositions.forEach(([px, pz]) => {
+                const post = makeBox(0.18, 2.5, 0.18, 0x78350f);
+                post.position.set(px, 1.25, pz);
+                stationGroup.add(post);
+            });
+
+            // Cheerful Striped Canopy Roof Top (semi-open so camera sees inside clearly)
+            const roofFrame = makeBox(4.0, 0.18, 3.6, agent.hatColor);
+            roofFrame.position.y = 2.55;
+            stationGroup.add(roofFrame);
+
+            // Desk Table in front of the agent
+            const deskTop = makeBox(2.2, 0.14, 1.0, 0xfef3c7);
+            deskTop.position.set(0, 0.85, 0.55);
+            stationGroup.add(deskTop);
+
+            const legL = makeBox(0.16, 0.75, 0.85, 0x92400e);
+            legL.position.set(-0.9, 0.45, 0.55);
+            const legR = makeBox(0.16, 0.75, 0.85, 0x92400e);
+            legR.position.set(0.9, 0.45, 0.55);
+            stationGroup.add(legL, legR);
+
+            // Dual Pixel Monitors on the Desk
+            const screenTex = createScreenTexture(agent.color);
+            const monitor1 = makeBox(0.75, 0.52, 0.08, screenTex);
+            monitor1.position.set(-0.42, 1.22, 0.65);
+            monitor1.rotation.y = 0.18;
+            stationGroup.add(monitor1);
+
+            const monitor2 = makeBox(0.75, 0.52, 0.08, screenTex);
+            monitor2.position.set(0.42, 1.22, 0.65);
+            monitor2.rotation.y = -0.18;
+            stationGroup.add(monitor2);
+
+            // Coffee / Matcha Mug on Desk
+            const mug = makeBox(0.2, 0.24, 0.2, 0xffffff);
+            mug.position.set(0.85, 1.02, 0.4);
+            stationGroup.add(mug);
+
+            // Cute Potted Desk Succulents
+            const pot = makeBox(0.24, 0.22, 0.24, 0xea580c);
+            pot.position.set(-0.85, 1.02, 0.4);
+            const plant = makeBox(0.2, 0.22, 0.2, 0x22c55e);
+            plant.position.set(-0.85, 1.22, 0.4);
+            stationGroup.add(pot, plant);
+
+            // Build the Cute Voxel Character
+            const charGroup = new THREE.Group();
+            charGroup.position.set(0, 0.16, -0.35);
+
+            // Body / Tunic
+            const torso = makeBox(0.62, 0.68, 0.4, agent.shirtColor);
+            torso.position.y = 0.62;
+            charGroup.add(torso);
+
+            // Head with procedural Pixel Face on the front (+Z)
+            const faceTex = createFaceTexture('#ffedd5');
+            const headMaterials = [
+                new THREE.MeshStandardMaterial({ color: agent.skinColor }), // right
+                new THREE.MeshStandardMaterial({ color: agent.skinColor }), // left
+                new THREE.MeshStandardMaterial({ color: 0x334155 }),        // top hair
+                new THREE.MeshStandardMaterial({ color: agent.skinColor }), // bottom
+                new THREE.MeshStandardMaterial({ map: faceTex }),           // front (+Z)
+                new THREE.MeshStandardMaterial({ color: 0x334155 })         // back hair
+            ];
+            const head = new THREE.Mesh(new THREE.BoxGeometry(0.64, 0.64, 0.64), headMaterials);
+            head.position.y = 1.28;
+            head.castShadow = true;
+            charGroup.add(head);
+
+            // Hat / Accessory + Hermes Wings
+            const hat = makeBox(0.74, 0.22, 0.74, agent.hatColor);
+            hat.position.y = 1.66;
+            charGroup.add(hat);
+
+            if (agent.id === 'hermes') {
+                // Iconic Golden Wings on Hermes' Helmet
+                const wingL = makeBox(0.32, 0.26, 0.1, 0xfef08a);
+                wingL.position.set(-0.48, 1.72, 0);
+                wingL.rotation.z = 0.3;
+                const wingR = makeBox(0.32, 0.26, 0.1, 0xfef08a);
+                wingR.position.set(0.48, 1.72, 0);
+                wingR.rotation.z = -0.3;
+                charGroup.add(wingL, wingR);
+            }
+
+            // Left & Right Arms (animated typing!)
+            const armL = makeBox(0.22, 0.52, 0.22, agent.shirtColor);
+            armL.position.set(-0.44, 0.72, 0.22);
+            armL.rotation.x = -0.7;
+            charGroup.add(armL);
+
+            const armR = makeBox(0.22, 0.52, 0.22, agent.shirtColor);
+            armR.position.set(0.44, 0.72, 0.22);
+            armR.rotation.x = -0.7;
+            charGroup.add(armR);
+
+            stationGroup.add(charGroup);
+
+            // Invisible Hitbox for easy clicking
+            const hitBox = new THREE.Mesh(
+                new THREE.BoxGeometry(3.8, 3.2, 3.4),
+                new THREE.MeshBasicMaterial({ visible: false })
+            );
+            hitBox.position.y = 1.5;
+            hitBox.userData = { agentId: agent.id };
+            stationGroup.add(hitBox);
+            interactableMeshes.push(hitBox);
+
+            worldGroup.add(stationGroup);
+
+            // Store references for animation & label projection
+            agentMeshes[agent.id] = {
+                stationGroup,
+                charGroup,
+                head,
+                armL,
+                armR,
+                monitor1,
+                monitor2,
+                worldPos: new THREE.Vector3(agent.position.x, 2.85, agent.position.z)
+            };
+        }
+
+        // 6. Floating Blossom Petals / Sparkle Particles & Active Messenger Packets
+        const particles = [];
+        const particleGroup = new THREE.Group();
+        scene.add(particleGroup);
+
+        function initGardenParticles() {
+            const pColors = [0xfbcfe8, 0xfef08a, 0xffffff, 0xa7f3d0];
+            for (let i = 0; i < 55; i++) {
+                const mat = new THREE.MeshBasicMaterial({
+                    color: pColors[i % pColors.length]
+                });
+                const mesh = new THREE.Mesh(new THREE.BoxGeometry(0.14, 0.14, 0.14), mat);
+                mesh.position.set(
+                    (Math.random() - 0.5) * 24,
+                    1 + Math.random() * 7,
+                    (Math.random() - 0.5) * 24
+                );
+                particleGroup.add(mesh);
+                particles.push({
+                    mesh,
+                    speedY: 0.25 + Math.random() * 0.35,
+                    driftX: (Math.random() - 0.5) * 0.4,
+                    phase: Math.random() * Math.PI * 2
+                });
+            }
+        }
+
+        // Active Data Packets flying between Hermes Hub and Agent Desks
+        const activePackets = [];
+        function spawnVisualPacket(fromId, toId, colorHex = 0xfbbf24) {
+            const fromAgent = AGENTS.find(a => a.id === fromId) || AGENTS[0];
+            const toAgent = AGENTS.find(a => a.id === toId) || AGENTS[1];
+
+            const start = new THREE.Vector3(fromAgent.position.x, 1.6, fromAgent.position.z);
+            const end = new THREE.Vector3(toAgent.position.x, 1.6, toAgent.position.z);
+
+            const packetGroup = new THREE.Group();
+            const core = new THREE.Mesh(
+                new THREE.BoxGeometry(0.38, 0.38, 0.38),
+                new THREE.MeshStandardMaterial({
+                    color: colorHex,
+                    emissive: colorHex,
+                    emissiveIntensity: 0.8
+                })
+            );
+            // Tiny pixel wings on the packet
+            const w1 = makeBox(0.28, 0.14, 0.08, 0xffffff, false, false);
+            w1.position.x = -0.28;
+            const w2 = makeBox(0.28, 0.14, 0.08, 0xffffff, false, false);
+            w2.position.x = 0.28;
+            packetGroup.add(core, w1, w2);
+            packetGroup.position.copy(start);
+            scene.add(packetGroup);
+
+            activePackets.push({
+                mesh: packetGroup,
+                start,
+                end,
+                progress: 0,
+                speed: isTurboMode ? 1.8 : 0.95
+            });
+
+            totalPacketsSent++;
+            document.getElementById('metric-packets').textContent = `${totalPacketsSent} Paket`;
+            playChime('packet');
+        }
+
+        // Initialize all 3D structures
+        buildGardenIsland();
+        buildCentralFountain();
+        buildGardenPond();
+        decorateGardenFoliage();
+        AGENTS.forEach(agent => buildAgentStation(agent));
+        initGardenParticles();
+
+        /******************************************************************
+         * 6. FLOATING 3D WORLD LABELS & SPEECH BUBBLES
+         ******************************************************************/
+        const labelsContainer = document.getElementById('labels-container');
+        const labelElements = {};
+
+        function createFloatingLabels() {
+            labelsContainer.innerHTML = '';
+            AGENTS.forEach(agent => {
+                const el = document.createElement('div');
+                el.className = 'world-label flex flex-col items-center';
+                el.onclick = () => selectAgent(agent.id, true);
+
+                el.innerHTML = `
+                    <!-- Speech Bubble -->
+                    <div id="bubble-${agent.id}" class="speech-bubble bg-white text-slate-900 border-2 border-slate-900 px-2.5 py-1 rounded-xl shadow-md mb-1.5 max-w-[185px] text-center">
+                        <p id="speech-text-${agent.id}" class="text-[11px] font-bold leading-tight text-slate-800">${agent.speech}</p>
+                    </div>
+                    <!-- Agent Name Badge -->
+                    <div id="badge-${agent.id}" class="flex items-center gap-1.5 px-2.5 py-1 rounded-full border-2 border-slate-900 shadow-md transition-all" style="background-color: ${agent.color}; color: #0f172a;">
+                        <i class="fa-solid ${agent.icon} text-[10px]"></i>
+                        <span class="font-pixel text-[9px] tracking-tighter">${agent.name}</span>
+                        <span class="w-2 h-2 rounded-full bg-white border border-slate-900 animate-pulse"></span>
+                    </div>
+                `;
+                labelsContainer.appendChild(el);
+                labelElements[agent.id] = el;
+            });
+        }
+
+        function updateFloatingLabelsProjection() {
+            const widthHalf = window.innerWidth / 2;
+            const heightHalf = window.innerHeight / 2;
+
+            AGENTS.forEach(agent => {
+                const meshData = agentMeshes[agent.id];
+                const el = labelElements[agent.id];
+                if (!meshData || !el) return;
+
+                const pos = meshData.worldPos.clone();
+                pos.project(camera);
+
+                // Hide if behind camera
+                if (pos.z > 1) {
+                    el.style.display = 'none';
+                    return;
+                }
+
+                const x = (pos.x * widthHalf) + widthHalf;
+                const y = -(pos.y * heightHalf) + heightHalf;
+
+                el.style.display = 'flex';
+                el.style.left = `${x}px`;
+                el.style.top = `${y}px`;
+            });
+        }
+
+        createFloatingLabels();
+
+        /******************************************************************
+         * 7. UI RENDERING: ROSTER, INSPECTOR & LIVE TELEMETRY
+         ******************************************************************/
+        function renderRoster() {
+            const listEl = document.getElementById('agent-roster-list');
+            listEl.innerHTML = AGENTS.map(agent => {
+                const isSelected = agent.id === selectedAgentId;
+                return `
+                    <div onclick="selectAgent('${agent.id}', true)" 
+                         class="p-2.5 rounded-xl border-2 cursor-pointer transition-all flex items-center justify-between ${isSelected ? 'bg-amber-100 border-slate-900 shadow-sm translate-x-1' : 'bg-white/80 border-slate-300 hover:border-slate-800'}">
+                        <div class="flex items-center gap-2.5">
+                            <div class="w-9 h-9 rounded-lg border-2 border-slate-900 flex items-center justify-center text-slate-900 font-bold shadow-sm" style="background-color: ${agent.color}">
+                                <i class="fa-solid ${agent.icon}"></i>
+                            </div>
+                            <div>
+                                <div class="text-xs font-bold text-slate-900 flex items-center gap-1.5">
+                                    <span>${agent.name}</span>
+                                </div>
+                                <div class="text-[11px] text-slate-500 font-medium">${agent.role}</div>
+                            </div>
+                        </div>
+                        <span class="text-[10px] font-bold px-2 py-0.5 rounded-md border border-slate-800 bg-emerald-300 text-slate-900">
+                            ${agent.status}
+                        </span>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function renderInspector() {
+            const agent = AGENTS.find(a => a.id === selectedAgentId) || AGENTS[0];
+            const inspectorEl = document.getElementById('agent-inspector');
+
+            inspectorEl.innerHTML = `
+                <div>
+                    <div class="flex items-center justify-between border-b-2 border-slate-200 pb-2.5 mb-2.5">
+                        <div class="flex items-center gap-2.5">
+                            <div class="w-10 h-10 rounded-xl border-2 border-slate-900 flex items-center justify-center text-slate-900 text-base shadow" style="background-color: ${agent.color}">
+                                <i class="fa-solid ${agent.icon}"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-pixel text-xs text-slate-900">${agent.name}</h3>
+                                <p class="text-xs font-semibold text-slate-500"><i class="fa-solid fa-location-dot text-rose-500 mr-1"></i>${agent.stationName}</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="space-y-2 text-xs">
+                        <div class="bg-slate-100 border border-slate-300 rounded-lg p-2 flex justify-between items-center">
+                            <span class="text-slate-500 font-semibold">Engine Model:</span>
+                            <span class="font-mono-code font-bold text-slate-800 text-[11px]">${agent.model}</span>
+                        </div>
+
+                        <div class="bg-amber-50 border border-amber-200 rounded-lg p-2">
+                            <div class="text-[10px] font-bold uppercase text-amber-700 mb-0.5">Tugas Saat Ini</div>
+                            <div class="text-slate-800 font-medium leading-snug">${agent.currentTask}</div>
+                        </div>
+
+                        <div>
+                            <div class="text-[10px] font-bold uppercase text-slate-400 mb-1">Active Tools (${agent.tools.length})</div>
+                            <div class="flex flex-wrap gap-1">
+                                ${agent.tools.map(t => `<span class="font-mono-code text-[10px] bg-slate-800 text-emerald-300 px-2 py-0.5 rounded border border-slate-900">${t}()</span>`).join('')}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="pt-3 border-t-2 border-slate-200 mt-2 flex items-center justify-between gap-2">
+                    <div class="text-xs font-bold text-slate-700">${agent.mood}</div>
+                    <button onclick="pingSingleAgent('${agent.id}')" class="pixel-btn bg-amber-300 hover:bg-amber-400 text-slate-900 px-3 py-1.5 text-xs font-bold flex items-center gap-1.5">
+                        <i class="fa-solid fa-bolt"></i> Ping Agen
+                    </button>
+                </div>
+            `;
+        }
+
+        function selectAgent(agentId, focusCamera = true) {
+            selectedAgentId = agentId;
+            playChime('select');
+            renderRoster();
+            renderInspector();
+
+            const agent = AGENTS.find(a => a.id === agentId);
+            if (agent && focusCamera) {
+                camState.desiredTarget.set(agent.position.x, 1.3, agent.position.z);
+                camState.desiredRadius = 11.5;
+            }
+        }
+
+        function resetCameraOverview() {
+            playChime('select');
+            camState.desiredTarget.set(0, 0.8, 0.5);
+            camState.desiredRadius = 22.5;
+        }
+
+        function addTelemetryLog(agentName, badgeColor, text) {
+            const streamEl = document.getElementById('tab-content-stream');
+            const time = new Date().toLocaleTimeString('id-ID', { hour12: false });
+            const item = document.createElement('div');
+            item.className = 'bg-slate-800/90 border border-slate-700 rounded-lg p-2 transition-all';
+            item.innerHTML = `
+                <div class="flex items-center justify-between mb-1">
+                    <span class="font-bold text-[11px] px-1.5 py-0.2 rounded text-slate-950" style="background-color: ${badgeColor}">${agentName}</span>
+                    <span class="text-[10px] text-slate-400">${time}</span>
+                </div>
+                <p class="text-slate-200 text-[11px] leading-relaxed">${text}</p>
+            `;
+            streamEl.prepend(item);
+            if (streamEl.children.length > 25) {
+                streamEl.removeChild(streamEl.lastChild);
+            }
+            if (typeof saveLogToBridge === 'function') {
+                saveLogToBridge(agentName, text, badgeColor);
+            }
+        }
+
+        function updateAgentSpeech(agentId, text, statusLabel = null) {
+            const agent = AGENTS.find(a => a.id === agentId);
+            if (!agent) return;
+            agent.speech = text;
+            if (statusLabel) agent.status = statusLabel;
+
+            const speechEl = document.getElementById(`speech-text-${agentId}`);
+            if (speechEl) speechEl.textContent = text;
+
+            renderRoster();
+            if (selectedAgentId === agentId) renderInspector();
+        }
+
+        /******************************************************************
+         * 8. INTERACTIVE WORKFLOWS, MISSIONS & GARDEN ACTIONS
+         ******************************************************************/
+        let missionTimers = [];
+
+        function clearMissionTimers() {
+            missionTimers.forEach(t => clearTimeout(t));
+            missionTimers = [];
+        }
+
+        function showToast(msg) {
+            const banner = document.getElementById('toast-banner');
+            document.getElementById('toast-message').textContent = msg;
+            banner.classList.remove('opacity-0', '-translate-y-3');
+            banner.classList.add('opacity-100', 'translate-y-0');
+            setTimeout(() => {
+                banner.classList.remove('opacity-100', 'translate-y-0');
+                banner.classList.add('opacity-0', '-translate-y-3');
+            }, 3200);
+        }
+
+        function runPresetMission(index) {
+            const preset = PRESET_MISSIONS[index] || PRESET_MISSIONS[0];
+            executeMissionWorkflow(preset.title, preset.prompt, preset.steps, preset.artifact);
+        }
+
+        function dispatchCustomMission() {
+            const input = document.getElementById('mission-input');
+            const promptText = input.value.trim();
+            if (!promptText) {
+                showToast('Ketik perintah misi terlebih dahulu atau pilih Misi Cepat!');
+                return;
+            }
+            input.value = '';
+
+            const customSteps = [
+                { agent: 'hermes', speech: `Menerima misi: "${promptText.slice(0, 28)}..."`, log: `Hermes mengurai prompt pengguna & menyusun graf eksekusi.` },
+                { agent: 'athena', speech: 'Mengumpulkan referensi & konteks pengetahuan...', log: `Athena memvalidasi data pendukung untuk: "${promptText}".` },
+                { agent: 'hephaestus', speech: 'Menulis modul kode & solusi teknis!', log: 'Hephaestus mengeksekusi sintesis kode di sandbox.' },
+                { agent: 'iris', speech: 'Memoles antarmuka & merangkum artefak!', log: 'Iris menyelesaikan presentasi hasil kerja tim.' }
+            ];
+
+            const customArtifact = `// ==================================================
+// HERMES MULTI-AGENT DELIVERABLE
+// Misi: ${promptText}
+// Status: SELESAI & TERVERIFIKASI
+// ==================================================
+
+export async function executeHermesSolution() {
+  const orchestration = {
+    coordinator: "Hermes Prime (Nous-Hermes-3-405B)",
+    researchContext: "Validated by Athena Owl",
+    implementation: "Compiled by Hephaestus Forge",
+    visualPolish: "Styled by Iris Prism"
+  };
+
+  return {
+    success: true,
+    mission: ${JSON.stringify(promptText)},
+    timestamp: "${new Date().toISOString()}",
+    orchestration
+  };
+}`;
+
+            executeMissionWorkflow('Misi Kustom Pengguna', promptText, customSteps, customArtifact);
+        }
+
+        function executeMissionWorkflow(title, prompt, steps, artifactText) {
+            clearMissionTimers();
+            playChime('dispatch');
+            showToast(`🚀 Misi Dimulai: ${title}`);
+            resetCameraOverview();
+
+            addTelemetryLog('USER MISSION', '#fde047', `Misi Baru: "${prompt}"`);
+
+            steps.forEach((step, idx) => {
+                const t = setTimeout(() => {
+                    const targetAgent = AGENTS.find(a => a.id === step.agent);
+                    if (step.agent !== 'hermes') {
+                        spawnVisualPacket('hermes', step.agent, targetAgent ? targetAgent.color : 0xfbbf24);
+                    } else {
+                        spawnVisualPacket('athena', 'hermes', 0xfbbf24);
+                    }
+
+                    updateAgentSpeech(step.agent, step.speech, 'ACTIVE ⚡');
+                    if (targetAgent) {
+                        targetAgent.currentTask = step.log;
+                        addTelemetryLog(targetAgent.name, targetAgent.color, step.log);
+                    }
+
+                    // Final step completion
+                    if (idx === steps.length - 1) {
+                        setTimeout(() => {
+                            playChime('complete');
+                            document.getElementById('artifact-viewer').textContent = artifactText;
+                            document.getElementById('artifact-meta').textContent = `Selesai: ${title}`;
+                            switchRightTab('artifact');
+                            triggerFireworks();
+                            showToast('✨ Misi Selesai! Hasil kerja tersedia di panel kanan.');
+                            if (typeof isBridgeOnline !== 'undefined' && isBridgeOnline) {
+                                saveArtifactToDrive();
+                            }
+                        }, 1100);
+                    }
+                }, idx * 1400);
+                missionTimers.push(t);
+            });
+        }
+
+        function pingSingleAgent(agentId) {
+            const agent = AGENTS.find(a => a.id === agentId);
+            if (!agent) return;
+            spawnVisualPacket('hermes', agent.id, agent.color);
+            updateAgentSpeech(agent.id, 'Siap! Paket prioritas diterima! ✨', 'BOOSTED');
+            addTelemetryLog(agent.name, agent.color, `Menerima ping langsung dari Supervisor di ${agent.stationName}.`);
+        }
+
+        function triggerCoffeeBreak() {
+            playChime('complete');
+            showToast('🍵 Semua agen menikmati Matcha Latte hangat di taman!');
+            AGENTS.forEach(a => {
+                updateAgentSpeech(a.id, 'Segar sekali! Terima kasih Matcha-nya! 🍵💚', 'ENERGIZED');
+                spawnVisualPacket('hermes', a.id, 0x4ade80);
+            });
+            addTelemetryLog('GARDEN EVENT', '#4ade80', 'Sesi Matcha Break meningkatkan semangat seluruh agen menjadi 100%!');
+        }
+
+        function triggerSpeedBoost() {
+            isTurboMode = !isTurboMode;
+            playChime('dispatch');
+            const tpsEl = document.getElementById('metric-tps');
+            if (isTurboMode) {
+                tpsEl.textContent = '310 tok/s ⚡';
+                showToast('⚡ Turbo Mode Aktif! Kecepatan agen & paket meningkat 2x!');
+                addTelemetryLog('HERMES CORE', '#38bdf8', 'Turbo Overclock diaktifkan: Kecepatan pengiriman paket meningkat 200%.');
+            } else {
+                tpsEl.textContent = '142 tok/s';
+                showToast('🌿 Kembali ke ritme taman normal yang santai.');
+            }
+        }
+
+        function triggerFireworks() {
+            AGENTS.forEach(a => {
+                if (a.id !== 'hermes') spawnVisualPacket(a.id, 'hermes', a.color);
+            });
+        }
+
+        /******************************************************************
+         * 9. ENVIRONMENT CONTROLS (TIME OF DAY & PIXEL SHADER)
+         ******************************************************************/
+        function setGardenTime(mode) {
+            playChime('select');
+            const clockEl = document.getElementById('hud-clock');
+            const btns = {
+                day: document.getElementById('btn-time-day'),
+                sunset: document.getElementById('btn-time-sunset'),
+                night: document.getElementById('btn-time-night')
+            };
+
+            Object.values(btns).forEach(b => {
+                b.className = 'px-2.5 py-1.5 rounded-lg text-xs font-bold text-slate-700 hover:bg-slate-200 transition flex items-center gap-1.5';
+            });
+
+            if (mode === 'day') {
+                btns.day.className = 'px-2.5 py-1.5 rounded-lg text-xs font-bold bg-sky-400 text-slate-900 border-2 border-slate-800 transition flex items-center gap-1.5';
+                scene.background.setHex(0x7dd3fc);
+                scene.fog.color.setHex(0x7dd3fc);
+                ambientLight.intensity = 0.72;
+                dirLight.intensity = 1.15;
+                dirLight.color.setHex(0xfffbeb);
+                lanternLights.forEach(l => l.intensity = 0.3);
+                clockEl.textContent = 'CERAH PAGI';
+            } else if (mode === 'sunset') {
+                btns.sunset.className = 'px-2.5 py-1.5 rounded-lg text-xs font-bold bg-amber-400 text-slate-900 border-2 border-slate-800 transition flex items-center gap-1.5';
+                scene.background.setHex(0xfb923c);
+                scene.fog.color.setHex(0xfb923c);
+                ambientLight.intensity = 0.58;
+                dirLight.intensity = 1.05;
+                dirLight.color.setHex(0xfde047);
+                lanternLights.forEach(l => l.intensity = 1.1);
+                clockEl.textContent = 'SENJA KEEMASAN';
+            } else if (mode === 'night') {
+                btns.night.className = 'px-2.5 py-1.5 rounded-lg text-xs font-bold bg-indigo-400 text-slate-900 border-2 border-slate-800 transition flex items-center gap-1.5';
+                scene.background.setHex(0x0f172a);
+                scene.fog.color.setHex(0x0f172a);
+                ambientLight.intensity = 0.32;
+                dirLight.intensity = 0.35;
+                dirLight.color.setHex(0x818cf8);
+                lanternLights.forEach(l => l.intensity = 2.2);
+                clockEl.textContent = 'MALAM LENTERA';
+            }
+        }
+
+        function togglePixelMode() {
+            playChime('select');
+            const label = document.getElementById('pixel-mode-label');
+            if (pixelScaleMode === 'hd') {
+                pixelScaleMode = 'retro';
+                // Lower internal WebGL render resolution for crunchy retro 3D pixel shader feel
+                renderer.setPixelRatio(0.42);
+                label.textContent = 'Retro 16-Bit';
+                showToast('👾 Mode Visual: Retro 16-Bit Crunchy Pixel 3D!');
+            } else {
+                pixelScaleMode = 'hd';
+                renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+                label.textContent = 'HD Pixel';
+                showToast('✨ Mode Visual: Crisp HD-2D Voxel Garden!');
+            }
+        }
+
+        function switchRightTab(tab) {
+            const streamContent = document.getElementById('tab-content-stream');
+            const artifactContent = document.getElementById('tab-content-artifact');
+            const btnStream = document.getElementById('tab-btn-stream');
+            const btnArtifact = document.getElementById('tab-btn-artifact');
+
+            if (tab === 'stream') {
+                streamContent.classList.remove('hidden');
+                artifactContent.classList.add('hidden');
+                btnStream.className = 'text-[11px] font-bold px-2 py-0.5 rounded bg-amber-400 text-slate-900';
+                btnArtifact.className = 'text-[11px] font-bold px-2 py-0.5 rounded bg-slate-800 text-slate-300 hover:bg-slate-700';
+            } else {
+                streamContent.classList.add('hidden');
+                artifactContent.classList.remove('hidden');
+                btnArtifact.className = 'text-[11px] font-bold px-2 py-0.5 rounded bg-emerald-400 text-slate-900';
+                btnStream.className = 'text-[11px] font-bold px-2 py-0.5 rounded bg-slate-800 text-slate-300 hover:bg-slate-700';
+            }
+        }
+
+        function copyArtifactContent() {
+            const text = document.getElementById('artifact-viewer').textContent;
+            const textarea = document.createElement('textarea');
+            textarea.value = text;
+            document.body.appendChild(textarea);
+            textarea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textarea);
+            playChime('select');
+            showToast('📋 Output berhasil disalin ke Clipboard!');
+        }
+
+        function toggleLeftPanel() {
+            const panel = document.getElementById('left-panel');
+            panel.classList.toggle('-translate-x-[120%]');
+        }
+
+        /******************************************************************
+         * 10. MOUSE / TOUCH CAMERA ORBIT & RAYCAST CLICKING
+         ******************************************************************/
+        const raycaster = new THREE.Raycaster();
+        const mouse = new THREE.Vector2();
+        let downTime = 0;
+
+        renderer.domElement.addEventListener('pointerdown', (e) => {
+            camState.isDragging = true;
+            camState.prevX = e.clientX;
+            camState.prevY = e.clientY;
+            downTime = performance.now();
+        });
+
+        window.addEventListener('pointermove', (e) => {
+            if (!camState.isDragging) return;
+            const dx = e.clientX - camState.prevX;
+            const dy = e.clientY - camState.prevY;
+            camState.prevX = e.clientX;
+            camState.prevY = e.clientY;
+
+            camState.theta -= dx * 0.007;
+            camState.phi = Math.max(0.35, Math.min(1.38, camState.phi - dy * 0.006));
+        });
+
+        window.addEventListener('pointerup', (e) => {
+            const elapsed = performance.now() - downTime;
+            camState.isDragging = false;
+
+            // If quick click/tap, raycast to see if an agent station was clicked
+            if (elapsed < 220) {
+                mouse.x = (e.clientX / window.innerWidth) * 2 - 1;
+                mouse.y = -(e.clientY / window.innerHeight) * 2 + 1;
+                raycaster.setFromCamera(mouse, camera);
+                const hits = raycaster.intersectObjects(interactableMeshes, false);
+                if (hits.length > 0 && hits[0].object.userData.agentId) {
+                    selectAgent(hits[0].object.userData.agentId, true);
+                }
+            }
+        });
+
+        renderer.domElement.addEventListener('wheel', (e) => {
+            e.preventDefault();
+            camState.desiredRadius = Math.max(8, Math.min(34, camState.desiredRadius + e.deltaY * 0.015));
+        }, { passive: false });
+
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+        /******************************************************************
+         * 11. MAIN ANIMATION LOOP & AUTONOMOUS GARDEN LIFE
+         ******************************************************************/
+        const clock = new THREE.Clock();
+
+        function animate() {
+            requestAnimationFrame(animate);
+            const t = clock.getElapsedTime();
+            const dt = 0.016;
+
+            const speedMult = isTurboMode ? 2.0 : 1.0;
+
+            // 1. Animate Central Hermes Golden Crystal & Water
+            if (fountainCristal) {
+                fountainCristal.rotation.y = t * 1.4 * speedMult;
+                fountainCristal.position.y = 2.05 + Math.sin(t * 3) * 0.14;
+            }
+            if (fountainWaterRing) {
+                fountainWaterRing.scale.x = 1 + Math.sin(t * 4) * 0.025;
+                fountainWaterRing.scale.z = 1 + Math.cos(t * 4) * 0.025;
+            }
+
+            // 2. Animate Koi Fish in the Garden Pond
+            koiFishList.forEach(koi => {
+                koi.angle += dt * koi.speed * speedMult;
+                koi.mesh.position.x = Math.cos(koi.angle) * koi.radius;
+                koi.mesh.position.z = Math.sin(koi.angle) * (koi.radius * 0.75);
+                koi.mesh.rotation.y = -koi.angle - Math.PI / 2;
+            });
+
+            // 3. Animate Each Agent (Bobbing, Typing Arms, Looking Around)
+            AGENTS.forEach((agent, idx) => {
+                const m = agentMeshes[agent.id];
+                if (!m) return;
+
+                // Cheerful bounce while working
+                m.charGroup.position.y = 0.16 + Math.abs(Math.sin(t * 4.5 * speedMult + idx)) * 0.08;
+                // Subtle head look
+                m.head.rotation.y = Math.sin(t * 2.0 + idx * 1.7) * 0.22;
+                // Typing arms animation
+                m.armL.rotation.x = -0.7 + Math.sin(t * 12 * speedMult + idx) * 0.25;
+                m.armR.rotation.x = -0.7 + Math.cos(t * 12 * speedMult + idx) * 0.25;
+            });
+
+            // 4. Animate Floating Blossom Petals / Sparkles
+            particles.forEach(p => {
+                p.mesh.position.y -= p.speedY * dt;
+                p.mesh.position.x += Math.sin(t + p.phase) * 0.01;
+                p.mesh.rotation.x += 0.02;
+                p.mesh.rotation.y += 0.03;
+                if (p.mesh.position.y < 0.2) {
+                    p.mesh.position.y = 7.5;
+                }
+            });
+
+            // 5. Animate Active Messenger Data Packets along parabolic arcs
+            for (let i = activePackets.length - 1; i >= 0; i--) {
+                const pkt = activePackets[i];
+                pkt.progress += dt * pkt.speed;
+                if (pkt.progress >= 1) {
+                    scene.remove(pkt.mesh);
+                    activePackets.splice(i, 1);
+                } else {
+                    pkt.mesh.position.lerpVectors(pkt.start, pkt.end, pkt.progress);
+                    // Parabolic arc height
+                    pkt.mesh.position.y += Math.sin(pkt.progress * Math.PI) * 2.4;
+                    pkt.mesh.rotation.y += 0.15;
+                }
+            }
+
+            // 6. Update Camera & Floating HTML Labels
+            updateCameraPosition();
+            updateFloatingLabelsProjection();
+
+            renderer.render(scene, camera);
+        }
+
+        // Periodic Autonomous Background Activity so the garden feels alive immediately
+        function startAutonomousGardenPulse() {
+            const idleChatter = [
+                { id: 'hermes', msg: 'Menjaga sinkronisasi memori taman 100%!', log: 'Hermes melakukan health-check pada seluruh stasiun agen.' },
+                { id: 'athena', msg: 'Menemukan paper baru tentang Agentic Memory! 📚', log: 'Athena mengindeks 3 dokumen referensi baru ke Vector DB.' },
+                { id: 'hephaestus', msg: 'Build selesai dalam 120ms! Semua test hijau ✅', log: 'Hephaestus menyelesaikan optimasi pipeline CI/CD.' },
+                { id: 'iris', msg: 'Menambahkan efek kilau bunga sakura di UI 🌸', log: 'Iris memperbarui komponen tema visual Pixel HD.' }
+            ];
+
+            let stepIdx = 0;
+            setInterval(() => {
+                const item = idleChatter[stepIdx % idleChatter.length];
+                const agent = AGENTS.find(a => a.id === item.id);
+                if (agent) {
+                    spawnVisualPacket('hermes', agent.id, agent.color);
+                    updateAgentSpeech(agent.id, item.msg);
+                    addTelemetryLog(agent.name, agent.color, item.log);
+                }
+                stepIdx++;
+            }, 6500);
+        }
+
+        /******************************************************************
+         * 12. LOCAL MICRO BRIDGE INTEGRATION (DATA AUTO-SAVE)
+         ******************************************************************/
+        const BRIDGE_API = 'http://localhost:8765/api';
+        let isBridgeOnline = false;
+
+        async function checkBridgeStatus(notifyUser = false) {
+            try {
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 1800);
+                const res = await fetch(`${BRIDGE_API}/status`, { signal: controller.signal });
+                clearTimeout(timeoutId);
+
+                if (res.ok) {
+                    const data = await res.json();
+                    isBridgeOnline = true;
+                    updateBridgeUI(true, data.data_dir);
+                    if (notifyUser) showToast('✨ Drive Bridge Terhubung! Auto-save aktif.');
+                    return true;
+                }
+            } catch (e) {
+                // Bridge offline
+            }
+
+            isBridgeOnline = false;
+            updateBridgeUI(false);
+            if (notifyUser) showToast('⚠️ Bridge belum aktif. Jalankan run_desk.bat');
+            return false;
+        }
+
+        function updateBridgeUI(online, dirPath = '') {
+            const dot = document.getElementById('bridge-dot');
+            const label = document.getElementById('bridge-label');
+            const pill = document.getElementById('bridge-status-pill');
+            if (!dot || !label) return;
+
+            if (online) {
+                dot.className = 'w-2.5 h-2.5 rounded-full bg-emerald-500 shadow-sm animate-pulse';
+                label.textContent = 'Bridge Aktif';
+                label.className = 'hidden lg:inline text-[11px] text-emerald-700 font-semibold';
+                if (pill) pill.title = `Micro Bridge Aktif -> Menyimpan ke: ${dirPath}`;
+            } else {
+                dot.className = 'w-2.5 h-2.5 rounded-full bg-slate-400';
+                label.textContent = 'Bridge Offline';
+                label.className = 'hidden lg:inline text-[11px] text-slate-500';
+                if (pill) pill.title = 'Micro Bridge Offline (Klik untuk cek atau jalankan run_desk.bat)';
+            }
+        }
+
+        async function saveLogToBridge(agentName, text, badgeColor) {
+            if (!isBridgeOnline) return;
+            try {
+                await fetch(`${BRIDGE_API}/save_log`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        agent: agentName,
+                        text: text,
+                        color: badgeColor,
+                        timestamp: new Date().toISOString()
+                    })
+                });
+            } catch (e) {}
+        }
+
+        async function saveArtifactToDrive() {
+            const content = document.getElementById('artifact-viewer').textContent;
+            const meta = document.getElementById('artifact-meta').textContent || 'hermes_artifact';
+            playChime('select');
+
+            if (isBridgeOnline) {
+                try {
+                    const res = await fetch(`${BRIDGE_API}/save_artifact`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            title: meta,
+                            content: content
+                        })
+                    });
+                    const data = await res.json();
+                    if (data && data.success) {
+                        playChime('complete');
+                        showToast(`💾 Tersimpan di: data/artifacts/${data.filename}`);
+                        addTelemetryLog('DRIVE BRIDGE', '#38bdf8', `Tersimpan: ${data.filename}`);
+                        return;
+                    }
+                } catch (e) {
+                    console.warn('Bridge save failed, fallback to download', e);
+                }
+            }
+
+            // Fallback download if bridge is offline
+            const blob = new Blob([content], { type: 'text/markdown;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `hermes_${Date.now()}.md`;
+            a.click();
+            URL.revokeObjectURL(url);
+            showToast('💾 Berkas diunduh via Browser (Bridge Offline)');
+        }
+
+        // Start Everything on Window Load
+        window.onload = function () {
+            renderRoster();
+            renderInspector();
+
+            // Initial logs & default artifact
+            addTelemetryLog('HERMES CORE', '#f59e0b', 'Sistem Hermes Visual Agent Desk v3.8 siap di Taman Pixel 3D HD.');
+            addTelemetryLog('ATHENA OWL', '#10b981', 'Terhubung ke indeks pengetahuan & pencarian semantik.');
+            addTelemetryLog('HEPHAESTUS', '#f43f5e', 'Sandbox eksekusi kode siap menerima kompilasi.');
+            addTelemetryLog('IRIS PRISM', '#a855f7', 'Engine visual Pixel HD-2D berjalan pada 60 FPS.');
+
+            document.getElementById('artifact-viewer').textContent = PRESET_MISSIONS[0].artifact;
+
+            // Spawn a welcome packet
+            setTimeout(() => spawnVisualPacket('hermes', 'athena', 0x10b981), 600);
+            setTimeout(() => spawnVisualPacket('hermes', 'hephaestus', 0xf43f5e), 1000);
+
+            // Connect to local micro bridge
+            checkBridgeStatus();
+            setInterval(checkBridgeStatus, 10000);
+
+            startAutonomousGardenPulse();
+            animate();
+        };
+    </script>
+</body>
+</html>

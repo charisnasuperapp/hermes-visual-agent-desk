@@ -1,0 +1,15 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.env
+.venv/
+env/
+
+# OS specific
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Optional: Ignore local telemetry log if large
+# data/*.jsonl

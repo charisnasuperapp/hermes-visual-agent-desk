@@ -11,5 +11,9 @@ env/
 Thumbs.db
 desktop.ini
 
-# Optional: Ignore local telemetry log if large
-# data/*.jsonl
+# Local runtime logs
+data/*.jsonl
+data/*.tmp
+data/artifacts/*.md
+!data/.gitkeep
+!data/artifacts/.gitkeep

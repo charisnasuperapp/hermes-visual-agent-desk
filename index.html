@@ -8,20 +8,26 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Three.js r128 -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <!-- Google Fonts: Pixel & Modern Readable UI -->
+    <!-- Modern Dark Developer Fonts: Inter & JetBrains Mono -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Fredoka:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Press+Start+2P&display=swap" rel="stylesheet">
     <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
     <style>
         :root {
-            --pixel-border: #2d3748;
-            --cheer-gold: #fbbf24;
-            --cheer-sky: #38bdf8;
-            --cheer-leaf: #4ade80;
-            --cheer-coral: #fb7185;
+            --bg-base: #090d16;
+            --bg-surface: rgba(15, 23, 42, 0.88);
+            --bg-panel: rgba(15, 23, 42, 0.94);
+            --border-subtle: rgba(255, 255, 255, 0.08);
+            --border-glow: rgba(245, 158, 11, 0.4);
+            --accent-amber: #f59e0b;
+            --accent-emerald: #10b981;
+            --accent-sky: #38bdf8;
+            --accent-rose: #f43f5e;
+            --text-main: #f1f5f9;
+            --text-dim: #94a3b8;
         }
 
         * {
@@ -35,8 +41,9 @@
             width: 100%;
             height: 100%;
             overflow: hidden;
-            font-family: 'Fredoka', sans-serif;
-            background-color: #7dd3fc;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: var(--bg-base);
+            color: var(--text-main);
         }
 
         .font-pixel {
@@ -45,52 +52,54 @@
         }
 
         .font-mono-code {
-            font-family: 'JetBrains Mono', monospace;
+            font-family: 'JetBrains Mono', ui-monospace, monospace;
         }
 
-        /* Crisp Pixel Card Styling */
-        .pixel-card {
-            background: rgba(255, 253, 245, 0.92);
-            backdrop-filter: blur(8px);
-            border: 3px solid #1e293b;
-            box-shadow: 0 6px 0 #1e293b, 0 10px 20px rgba(0,0,0,0.18);
-            border-radius: 14px;
+        /* Modern Dark Glassmorphic Card */
+        .pixel-card, .pixel-card-dark {
+            background: var(--bg-surface) !important;
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--border-subtle) !important;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.06) !important;
+            border-radius: 12px;
+            color: var(--text-main) !important;
         }
 
-        .pixel-card-dark {
-            background: rgba(15, 23, 42, 0.90);
-            backdrop-filter: blur(10px);
-            border: 3px solid #334155;
-            box-shadow: 0 6px 0 #0f172a, 0 12px 24px rgba(0,0,0,0.35);
-            border-radius: 14px;
-            color: #f8fafc;
-        }
-
+        /* Modern Professional Developer Button */
         .pixel-btn {
-            border: 3px solid #1e293b;
-            box-shadow: 0 4px 0 #1e293b;
-            transition: all 0.1s ease;
-            border-radius: 10px;
+            background: #1e293b !important;
+            border: 1px solid rgba(255, 255, 255, 0.12) !important;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.05) !important;
+            border-radius: 8px;
+            color: #f1f5f9 !important;
+            font-family: 'Inter', sans-serif;
+            font-weight: 500;
+            font-size: 12px;
             cursor: pointer;
+            transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .pixel-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 0 #1e293b;
+            background: #334155 !important;
+            border-color: rgba(255, 255, 255, 0.25) !important;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4) !important;
         }
 
         .pixel-btn:active {
-            transform: translateY(3px);
-            box-shadow: 0 1px 0 #1e293b;
+            transform: translateY(1px);
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.4) !important;
         }
 
-        /* Retro Pixel Canvas Filter when enabled */
+        /* Canvas Containers */
         #canvas-container {
             position: absolute;
             inset: 0;
             width: 100%;
             height: 100%;
             z-index: 1;
+            background: #090d16;
         }
 
         canvas {
@@ -101,7 +110,6 @@
             image-rendering: crisp-edges;
         }
 
-        /* 3D Floating World Labels */
         .world-label {
             position: absolute;
             transform: translate(-50%, -100%);
@@ -116,7 +124,6 @@
             z-index: 25;
         }
 
-        /* Speech Bubble Animation */
         @keyframes floatBubble {
             0%, 100% { transform: translateY(0px); }
             50% { transform: translateY(-4px); }
@@ -125,43 +132,49 @@
         .speech-bubble {
             animation: floatBubble 2.4s ease-in-out infinite;
             position: relative;
+            background: rgba(15, 23, 42, 0.95) !important;
+            border: 1px solid rgba(245, 158, 11, 0.5) !important;
+            color: #f8fafc !important;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.6);
+            border-radius: 8px;
         }
 
         .speech-bubble::after {
             content: '';
             position: absolute;
-            bottom: -8px;
+            bottom: -6px;
             left: 50%;
             transform: translateX(-50%);
-            border-width: 8px 7px 0;
+            border-width: 6px 6px 0;
             border-style: solid;
-            border-color: #1e293b transparent;
+            border-color: rgba(15, 23, 42, 0.95) transparent;
             display: block;
             width: 0;
         }
 
-        /* Custom Scrollbar */
         ::-webkit-scrollbar {
-            width: 6px;
-            height: 6px;
+            width: 5px;
+            height: 5px;
         }
         ::-webkit-scrollbar-track {
-            background: rgba(0, 0, 0, 0.06);
-            border-radius: 8px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 4px;
         }
         ::-webkit-scrollbar-thumb {
-            background: #64748b;
-            border-radius: 8px;
+            background: #334155;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #475569;
         }
 
-        /* Scanline subtle overlay for pixel charm */
         .scanlines {
             background: linear-gradient(
                 to bottom,
                 rgba(255,255,255,0),
                 rgba(255,255,255,0) 50%,
-                rgba(0, 0, 0, 0.03) 50%,
-                rgba(0, 0, 0, 0.03)
+                rgba(0, 0, 0, 0.12) 50%,
+                rgba(0, 0, 0, 0.12)
             );
             background-size: 100% 4px;
             pointer-events: none;
@@ -169,8 +182,8 @@
 
         @keyframes pulseRing {
             0% { transform: scale(0.95); opacity: 0.9; }
-            70% { transform: scale(1.25); opacity: 0; }
-            100% { transform: scale(1.25); opacity: 0; }
+            70% { transform: scale(1.3); opacity: 0; }
+            100% { transform: scale(1.3); opacity: 0; }
         }
         .pulse-dot::before {
             content: '';
@@ -199,110 +212,122 @@
     <!-- Floating 3D HTML Labels Container -->
     <div id="labels-container" class="fixed inset-0 pointer-events-none z-20 overflow-hidden"></div>
 
-    <!-- ================= TOP BAR HUD ================= -->
+    <!-- ================= TOP BAR HUD (PROFESSIONAL DARK STUDIO) ================= -->
     <header class="fixed top-3 left-3 right-3 z-30 flex flex-wrap items-center justify-between gap-2 pointer-events-none">
         
-        <!-- Brand & Garden Status -->
-        <div class="pixel-card px-4 py-2.5 flex items-center gap-3 pointer-events-auto">
-            <div class="w-11 h-11 rounded-xl bg-gradient-to-br from-amber-300 via-yellow-400 to-orange-400 border-2 border-slate-800 flex items-center justify-center shadow-inner relative">
-                <i class="fa-solid fa-feather-pointed text-slate-900 text-xl"></i>
-                <span class="absolute -top-1 -right-1 w-3.5 h-3.5 bg-emerald-400 border-2 border-slate-900 rounded-full pulse-dot"></span>
+        <!-- Brand & Workspace Status -->
+        <div class="pixel-card px-3.5 py-2 flex items-center gap-3 pointer-events-auto">
+            <div class="w-9 h-9 rounded-lg bg-gradient-to-br from-amber-500/20 to-orange-500/20 border border-amber-500/40 flex items-center justify-center relative">
+                <i class="fa-solid fa-feather-pointed text-amber-400 text-lg"></i>
+                <span class="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 bg-emerald-400 rounded-full pulse-dot"></span>
             </div>
             <div>
                 <div class="flex items-center gap-2">
-                    <h1 class="font-pixel text-xs sm:text-sm text-slate-900 tracking-tight">HERMES GARDEN DESK</h1>
-                    <span class="bg-amber-300 text-slate-900 border-2 border-slate-800 text-[10px] font-bold px-2 py-0.5 rounded-full">v3.8 PIXEL HD</span>
+                    <h1 class="text-xs font-bold tracking-wider text-slate-100 uppercase">HERMES DESK</h1>
+                    <span class="bg-amber-500/15 text-amber-400 border border-amber-500/30 text-[10px] font-semibold px-2 py-0.2 rounded">PRO v4.2</span>
                 </div>
-                <p class="text-xs text-slate-600 font-medium flex items-center gap-2 mt-0.5">
-                    <span><i class="fa-solid fa-seedling text-emerald-500 mr-1"></i>Taman Otonom Aktif</span>
-                    <span class="text-slate-300">•</span>
-                    <span id="hud-clock" class="font-mono-code text-[11px] text-slate-700 font-semibold">CERAH PAGI</span>
+                <p class="text-[11px] text-slate-400 font-medium flex items-center gap-2 mt-0.5">
+                    <span><i class="fa-solid fa-circle-dot text-emerald-400 mr-1 text-[8px]"></i>Studio Otonom</span>
+                    <span class="text-slate-600">•</span>
+                    <span id="hud-clock" class="font-mono-code text-[11px] text-slate-300 font-semibold">MALAM STUDIO</span>
                 </p>
             </div>
         </div>
 
-        <!-- View Switcher (3D Garden vs 2D Pixel Office) -->
-        <div class="pixel-card p-1 flex items-center gap-1 pointer-events-auto">
-            <button onclick="switchViewMode('3d')" id="btn-view-3d" class="px-2.5 py-1.5 rounded-lg text-xs font-bold bg-amber-400 text-slate-900 border-2 border-slate-800 transition flex items-center gap-1.5 shadow-sm" title="Taman 3D Voxel">
-                <i class="fa-solid fa-cube"></i><span class="hidden sm:inline">Taman 3D</span>
-            </button>
-            <button onclick="switchViewMode('2d')" id="btn-view-2d" class="px-2.5 py-1.5 rounded-lg text-xs font-bold text-slate-700 hover:bg-slate-200 transition flex items-center gap-1.5" title="Kantor 2D Pixel Hermes Office">
-                <i class="fa-solid fa-building-user"></i><span class="hidden sm:inline">Kantor 2D</span>
-            </button>
-            <button onclick="toggleDemoFeed()" id="btn-demo-feed" class="px-2.5 py-1.5 rounded-lg text-xs font-bold bg-emerald-400 hover:bg-emerald-300 text-slate-950 border-2 border-slate-800 transition flex items-center gap-1.5" title="Simulasi Live Sub-agents & Tasks">
-                <i class="fa-solid fa-play" id="icon-demo-feed"></i><span id="label-demo-feed" class="hidden sm:inline">Simulasi</span>
+        <!-- View Switcher & Macro Controls -->
+        <div class="pixel-card p-1 flex items-center gap-1.5 pointer-events-auto">
+            <!-- View Mode Switcher -->
+            <div class="flex items-center bg-slate-900/80 p-0.5 rounded-lg border border-slate-700/50">
+                <button onclick="switchViewMode('3d')" id="btn-view-3d" class="px-2.5 py-1.5 rounded-md text-xs font-semibold bg-amber-500 text-slate-950 transition flex items-center gap-1.5 shadow-sm" title="Taman 3D Voxel Studio">
+                    <i class="fa-solid fa-cube text-xs"></i><span class="hidden sm:inline">3D Studio</span>
+                </button>
+                <button onclick="switchViewMode('2d')" id="btn-view-2d" class="px-2.5 py-1.5 rounded-md text-xs font-semibold text-slate-400 hover:text-slate-200 transition flex items-center gap-1.5" title="Kantor 2D Pixel Virtual Office">
+                    <i class="fa-solid fa-building-user text-xs"></i><span class="hidden sm:inline">2D Office</span>
+                </button>
+            </div>
+
+            <!-- Macro Actions: Rapat, Rehat, Sprint -->
+            <div class="hidden md:flex items-center gap-1 pl-1 border-l border-slate-700/60">
+                <button onclick="triggerMacroAction('meeting')" class="pixel-btn px-2.5 py-1.5 text-xs text-amber-300 hover:text-amber-200 flex items-center gap-1" title="Kumpulkan semua agen untuk rapat koordinasi">
+                    <i class="fa-solid fa-users text-xs"></i><span>Rapat</span>
+                </button>
+                <button onclick="triggerMacroAction('break')" class="pixel-btn px-2.5 py-1.5 text-xs text-purple-300 hover:text-purple-200 flex items-center gap-1" title="Ajak semua agen istirahat di lounge / taman">
+                    <i class="fa-solid fa-couch text-xs"></i><span>Rehat</span>
+                </button>
+                <button onclick="triggerMacroAction('sprint')" class="pixel-btn px-2.5 py-1.5 text-xs text-cyan-300 hover:text-cyan-200 flex items-center gap-1" title="Overclock coding intensif untuk semua agen">
+                    <i class="fa-solid fa-bolt text-xs"></i><span>Sprint</span>
+                </button>
+            </div>
+
+            <!-- Live Simulation Toggle -->
+            <button onclick="toggleDemoFeed()" id="btn-demo-feed" class="pixel-btn px-2.5 py-1.5 text-xs font-semibold text-emerald-400 hover:text-emerald-300 flex items-center gap-1.5 border border-emerald-500/30" title="Simulasi Live Sub-agents & Tasks">
+                <i class="fa-solid fa-play text-[10px]" id="icon-demo-feed"></i><span id="label-demo-feed" class="hidden sm:inline">Simulasi</span>
             </button>
         </div>
 
         <!-- Live Metrics Pills -->
-        <div class="hidden xl:flex items-center gap-2.5 pixel-card px-3.5 py-2 pointer-events-auto">
-            <div class="flex items-center gap-2 pr-3 border-r-2 border-slate-200">
-                <div class="w-8 h-8 rounded-lg bg-emerald-100 border-2 border-slate-800 flex items-center justify-center text-emerald-600">
-                    <i class="fa-solid fa-robot text-sm"></i>
+        <div class="hidden xl:flex items-center gap-3 pixel-card px-3.5 py-2 pointer-events-auto">
+            <div class="flex items-center gap-2 pr-3 border-r border-slate-700/50">
+                <div class="w-7 h-7 rounded bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400">
+                    <i class="fa-solid fa-robot text-xs"></i>
                 </div>
                 <div>
-                    <div class="text-[10px] font-bold uppercase text-slate-400 leading-none">Active Agents</div>
-                    <div class="text-sm font-bold text-slate-800"><span id="metric-active-agents">4</span> / 4 Online</div>
+                    <div class="text-[9px] font-semibold uppercase text-slate-400 tracking-wider">Agents</div>
+                    <div class="text-xs font-bold text-slate-200 font-mono-code"><span id="metric-active-agents">4</span> Live</div>
                 </div>
             </div>
 
-            <div class="flex items-center gap-2 pr-3 border-r-2 border-slate-200">
-                <div class="w-8 h-8 rounded-lg bg-sky-100 border-2 border-slate-800 flex items-center justify-center text-sky-600">
-                    <i class="fa-solid fa-paper-plane text-sm"></i>
+            <div class="flex items-center gap-2 pr-3 border-r border-slate-700/50">
+                <div class="w-7 h-7 rounded bg-sky-500/10 border border-sky-500/20 flex items-center justify-center text-sky-400">
+                    <i class="fa-solid fa-paper-plane text-xs"></i>
                 </div>
                 <div>
-                    <div class="text-[10px] font-bold uppercase text-slate-400 leading-none">Pesan Terkirim</div>
-                    <div class="text-sm font-bold text-slate-800" id="metric-packets">18 Paket</div>
+                    <div class="text-[9px] font-semibold uppercase text-slate-400 tracking-wider">Packets</div>
+                    <div class="text-xs font-bold text-slate-200 font-mono-code" id="metric-packets">18 Pkt</div>
                 </div>
             </div>
 
             <div class="flex items-center gap-2">
-                <div class="w-8 h-8 rounded-lg bg-amber-100 border-2 border-slate-800 flex items-center justify-center text-amber-600">
-                    <i class="fa-solid fa-bolt text-sm"></i>
+                <div class="w-7 h-7 rounded bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400">
+                    <i class="fa-solid fa-gauge-high text-xs"></i>
                 </div>
                 <div>
-                    <div class="text-[10px] font-bold uppercase text-slate-400 leading-none">Throughput</div>
-                    <div class="text-sm font-bold text-slate-800" id="metric-tps">142 tok/s</div>
+                    <div class="text-[9px] font-semibold uppercase text-slate-400 tracking-wider">Velocity</div>
+                    <div class="text-xs font-bold text-slate-200 font-mono-code" id="metric-tps">142 tok/s</div>
                 </div>
             </div>
         </div>
 
-        <!-- Environment & Camera Controls -->
-        <div class="flex items-center gap-2 pointer-events-auto">
-            <!-- Time of Day Selector -->
+        <!-- Studio Lighting & System Controls -->
+        <div class="flex items-center gap-1.5 pointer-events-auto">
+            <!-- Lighting Selector -->
             <div class="pixel-card p-1 flex items-center gap-1">
-                <button onclick="setGardenTime('day')" id="btn-time-day" class="px-2.5 py-1.5 rounded-lg text-xs font-bold bg-sky-400 text-slate-900 border-2 border-slate-800 transition flex items-center gap-1.5" title="Pagi Cerah">
-                    <i class="fa-solid fa-sun"></i><span class="hidden sm:inline">Pagi</span>
+                <button onclick="setGardenTime('night')" id="btn-time-night" class="px-2 py-1 rounded text-xs font-semibold bg-indigo-500/20 text-indigo-300 border border-indigo-500/40 transition flex items-center gap-1" title="Malam Studio">
+                    <i class="fa-solid fa-moon text-xs"></i><span class="hidden sm:inline">Malam</span>
                 </button>
-                <button onclick="setGardenTime('sunset')" id="btn-time-sunset" class="px-2.5 py-1.5 rounded-lg text-xs font-bold text-slate-700 hover:bg-amber-100 transition flex items-center gap-1.5" title="Sore Senja">
-                    <i class="fa-solid fa-cloud-sun"></i><span class="hidden sm:inline">Senja</span>
+                <button onclick="setGardenTime('sunset')" id="btn-time-sunset" class="px-2 py-1 rounded text-xs font-semibold text-slate-400 hover:text-slate-200 transition flex items-center gap-1" title="Senja Keemasan">
+                    <i class="fa-solid fa-cloud-sun text-xs"></i><span class="hidden sm:inline">Senja</span>
                 </button>
-                <button onclick="setGardenTime('night')" id="btn-time-night" class="px-2.5 py-1.5 rounded-lg text-xs font-bold text-slate-700 hover:bg-indigo-100 transition flex items-center gap-1.5" title="Malam Lentera">
-                    <i class="fa-solid fa-moon"></i><span class="hidden sm:inline">Malam</span>
+                <button onclick="setGardenTime('day')" id="btn-time-day" class="px-2 py-1 rounded text-xs font-semibold text-slate-400 hover:text-slate-200 transition flex items-center gap-1" title="Pagi Studio">
+                    <i class="fa-solid fa-sun text-xs"></i><span class="hidden sm:inline">Pagi</span>
                 </button>
             </div>
 
-            <!-- Pixel Shader Scale Toggle -->
-            <button onclick="togglePixelMode()" id="btn-pixel-mode" class="pixel-btn bg-lime-300 hover:bg-lime-400 text-slate-900 px-3 py-2 text-xs font-bold flex items-center gap-1.5" title="Ubah Ketajaman Pixel 3D">
-                <i class="fa-solid fa-border-all"></i>
-                <span id="pixel-mode-label" class="hidden md:inline">HD Pixel</span>
-            </button>
-
             <!-- Camera Reset -->
-            <button onclick="resetCameraOverview()" class="pixel-btn bg-white hover:bg-slate-100 text-slate-800 px-3 py-2 text-xs font-bold flex items-center gap-1.5" title="Reset Sudut Kamera">
-                <i class="fa-solid fa-video"></i>
+            <button onclick="resetCameraOverview()" class="pixel-btn px-2.5 py-1.5 text-xs text-slate-300 hover:text-white flex items-center gap-1" title="Reset Sudut Kamera">
+                <i class="fa-solid fa-video text-xs"></i>
                 <span class="hidden sm:inline">Overview</span>
             </button>
 
             <!-- Sound FX Toggle -->
-            <button onclick="toggleAudio()" id="btn-audio" class="pixel-btn bg-amber-300 hover:bg-amber-400 text-slate-900 w-9 h-9 flex items-center justify-center text-sm" title="Efek Suara Chiptune">
+            <button onclick="toggleAudio()" id="btn-audio" class="pixel-btn w-8 h-8 flex items-center justify-center text-xs text-amber-400" title="Efek Suara 8-Bit Chiptune">
                 <i id="icon-audio" class="fa-solid fa-volume-high"></i>
             </button>
 
             <!-- Drive Micro Bridge Status -->
-            <div id="bridge-status-pill" class="pixel-card px-2.5 py-1.5 flex items-center gap-1.5 text-xs font-bold text-slate-700 pointer-events-auto cursor-pointer" onclick="checkBridgeStatus(true)" title="Klik untuk refresh status Micro Bridge">
-                <span class="w-2.5 h-2.5 rounded-full bg-slate-400" id="bridge-dot"></span>
-                <span id="bridge-label" class="hidden lg:inline text-[11px] text-slate-500">Bridge Offline</span>
+            <div id="bridge-status-pill" class="pixel-card px-2.5 py-1.5 flex items-center gap-1.5 text-xs font-medium text-slate-300 pointer-events-auto cursor-pointer" onclick="checkBridgeStatus(true)" title="Klik untuk refresh status Micro Bridge">
+                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" id="bridge-dot"></span>
+                <span id="bridge-label" class="hidden lg:inline text-[11px] text-emerald-400 font-semibold font-mono-code">Bridge Online</span>
             </div>
         </div>
     </header>
@@ -312,12 +337,12 @@
         
         <!-- Squad Roster Card -->
         <div class="pixel-card p-3.5 flex flex-col gap-2.5 pointer-events-auto max-h-[55%] overflow-y-auto">
-            <div class="flex items-center justify-between border-b-2 border-slate-200 pb-2">
+            <div class="flex items-center justify-between border-b border-slate-800/80 pb-2">
                 <div class="flex items-center gap-2">
-                    <i class="fa-solid fa-users-gear text-amber-500"></i>
-                    <h2 class="font-pixel text-[11px] text-slate-800">TIM AGEN TAMAN</h2>
+                    <i class="fa-solid fa-users-gear text-amber-400 text-xs"></i>
+                    <h2 class="font-mono-code font-bold text-xs text-slate-200 tracking-wide uppercase">HERMES SQUAD</h2>
                 </div>
-                <span class="text-[11px] font-bold text-emerald-600 bg-emerald-100 px-2 py-0.5 rounded-md border border-emerald-300">Auto-Sync</span>
+                <span class="text-[10px] font-semibold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/30 font-mono-code">Live Sync</span>
             </div>
 
             <!-- Agent List populated via JS -->
@@ -331,7 +356,7 @@
     </aside>
 
     <!-- Toggle Left Panel Button on Mobile -->
-    <button onclick="toggleLeftPanel()" class="fixed left-3 bottom-24 z-40 lg:hidden pixel-btn bg-amber-300 text-slate-900 px-3 py-2 text-xs font-bold flex items-center gap-1.5">
+    <button onclick="toggleLeftPanel()" class="fixed left-3 bottom-24 z-40 lg:hidden pixel-btn px-3 py-2 text-xs font-semibold flex items-center gap-1.5 text-slate-200">
         <i class="fa-solid fa-id-card"></i> Agen
     </button>
 
@@ -372,16 +397,16 @@
                 </div>
             </div>
 
-            <!-- Mini Garden Quick Actions -->
-            <div class="border-t border-slate-700 pt-2.5 flex items-center justify-between gap-1.5">
-                <button onclick="triggerCoffeeBreak()" class="flex-1 pixel-btn bg-rose-400 hover:bg-rose-300 text-slate-900 py-1.5 px-2 text-xs font-bold flex items-center justify-center gap-1">
-                    <i class="fa-solid fa-mug-hot"></i> Traktir Matcha
+            <!-- Mini Studio Quick Actions -->
+            <div class="border-t border-slate-700/60 pt-2 flex items-center justify-between gap-1.5">
+                <button onclick="triggerMacroAction('break')" class="flex-1 pixel-btn py-1.5 px-2 text-xs text-purple-300 hover:text-purple-200 flex items-center justify-center gap-1.5">
+                    <i class="fa-solid fa-mug-hot"></i> Rehat Kopi
                 </button>
-                <button onclick="triggerSpeedBoost()" class="flex-1 pixel-btn bg-cyan-400 hover:bg-cyan-300 text-slate-900 py-1.5 px-2 text-xs font-bold flex items-center justify-center gap-1">
-                    <i class="fa-solid fa-wand-magic-sparkles"></i> Turbo Mode
+                <button onclick="triggerMacroAction('sprint')" class="flex-1 pixel-btn py-1.5 px-2 text-xs text-cyan-300 hover:text-cyan-200 flex items-center justify-center gap-1.5">
+                    <i class="fa-solid fa-bolt"></i> Turbo Sprint
                 </button>
-                <button onclick="triggerFireworks()" class="pixel-btn bg-amber-300 hover:bg-amber-200 text-slate-900 py-1.5 px-2.5 text-xs font-bold" title="Rayakan di Taman!">
-                    <i class="fa-solid fa-sparkles"></i>✨
+                <button onclick="triggerFireworks()" class="pixel-btn py-1.5 px-2.5 text-xs text-amber-300 hover:text-amber-200" title="Rayakan di Studio!">
+                    <i class="fa-solid fa-sparkles"></i>
                 </button>
             </div>
         </div>
@@ -392,47 +417,85 @@
         
         <!-- Preset Mission Chips -->
         <div class="flex items-center gap-1.5 mb-2 overflow-x-auto max-w-full px-2 pointer-events-auto no-scrollbar">
-            <span class="pixel-card px-2.5 py-1 text-[11px] font-bold text-slate-700 flex items-center gap-1 shrink-0">
-                <i class="fa-solid fa-compass text-amber-500"></i> Misi Cepat:
+            <span class="pixel-card px-2.5 py-1 text-[11px] font-medium text-slate-400 flex items-center gap-1 shrink-0">
+                <i class="fa-solid fa-compass text-amber-400"></i> Misi Cepat:
             </span>
-            <button onclick="runPresetMission(0)" class="pixel-btn bg-amber-200 hover:bg-amber-300 text-slate-900 px-3 py-1 text-xs font-bold shrink-0">
-                🚀 Buat Web App & UI Pixel
+            <button onclick="runPresetMission(0)" class="pixel-btn px-3 py-1 text-xs text-slate-200 hover:text-white shrink-0">
+                🚀 Web App & UI Pixel
             </button>
-            <button onclick="runPresetMission(1)" class="pixel-btn bg-emerald-200 hover:bg-emerald-300 text-slate-900 px-3 py-1 text-xs font-bold shrink-0">
-                🔍 Riset Tren AI & Ringkasan
+            <button onclick="runPresetMission(1)" class="pixel-btn px-3 py-1 text-xs text-slate-200 hover:text-white shrink-0">
+                🔍 Riset Tren AI & Vector DB
             </button>
-            <button onclick="runPresetMission(2)" class="pixel-btn bg-sky-200 hover:bg-sky-300 text-slate-900 px-3 py-1 text-xs font-bold shrink-0">
-                🛡️ Audit API & Optimasi Database
+            <button onclick="runPresetMission(2)" class="pixel-btn px-3 py-1 text-xs text-slate-200 hover:text-white shrink-0">
+                🛡️ Audit API & Sandbox Security
             </button>
-            <button onclick="runPresetMission(3)" class="pixel-btn bg-pink-200 hover:bg-pink-300 text-slate-900 px-3 py-1 text-xs font-bold shrink-0">
-                🎨 Desain Sistem Kampanye Produk
+            <button onclick="runPresetMission(3)" class="pixel-btn px-3 py-1 text-xs text-slate-200 hover:text-white shrink-0">
+                🎨 Desain Sistem & Token UI
             </button>
         </div>
 
         <!-- Main Prompt Bar -->
-        <div class="pixel-card w-full max-w-3xl p-2 flex items-center gap-2 pointer-events-auto">
-            <div class="w-9 h-9 rounded-lg bg-amber-400 border-2 border-slate-800 flex items-center justify-center text-slate-900 shrink-0">
-                <i class="fa-solid fa-terminal"></i>
+        <div class="pixel-card w-full max-w-3xl p-1.5 flex items-center gap-2 pointer-events-auto border border-slate-700/80 focus-within:border-amber-500/60 transition-all">
+            <div class="w-8 h-8 rounded-lg bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400 shrink-0">
+                <i class="fa-solid fa-terminal text-xs"></i>
             </div>
             <input 
                 id="mission-input" 
                 type="text" 
-                placeholder="Perintahkan Hermes Agent Desk... (contoh: Rancang dashboard analitik real-time & dokumentasi)"
-                class="w-full bg-transparent text-slate-800 placeholder-slate-400 font-medium text-sm focus:outline-none px-1"
+                placeholder="Perintahkan agen Hermes... (contoh: Rancang arsitektur multi-service & dokumentasi)"
+                class="w-full bg-transparent text-slate-100 placeholder-slate-500 font-medium text-xs sm:text-sm focus:outline-none px-1"
                 onkeydown="if(event.key === 'Enter') dispatchCustomMission()"
             >
-            <button onclick="dispatchCustomMission()" class="pixel-btn bg-gradient-to-r from-amber-400 to-orange-400 hover:from-amber-300 hover:to-orange-300 text-slate-900 px-4 py-2 text-xs sm:text-sm font-bold shrink-0 flex items-center gap-2">
-                <i class="fa-solid fa-paper-plane"></i>
-                <span>Kirim Misi</span>
+            <button onclick="dispatchCustomMission()" class="pixel-btn bg-amber-500 text-slate-950 hover:bg-amber-400 font-semibold px-3.5 py-1.5 text-xs sm:text-sm shrink-0 flex items-center gap-1.5 border border-amber-400">
+                <i class="fa-solid fa-paper-plane text-xs"></i>
+                <span>Dispatch</span>
             </button>
         </div>
     </footer>
 
-    <!-- Toast Notification Banner -->
+    <!-- ================= MICRO-INTERACTIVITY MODAL (KLIK AGEN) ================= -->
+    <div id="micro-action-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm pointer-events-auto" onclick="if(event.target === this) closeMicroModal()">
+        <div class="pixel-card w-full max-w-sm p-4 flex flex-col gap-3 shadow-2xl border border-amber-500/30 animate-in fade-in zoom-in-95 duration-150">
+            <div class="flex items-center justify-between pb-2 border-b border-slate-700/60">
+                <div class="flex items-center gap-2">
+                    <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse" id="modal-agent-dot"></span>
+                    <h3 class="font-bold text-sm text-slate-100 font-mono-code" id="modal-agent-name">Hermes Prime</h3>
+                    <span class="text-[10px] px-1.5 py-0.2 rounded bg-slate-800 text-slate-300 border border-slate-700" id="modal-agent-role">Coordinator</span>
+                </div>
+                <button onclick="closeMicroModal()" class="text-slate-400 hover:text-white px-2 py-1 text-xs">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <div class="bg-slate-900/80 p-2.5 rounded-lg border border-slate-800">
+                <div class="text-[10px] text-slate-400 uppercase font-semibold">Aktivitas Terkini:</div>
+                <p class="text-xs text-slate-200 mt-0.5 leading-relaxed" id="modal-agent-status">Sedang fokus menjalankan tugas...</p>
+            </div>
+            <div class="grid grid-cols-2 gap-2 pt-1">
+                <button onclick="sendAgentAction('coffee')" class="pixel-btn py-2 px-3 text-xs flex items-center justify-center gap-1.5 text-amber-300">
+                    <i class="fa-solid fa-mug-hot"></i> Traktir Kopi
+                </button>
+                <button onclick="sendAgentAction('rest')" class="pixel-btn py-2 px-3 text-xs flex items-center justify-center gap-1.5 text-purple-300">
+                    <i class="fa-solid fa-couch"></i> Istirahat Lounge
+                </button>
+                <button onclick="sendAgentAction('work')" class="pixel-btn py-2 px-3 text-xs flex items-center justify-center gap-1.5 text-emerald-300">
+                    <i class="fa-solid fa-laptop-code"></i> Lanjut Coding
+                </button>
+                <button onclick="focusAgentCamera()" class="pixel-btn py-2 px-3 text-xs flex items-center justify-center gap-1.5 text-cyan-300">
+                    <i class="fa-solid fa-video"></i> Kunci Kamera
+                </button>
+            </div>
+            <div class="pt-2 border-t border-slate-800 flex gap-1.5">
+                <input type="text" id="modal-prompt-input" placeholder="Instruksi khusus untuk agen ini..." class="flex-1 bg-slate-900 border border-slate-700 text-xs text-slate-100 px-2 py-1.5 rounded focus:outline-none focus:border-amber-500/60" onkeydown="if(event.key === 'Enter') sendAgentCustomPrompt()">
+                <button onclick="sendAgentCustomPrompt()" class="pixel-btn bg-amber-500 text-slate-950 font-bold px-3 text-xs">Kirim</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification Banner (Dark Studio Glass) -->
     <div id="toast-banner" class="fixed top-20 left-1/2 -translate-x-1/2 z-50 pointer-events-none opacity-0 transition-all duration-300 transform -translate-y-3">
-        <div class="pixel-card bg-amber-300 px-4 py-2 flex items-center gap-2.5 text-slate-900 font-bold text-xs shadow-xl">
-            <i class="fa-solid fa-bell text-slate-900"></i>
-            <span id="toast-message">Misi baru diterima oleh Hermes!</span>
+        <div class="pixel-card bg-slate-900/95 border border-amber-500/40 px-4 py-2 flex items-center gap-2.5 text-slate-100 font-medium text-xs shadow-2xl backdrop-blur-md rounded-lg">
+            <i class="fa-solid fa-bell text-amber-400"></i>
+            <span id="toast-message" class="font-mono-code text-xs">Misi baru diterima oleh Hermes!</span>
         </div>
     </div>
 
@@ -819,8 +882,8 @@ export const rateLimitConfig = {
          ******************************************************************/
         const container = document.getElementById('canvas-container');
         const scene = new THREE.Scene();
-        scene.background = new THREE.Color(0x7dd3fc);
-        scene.fog = new THREE.FogExp2(0x7dd3fc, 0.018);
+        scene.background = new THREE.Color(0x090d16);
+        scene.fog = new THREE.FogExp2(0x090d16, 0.022);
 
         const camera = new THREE.PerspectiveCamera(42, window.innerWidth / window.innerHeight, 0.1, 120);
         const renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: 'high-performance' });
@@ -855,14 +918,14 @@ export const rateLimitConfig = {
             camera.lookAt(camState.target);
         }
 
-        // Lighting Setup (HD-2D Warm Sunlight + Crisp Shadows)
-        const ambientLight = new THREE.AmbientLight(0xffffff, 0.72);
+        // Lighting Setup (Moody Studio Lighting: Deep Indigo Ambient + Golden Lantern Glow)
+        const ambientLight = new THREE.AmbientLight(0x1e293b, 0.55);
         scene.add(ambientLight);
 
-        const hemiLight = new THREE.HemisphereLight(0xe0f2fe, 0x4ade80, 0.45);
+        const hemiLight = new THREE.HemisphereLight(0x38bdf8, 0x090d16, 0.35);
         scene.add(hemiLight);
 
-        const dirLight = new THREE.DirectionalLight(0xfffbeb, 1.15);
+        const dirLight = new THREE.DirectionalLight(0x94a3b8, 0.75);
         dirLight.position.set(16, 26, 14);
         dirLight.castShadow = true;
         dirLight.shadow.mapSize.width = 2048;
@@ -1413,18 +1476,21 @@ export const rateLimitConfig = {
             AGENTS.forEach(agent => {
                 const el = document.createElement('div');
                 el.className = 'world-label flex flex-col items-center';
-                el.onclick = () => selectAgent(agent.id, true);
+                el.onclick = () => {
+                    selectAgent(agent.id, true);
+                    openMicroModal(agent.id);
+                };
 
                 el.innerHTML = `
-                    <!-- Speech Bubble -->
-                    <div id="bubble-${agent.id}" class="speech-bubble bg-white text-slate-900 border-2 border-slate-900 px-2.5 py-1 rounded-xl shadow-md mb-1.5 max-w-[185px] text-center">
-                        <p id="speech-text-${agent.id}" class="text-[11px] font-bold leading-tight text-slate-800">${agent.speech}</p>
+                    <!-- Speech Bubble (Dark Glass) -->
+                    <div id="bubble-${agent.id}" class="speech-bubble bg-slate-900/90 text-slate-100 border border-slate-700/80 px-2.5 py-1 rounded-lg shadow-xl mb-1.5 max-w-[190px] text-center backdrop-blur-sm">
+                        <p id="speech-text-${agent.id}" class="text-[11px] font-mono-code font-medium leading-tight text-slate-200">${agent.speech}</p>
                     </div>
                     <!-- Agent Name Badge -->
-                    <div id="badge-${agent.id}" class="flex items-center gap-1.5 px-2.5 py-1 rounded-full border-2 border-slate-900 shadow-md transition-all" style="background-color: ${agent.color}; color: #0f172a;">
+                    <div id="badge-${agent.id}" class="flex items-center gap-1.5 px-2.5 py-0.5 rounded-md border shadow-lg transition-all" style="background-color: #0f172a; color: ${agent.color}; border-color: ${agent.color}88">
                         <i class="fa-solid ${agent.icon} text-[10px]"></i>
-                        <span class="font-pixel text-[9px] tracking-tighter">${agent.name}</span>
-                        <span class="w-2 h-2 rounded-full bg-white border border-slate-900 animate-pulse"></span>
+                        <span class="font-mono-code text-[10px] font-semibold tracking-tight">${agent.name}</span>
+                        <span class="w-1.5 h-1.5 rounded-full animate-pulse" style="background-color: ${agent.color}"></span>
                     </div>
                 `;
                 labelsContainer.appendChild(el);
@@ -1470,21 +1536,24 @@ export const rateLimitConfig = {
                 const isSelected = agent.id === selectedAgentId;
                 return `
                     <div onclick="selectAgent('${agent.id}', true)" 
-                         class="p-2.5 rounded-xl border-2 cursor-pointer transition-all flex items-center justify-between ${isSelected ? 'bg-amber-100 border-slate-900 shadow-sm translate-x-1' : 'bg-white/80 border-slate-300 hover:border-slate-800'}">
-                        <div class="flex items-center gap-2.5">
-                            <div class="w-9 h-9 rounded-lg border-2 border-slate-900 flex items-center justify-center text-slate-900 font-bold shadow-sm" style="background-color: ${agent.color}">
-                                <i class="fa-solid ${agent.icon}"></i>
+                         class="p-2.5 rounded-lg border cursor-pointer transition-all flex items-center justify-between ${isSelected ? 'bg-slate-800/90 border-amber-500/60 shadow-lg ring-1 ring-amber-500/30' : 'bg-slate-900/60 border-slate-800/80 hover:border-slate-700 hover:bg-slate-800/50'}">
+                        <div class="flex items-center gap-2.5 min-w-0">
+                            <div class="w-8 h-8 rounded-lg border border-slate-700/80 flex items-center justify-center text-slate-100 font-bold shrink-0 text-xs shadow-inner" style="background-color: ${agent.color}33; border-color: ${agent.color}88">
+                                <i class="fa-solid ${agent.icon}" style="color: ${agent.color}"></i>
                             </div>
-                            <div>
-                                <div class="text-xs font-bold text-slate-900 flex items-center gap-1.5">
-                                    <span>${agent.name}</span>
-                                </div>
-                                <div class="text-[11px] text-slate-500 font-medium">${agent.role}</div>
+                            <div class="truncate">
+                                <div class="text-xs font-semibold text-slate-100 truncate">${agent.name}</div>
+                                <div class="text-[11px] text-slate-400 font-medium truncate">${agent.role}</div>
                             </div>
                         </div>
-                        <span class="text-[10px] font-bold px-2 py-0.5 rounded-md border border-slate-800 bg-emerald-300 text-slate-900">
-                            ${agent.status}
-                        </span>
+                        <div class="flex items-center gap-1.5 shrink-0">
+                            <span class="text-[10px] font-mono-code font-semibold px-2 py-0.5 rounded border border-emerald-500/30 bg-emerald-500/10 text-emerald-400">
+                                ${agent.status}
+                            </span>
+                            <button onclick="event.stopPropagation(); openMicroModal('${agent.id}')" class="w-6 h-6 rounded bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-300 hover:text-amber-400 flex items-center justify-center text-[10px]" title="Buka Kontrol Interaktif">
+                                <i class="fa-solid fa-sliders"></i>
+                            </button>
+                        </div>
                     </div>
                 `;
             }).join('');
@@ -1495,43 +1564,51 @@ export const rateLimitConfig = {
             const inspectorEl = document.getElementById('agent-inspector');
 
             inspectorEl.innerHTML = `
-                <div>
-                    <div class="flex items-center justify-between border-b-2 border-slate-200 pb-2.5 mb-2.5">
-                        <div class="flex items-center gap-2.5">
-                            <div class="w-10 h-10 rounded-xl border-2 border-slate-900 flex items-center justify-center text-slate-900 text-base shadow" style="background-color: ${agent.color}">
-                                <i class="fa-solid ${agent.icon}"></i>
+                <div class="flex flex-col gap-2.5">
+                    <div class="flex items-center justify-between border-b border-slate-800/80 pb-2.5">
+                        <div class="flex items-center gap-2.5 min-w-0">
+                            <div class="w-9 h-9 rounded-lg border flex items-center justify-center text-sm shadow-inner shrink-0" style="background-color: ${agent.color}33; border-color: ${agent.color}88">
+                                <i class="fa-solid ${agent.icon}" style="color: ${agent.color}"></i>
                             </div>
-                            <div>
-                                <h3 class="font-pixel text-xs text-slate-900">${agent.name}</h3>
-                                <p class="text-xs font-semibold text-slate-500"><i class="fa-solid fa-location-dot text-rose-500 mr-1"></i>${agent.stationName}</p>
+                            <div class="truncate">
+                                <h3 class="font-mono-code font-bold text-xs text-slate-100 truncate">${agent.name}</h3>
+                                <p class="text-[11px] text-slate-400 flex items-center gap-1 mt-0.5"><i class="fa-solid fa-location-dot text-rose-400 text-[10px]"></i>${agent.stationName}</p>
                             </div>
                         </div>
+                        <button onclick="openMicroModal('${agent.id}')" class="pixel-btn px-2.5 py-1 text-[11px] text-amber-300 flex items-center gap-1 shrink-0" title="Kelola Aksi">
+                            <i class="fa-solid fa-bolt text-[10px]"></i> Aksi
+                        </button>
                     </div>
 
                     <div class="space-y-2 text-xs">
-                        <div class="bg-slate-100 border border-slate-300 rounded-lg p-2 flex justify-between items-center">
-                            <span class="text-slate-500 font-semibold">Engine Model:</span>
-                            <span class="font-mono-code font-bold text-slate-800 text-[11px]">${agent.model}</span>
+                        <div class="bg-slate-900/80 border border-slate-800/80 rounded-lg p-2 flex justify-between items-center">
+                            <span class="text-slate-400 font-medium text-[11px]">Model:</span>
+                            <span class="font-mono-code font-semibold text-slate-200 text-[11px]">${agent.model}</span>
                         </div>
 
-                        <div class="bg-amber-50 border border-amber-200 rounded-lg p-2">
-                            <div class="text-[10px] font-bold uppercase text-amber-700 mb-0.5">Tugas Saat Ini</div>
-                            <div class="text-slate-800 font-medium leading-snug">${agent.currentTask}</div>
+                        <div class="bg-slate-900/80 border border-slate-800/80 rounded-lg p-2.5">
+                            <div class="text-[9px] font-bold uppercase tracking-wider text-amber-400/90 mb-1">Aktivitas Terkini</div>
+                            <div class="text-slate-200 text-xs leading-relaxed font-mono-code">${agent.currentTask}</div>
                         </div>
 
                         <div>
-                            <div class="text-[10px] font-bold uppercase text-slate-400 mb-1">Active Tools (${agent.tools.length})</div>
+                            <div class="text-[9px] font-bold uppercase tracking-wider text-slate-400 mb-1.5">Capabilities (${agent.tools.length})</div>
                             <div class="flex flex-wrap gap-1">
-                                ${agent.tools.map(t => `<span class="font-mono-code text-[10px] bg-slate-800 text-emerald-300 px-2 py-0.5 rounded border border-slate-900">${t}()</span>`).join('')}
+                                ${agent.tools.map(t => `<span class="font-mono-code text-[10px] bg-slate-950 text-emerald-400 px-2 py-0.5 rounded border border-slate-800/80">${t}()</span>`).join('')}
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <div class="pt-3 border-t-2 border-slate-200 mt-2 flex items-center justify-between gap-2">
-                    <div class="text-xs font-bold text-slate-700">${agent.mood}</div>
-                    <button onclick="pingSingleAgent('${agent.id}')" class="pixel-btn bg-amber-300 hover:bg-amber-400 text-slate-900 px-3 py-1.5 text-xs font-bold flex items-center gap-1.5">
-                        <i class="fa-solid fa-bolt"></i> Ping Agen
+                <div class="pt-2.5 border-t border-slate-800/80 mt-2 flex items-center justify-between gap-1.5">
+                    <button onclick="sendAgentActionQuick('${agent.id}', 'coffee')" class="flex-1 pixel-btn py-1.5 text-[11px] text-amber-300 hover:text-amber-200 flex items-center justify-center gap-1" title="Kopi / Pantry">
+                        <i class="fa-solid fa-mug-hot text-[10px]"></i> Kopi
+                    </button>
+                    <button onclick="sendAgentActionQuick('${agent.id}', 'rest')" class="flex-1 pixel-btn py-1.5 text-[11px] text-purple-300 hover:text-purple-200 flex items-center justify-center gap-1" title="Lounge Rest">
+                        <i class="fa-solid fa-couch text-[10px]"></i> Rehat
+                    </button>
+                    <button onclick="sendAgentActionQuick('${agent.id}', 'work')" class="flex-1 pixel-btn py-1.5 text-[11px] text-emerald-300 hover:text-emerald-200 flex items-center justify-center gap-1" title="Fokus Coding">
+                        <i class="fa-solid fa-laptop-code text-[10px]"></i> Kerja
                     </button>
                 </div>
             `;
@@ -1872,7 +1949,9 @@ export async function executeHermesSolution() {
                 raycaster.setFromCamera(mouse, camera);
                 const hits = raycaster.intersectObjects(interactableMeshes, false);
                 if (hits.length > 0 && hits[0].object.userData.agentId) {
-                    selectAgent(hits[0].object.userData.agentId, true);
+                    const aid = hits[0].object.userData.agentId;
+                    selectAgent(aid, true);
+                    openMicroModal(aid);
                 }
             }
         });
@@ -1988,15 +2067,18 @@ export async function executeHermesSolution() {
         }
 
         /******************************************************************
-         * 12. LOCAL MICRO BRIDGE INTEGRATION (DATA AUTO-SAVE)
+         * 12. LOCAL MICRO BRIDGE INTEGRATION (DATA AUTO-SAVE & DUAL-STACK)
          ******************************************************************/
-        const BRIDGE_API = 'http://localhost:8765/api';
+        const BRIDGE_ORIGIN = (window.location.protocol.startsWith('http') && (window.location.port === '8765' || window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'))
+            ? window.location.origin
+            : (window.location.protocol === 'file:' ? 'http://127.0.0.1:8765' : 'http://localhost:8765');
+        const BRIDGE_API = `${BRIDGE_ORIGIN}/api`;
         let isBridgeOnline = false;
 
         async function checkBridgeStatus(notifyUser = false) {
             try {
                 const controller = new AbortController();
-                const timeoutId = setTimeout(() => controller.abort(), 1800);
+                const timeoutId = setTimeout(() => controller.abort(), 2000);
                 const res = await fetch(`${BRIDGE_API}/status`, { signal: controller.signal });
                 clearTimeout(timeoutId);
 
@@ -2024,15 +2106,15 @@ export async function executeHermesSolution() {
             if (!dot || !label) return;
 
             if (online) {
-                dot.className = 'w-2.5 h-2.5 rounded-full bg-emerald-500 shadow-sm animate-pulse';
-                label.textContent = 'Bridge Aktif';
-                label.className = 'hidden lg:inline text-[11px] text-emerald-700 font-semibold';
+                dot.className = 'w-2 h-2 rounded-full bg-emerald-400 shadow-sm animate-pulse';
+                label.textContent = 'Bridge Online';
+                label.className = 'hidden lg:inline text-[11px] text-emerald-400 font-semibold font-mono-code';
                 if (pill) pill.title = `Micro Bridge Aktif -> Menyimpan ke: ${dirPath}`;
             } else {
-                dot.className = 'w-2.5 h-2.5 rounded-full bg-slate-400';
+                dot.className = 'w-2 h-2 rounded-full bg-slate-500';
                 label.textContent = 'Bridge Offline';
-                label.className = 'hidden lg:inline text-[11px] text-slate-500';
-                if (pill) pill.title = 'Micro Bridge Offline (Klik untuk cek atau jalankan run_desk.bat)';
+                label.className = 'hidden lg:inline text-[11px] text-slate-400 font-mono-code';
+                if (pill) pill.title = 'Micro Bridge Offline (Klik untuk refresh koneksi)';
             }
         }
 
@@ -2091,7 +2173,146 @@ export async function executeHermesSolution() {
         }
 
         /******************************************************************
-         * 13. HERMES 2D PIXEL OFFICE ENGINE (Inspired by hermes-pixel-office & pixel-agents)
+         * 13. MICRO & MACRO INTERACTIVITY CONTROLLERS
+         ******************************************************************/
+        let currentModalAgentId = null;
+
+        function openMicroModal(agentId) {
+            initAudio();
+            playChime('select');
+            currentModalAgentId = agentId;
+
+            const agent3d = AGENTS.find(a => a.id === agentId);
+            const agent2d = officeAgents.find(a => a.id === agentId);
+
+            const nameEl = document.getElementById('modal-agent-name');
+            const roleEl = document.getElementById('modal-agent-role');
+            const statusEl = document.getElementById('modal-agent-status');
+            const modal = document.getElementById('micro-action-modal');
+
+            const label = agent3d ? agent3d.name : (agent2d ? (agent2d.label || agent2d.id) : agentId);
+            const role = agent3d ? agent3d.role : (agent2d ? (agent2d.kind === 'subagent' ? 'Subagent' : 'Core Agent') : 'Autonomous Agent');
+            const status = agent3d 
+                ? `${agent3d.status} — "${agent3d.speech}"` 
+                : (agent2d ? `${agent2d.status.toUpperCase()} • ${agent2d.tool || agent2d.activity || agent2d.detail || 'idle'}` : 'Online');
+
+            if (nameEl) nameEl.textContent = label;
+            if (roleEl) roleEl.textContent = role;
+            if (statusEl) statusEl.textContent = status;
+
+            if (modal) modal.classList.remove('hidden');
+            const inputEl = document.getElementById('modal-prompt-input');
+            if (inputEl) {
+                inputEl.value = '';
+                inputEl.focus();
+            }
+        }
+
+        function closeMicroModal() {
+            const modal = document.getElementById('micro-action-modal');
+            if (modal) modal.classList.add('hidden');
+            currentModalAgentId = null;
+        }
+
+        async function sendAgentAction(action) {
+            if (!currentModalAgentId) return;
+            const aid = currentModalAgentId;
+            closeMicroModal();
+            await sendAgentActionQuick(aid, action);
+        }
+
+        async function sendAgentActionQuick(agentId, action) {
+            initAudio();
+            playChime('dispatch');
+
+            const actionNames = {
+                'coffee': '☕ Menikmati seduhan matcha latte hangat di pantry...',
+                'rest': '🛋️ Istirahat santai di lounge sofa...',
+                'work': '💻 Fokus sprint coding di meja kerja...',
+            };
+            showToast(actionNames[action] || `Aksi ${action} dikirim ke ${agentId}!`);
+
+            const agent3d = AGENTS.find(a => a.id === agentId);
+            if (agent3d) {
+                if (action === 'coffee') updateAgentSpeech(agentId, 'Sedang seduh matcha hangat ☕', 'Pantry');
+                else if (action === 'rest') updateAgentSpeech(agentId, 'Santai sejenak di lounge 🛋️', 'Lounge');
+                else if (action === 'work') updateAgentSpeech(agentId, 'Fokus coding intensif ⚡', 'Coding');
+            }
+
+            try {
+                await fetch(`${BRIDGE_API}/agent/action`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ id: agentId, action: action })
+                });
+                fetchOfficeState();
+            } catch (e) {}
+        }
+
+        async function sendAgentCustomPrompt() {
+            const input = document.getElementById('modal-prompt-input');
+            const text = input ? input.value.trim() : '';
+            if (!text || !currentModalAgentId) return;
+
+            initAudio();
+            playChime('dispatch');
+            const aid = currentModalAgentId;
+            input.value = '';
+
+            showToast(`✉️ Instruksi dikirim ke agen: "${text}"`);
+            addTelemetryLog('USER PROMPT', '#f59e0b', `[Instruksi -> ${aid}]: ${text}`);
+
+            const agent3d = AGENTS.find(a => a.id === aid);
+            if (agent3d) {
+                updateAgentSpeech(aid, `Mengerjakan: ${text}`, 'Working');
+            }
+
+            try {
+                await fetch(`${BRIDGE_API}/agent/action`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ id: aid, action: 'chat', message: text })
+                });
+                fetchOfficeState();
+            } catch (e) {}
+            closeMicroModal();
+        }
+
+        function focusAgentCamera() {
+            if (!currentModalAgentId) return;
+            selectAgent(currentModalAgentId, true);
+            closeMicroModal();
+            showToast(`🎥 Kamera mengunci target: ${currentModalAgentId}`);
+        }
+
+        async function triggerMacroAction(action) {
+            initAudio();
+            playChime('mission');
+            const titles = {
+                'meeting': '📢 All-Hands Meeting: Semua agen berkumpul di Meja Rapat Konferensi!',
+                'break': '☕ Rehat Massal: Semua agen istirahat santai di Lounge & Pantry!',
+                'sprint': '⚡ Overclock Sprint: Semua agen turbo coding di meja kerja!'
+            };
+            showToast(titles[action] || `Macro ${action} diaktifkan!`);
+
+            AGENTS.forEach(a => {
+                if (action === 'meeting') updateAgentSpeech(a.id, 'Rapat All-Hands di meja tengah 📢', 'Meeting');
+                else if (action === 'break') updateAgentSpeech(a.id, 'Istirahat santai di lounge ☕', 'Break');
+                else if (action === 'sprint') updateAgentSpeech(a.id, 'Coding kecepatan penuh 🚀', 'Sprint');
+            });
+
+            try {
+                await fetch(`${BRIDGE_ORIGIN}/api/office/macro`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ action: action })
+                });
+                fetchOfficeState();
+            } catch (e) {}
+        }
+
+        /******************************************************************
+         * 14. HERMES 2D PIXEL OFFICE ENGINE (Autonomous Life & Zones)
          ******************************************************************/
         let currentViewMode = '3d'; // '3d' | '2d'
         const officeCv = document.getElementById("office-canvas");
@@ -2100,11 +2321,17 @@ export async function executeHermesSolution() {
         let officeAgents = [];
         let officeFrame = 0;
         const officeChars = new Map();
-        const OFFICE_WALK_SPEED = 0.55;
+        const OFFICE_WALK_SPEED = 0.65;
 
         const OFFICE_SKIN = ["#f0c8a0", "#c68b59", "#8d5524", "#ffdbac", "#e0ac69", "#a1665e"];
-        const OFFICE_SHIRT = ["#4fa4d8", "#d84f6f", "#5fce7a", "#c9a227", "#9b6fd8", "#d87f4f"];
-        const OFFICE_HAIR = ["#2b2b2b", "#5a3825", "#c9a227", "#8a8a8a", "#7a3030", "#4a6741"];
+        const OFFICE_SHIRT = ["#38bdf8", "#f43f5e", "#10b981", "#f59e0b", "#a855f7", "#ec4899"];
+        const OFFICE_HAIR = ["#1e293b", "#5a3825", "#d97706", "#64748b", "#7f1d1d", "#334155"];
+
+        let officeZones = {
+            coffee: { x: 12, y: 50 },
+            lounge: { x: 90, y: 50 },
+            conference: { x: 50, y: 20, spots: [] }
+        };
 
         function officeHash(s) {
             let h = 0;
@@ -2123,63 +2350,128 @@ export async function executeHermesSolution() {
 
         function drawOfficeRoom(w, h) {
             if (!officeCtx) return;
+
+            // 1. Dark Modern Slate / Indigo Checkerboard Floor
             for (let y = 0; y < h; y += 8) {
                 for (let x = 0; x < w; x += 8) {
-                    officePx(x, y, 8, 8, ((x + y) / 8) % 2 ? "#2a2138" : "#251d31");
+                    officePx(x, y, 8, 8, ((x + y) / 8) % 2 ? "#141a29" : "#0f1422");
                 }
             }
-            officePx(0, 0, w, 6, "#3a2f4b");
-            officePx(0, 6, w, 1, "#241c30");
 
-            for (let x = 14; x < w - 14; x += 26) {
-                officePx(x, 1, 10, 4, "#151022");
-                officePx(x + 1, 2, 8, 2, "#3b5a8f");
-                officePx(x + 2, 2, 2, 1, "#7fa8d8");
+            // 2. Top Perimeter Wall
+            officePx(0, 0, w, 7, "#1e293b");
+            officePx(0, 7, w, 1, "#0f172a");
+
+            // Wall Skyline Windows
+            for (let x = 16; x < w - 20; x += 30) {
+                officePx(x, 1, 14, 5, "#0b0f19");
+                officePx(x + 1, 2, 12, 3, "#1e1b4b");
+                officePx(x + 2, 2, 3, 2, "#38bdf8");
+                officePx(x + 8, 3, 2, 2, "#818cf8");
             }
-            officePx(1, 1, 7, 6, "#54381f");
-            officePx(2, 2, 5, 5, "#6b4a2f");
-            officePx(6, 4, 1, 1, "#e8c170");
 
-            const rw = Math.min(28, w - 10);
-            officePx((w - rw) / 2, h - 8, rw, 5, "#3a2f4b");
-            officePx((w - rw) / 2 + 1, h - 7, rw - 2, 3, "#443358");
+            // Entrance Door (Top Left)
+            officePx(1, 1, 8, 6, "#334155");
+            officePx(2, 2, 6, 5, "#475569");
+            officePx(7, 4, 1, 1, "#f59e0b");
 
-            officePx(w - 6, h - 14, 3, 1, "#5fce7a");
-            officePx(w - 7, h - 15, 2, 2, "#5fce7a");
-            officePx(w - 4, h - 15, 2, 2, "#4aa860");
-            officePx(w - 6, h - 13, 2, 3, "#8d5524");
-            officePx(w - 6, h - 10, 3, 1, "#54381f");
+            // 3. Central Conference Round / Oval Table (All-Hands Zone)
+            const cf = officeZones.conference;
+            if (cf) {
+                // Table Rug
+                officePx(cf.x - 6, cf.y - 6, 44, 26, "#1e1b4b");
+                officePx(cf.x - 5, cf.y - 5, 42, 24, "#2e1065");
+                // Solid Mahogany Table Top
+                officePx(cf.x, cf.y, 32, 14, "#451a03");
+                officePx(cf.x + 1, cf.y + 1, 30, 12, "#78350f");
+                officePx(cf.x + 4, cf.y + 3, 24, 8, "#1e293b"); // Center glass display screen
+                officePx(cf.x + 10, cf.y + 5, 12, 4, (officeFrame >> 3) % 2 ? "#0284c7" : "#0ea5e9"); // Hologram bar
+                // Chairs around table
+                const chairColor = "#0f172a";
+                officePx(cf.x + 4, cf.y - 4, 6, 3, chairColor);
+                officePx(cf.x + 14, cf.y - 4, 6, 3, chairColor);
+                officePx(cf.x + 24, cf.y - 4, 6, 3, chairColor);
+                officePx(cf.x + 4, cf.y + 15, 6, 3, chairColor);
+                officePx(cf.x + 14, cf.y + 15, 6, 3, chairColor);
+                officePx(cf.x + 24, cf.y + 15, 6, 3, chairColor);
+            }
 
-            officePx(2, h - 14, 4, 5, "#7fa8d8");
-            officePx(3, h - 15, 2, 1, "#a8c8e8");
-            officePx(2, h - 9, 4, 1, "#4a4a5a");
-            officePx(3, h - 8, 2, 2, "#4a4a5a");
+            // 4. Pantry & Coffee Bar Zone (Bottom Left)
+            const cp = officeZones.coffee;
+            if (cp) {
+                // Kitchen Floor Tile
+                officePx(cp.x - 8, cp.y - 8, 30, 22, "#18212f");
+                // Espresso Bar Counter
+                officePx(cp.x - 6, cp.y + 4, 26, 4, "#334155");
+                officePx(cp.x - 6, cp.y + 2, 26, 2, "#64748b");
+                // Espresso Machine
+                officePx(cp.x - 4, cp.y - 3, 7, 5, "#0f172a");
+                officePx(cp.x - 3, cp.y - 2, 5, 3, "#334155");
+                officePx(cp.x - 2, cp.y - 1, 2, 1, (officeFrame >> 2) % 2 ? "#f59e0b" : "#ef4444");
+                // Steam particle
+                if ((officeFrame >> 3) % 2) {
+                    officePx(cp.x - 2, cp.y - 5, 1, 1, "#e2e8f0");
+                }
+                // Water Cooler Dispenser
+                officePx(cp.x + 12, cp.y - 5, 5, 7, "#0284c7");
+                officePx(cp.x + 13, cp.y - 4, 3, 4, "#38bdf8");
+                officePx(cp.x + 12, cp.y + 2, 5, 3, "#1e293b");
+                // Coffee Mugs
+                officePx(cp.x + 5, cp.y + 1, 2, 2, "#f8fafc");
+            }
 
-            officePx(10, h - 11, 6, 1, "#6b4a2f");
-            officePx(10, h - 10, 6, 3, "#54381f");
-            officePx(11, h - 14, 4, 3, "#33283f");
-            officePx(12, h - 13, 1, 1, "#d84f6f");
+            // 5. Lounge & Rest Area Zone (Bottom Right)
+            const lg = officeZones.lounge;
+            if (lg) {
+                // Cozy Lounge Rug
+                officePx(lg.x - 8, lg.y - 8, 38, 22, "#311042");
+                officePx(lg.x - 7, lg.y - 7, 36, 20, "#4a154b");
+                // Velvet Sectional Sofa
+                officePx(lg.x, lg.y - 2, 24, 7, "#3b2d54");
+                officePx(lg.x + 1, lg.y - 1, 22, 5, "#581c87");
+                officePx(lg.x - 2, lg.y - 2, 4, 12, "#3b2d54");
+                // Cushions
+                officePx(lg.x + 2, lg.y, 4, 3, "#a855f7");
+                officePx(lg.x + 10, lg.y, 4, 3, "#c084fc");
+                officePx(lg.x + 18, lg.y, 4, 3, "#e879f9");
+                // Low Wooden Coffee Table
+                officePx(lg.x + 4, lg.y + 7, 16, 5, "#451a03");
+                officePx(lg.x + 5, lg.y + 8, 14, 3, "#78350f");
+                officePx(lg.x + 10, lg.y + 7, 2, 1, "#f59e0b");
+                // Potted Ficus Tree
+                officePx(lg.x + 25, lg.y - 5, 5, 4, "#15803d");
+                officePx(lg.x + 26, lg.y - 7, 3, 3, "#22c55e");
+                officePx(lg.x + 26, lg.y - 1, 3, 4, "#78350f");
+            }
         }
 
         function drawOfficeDesk(x, y) {
-            officePx(x, y + 10, 16, 1, "#6b4a2f");
-            officePx(x, y + 11, 16, 3, "#54381f");
-            officePx(x + 1, y + 14, 2, 4, "#3c2814");
-            officePx(x + 13, y + 14, 2, 4, "#3c2814");
-            officePx(x + 10, y + 4, 6, 5, "#191524");
-            officePx(x + 12, y + 9, 2, 1, "#4a4a5a");
+            // Sleek developer desk with dark finish
+            officePx(x, y + 10, 16, 1, "#475569");
+            officePx(x, y + 11, 16, 3, "#334155");
+            officePx(x + 1, y + 14, 2, 4, "#0f172a");
+            officePx(x + 13, y + 14, 2, 4, "#0f172a");
+            // Dual Ultra-wide Monitors
+            officePx(x + 8, y + 4, 7, 5, "#090d16");
+            officePx(x + 1, y + 5, 6, 4, "#090d16");
+            officePx(x + 11, y + 9, 2, 1, "#64748b");
+            officePx(x + 3, y + 9, 2, 1, "#64748b");
         }
 
         function drawOfficeMonitor(x, y, a) {
             const t = officeFrame >> 3;
-            let col = "#0f2c1e";
+            let col1 = "#10b981"; // primary code monitor
+            let col2 = "#0284c7"; // secondary telemetry monitor
+
             if (a) {
-                if (a.activity === "running") col = (t % 4 < 2) ? "#0f3c1e" : "#0f2c16";
-                else if (a.activity === "browsing") col = (t % 6 < 3) ? "#1e2c4a" : "#24365a";
-                else if (a.activity === "typing") col = (t % 2) ? "#12321e" : "#0f2c1e";
-                else if (a.status === "waiting") col = "#3c1e28";
+                if (a.activity === "running") { col1 = (t % 4 < 2) ? "#f59e0b" : "#d97706"; }
+                else if (a.activity === "browsing") { col1 = (t % 6 < 3) ? "#38bdf8" : "#0284c7"; }
+                else if (a.activity === "typing") { col1 = (t % 2) ? "#10b981" : "#059669"; }
+                else if (a.status === "waiting") { col1 = "#f43f5e"; col2 = "#e11d48"; }
+                else if (a.behavior === "resting" || a.behavior === "drinking") { col1 = "#1e293b"; col2 = "#0f172a"; }
             }
-            officePx(x + 11, y + 5, 4, 3, col);
+            officePx(x + 9, y + 5, 5, 3, col1);
+            officePx(x + 2, y + 6, 4, 2, col2);
         }
 
         function drawOfficeChar(a, fx, fy, seated) {
@@ -2188,57 +2480,67 @@ export async function executeHermesSolution() {
             const skin = OFFICE_SKIN[h % OFFICE_SKIN.length];
             const shirt = OFFICE_SHIRT[(h >> 3) % OFFICE_SHIRT.length];
             const hair = OFFICE_HAIR[(h >> 6) % OFFICE_HAIR.length];
-            const t = officeFrame >> 4;
-            const walking = !seated;
+            const t = officeFrame >> 3;
+            const walking = !seated && a.behavior !== "resting";
             const bob = ((a.status === "working" || walking) && (t % 2)) ? 1 : 0;
             const x = fx;
             const y = fy + bob;
 
-            if (a.status === "gone") officeCtx.globalAlpha = 0.35;
+            if (a.status === "gone") officeCtx.globalAlpha = 0.30;
 
+            // Hair
             officePx(x + 2, y, 4, 3, hair);
             if (h % 3 === 0) officePx(x + 1, y + 1, 1, 2, hair);
             if (h % 5 === 0) officePx(x + 2, y - 1, 4, 1, hair);
 
+            // Face & Eyes
             officePx(x + 2, y + 2, 4, 3, skin);
             if (h % 4 === 0) {
-                officePx(x + 2, y + 3, 2, 1, "#222a44");
-                officePx(x + 4, y + 3, 2, 1, "#222a44");
+                officePx(x + 2, y + 3, 2, 1, "#38bdf8");
+                officePx(x + 4, y + 3, 2, 1, "#38bdf8");
             } else {
-                officePx(x + 3, y + 3, 1, 1, "#111");
-                officePx(x + 5, y + 3, 1, 1, "#111");
+                officePx(x + 3, y + 3, 1, 1, "#0f172a");
+                officePx(x + 5, y + 3, 1, 1, "#0f172a");
             }
 
+            // Torso / Shirt
             officePx(x + 1, y + 5, 6, 5, shirt);
 
+            // Subagent Golden Collar
             if (a.kind === "subagent") {
-                officePx(x + 1, y + 5, 6, 1, "#e8c170");
+                officePx(x + 1, y + 5, 6, 1, "#fbbf24");
             }
 
+            // Arms
             officePx(x + 0, y + 6, 1, 3, skin);
             officePx(x + 7, y + 6, 1, 3, skin);
 
-            if (walking) {
-                if (t % 2) {
-                    officePx(x + 2, y + 10, 1, 3, "#2d2d3d");
-                    officePx(x + 5, y + 11, 1, 2, "#2d2d3d");
-                } else {
-                    officePx(x + 2, y + 11, 1, 2, "#2d2d3d");
-                    officePx(x + 5, y + 10, 1, 3, "#2d2d3d");
-                }
-            } else {
-                officePx(x + 2, y + 10, 1, 3, "#2d2d3d");
-                officePx(x + 5, y + 10, 1, 3, "#2d2d3d");
+            // Coffee Cup in Hand when drinking
+            if (a.behavior === "drinking") {
+                officePx(x + 7, y + 5, 2, 2, "#f8fafc");
+                if (t % 2) officePx(x + 8, y + 4, 1, 1, "#e2e8f0");
             }
 
-            if (seated) {
+            // Legs
+            if (walking) {
+                if (t % 2) {
+                    officePx(x + 2, y + 10, 1, 3, "#1e293b");
+                    officePx(x + 5, y + 11, 1, 2, "#1e293b");
+                } else {
+                    officePx(x + 2, y + 11, 1, 2, "#1e293b");
+                    officePx(x + 5, y + 10, 1, 3, "#1e293b");
+                }
+            } else {
+                officePx(x + 2, y + 10, 1, 3, "#1e293b");
+                officePx(x + 5, y + 10, 1, 3, "#1e293b");
+            }
+
+            // Typing animation at desk
+            if (seated && a.behavior !== "resting" && a.behavior !== "meeting") {
                 if (a.activity === "typing" && (officeFrame >> 2) % 2) {
                     officePx(x + 7, y + 8, 2, 1, skin);
                 } else if (a.activity === "reading") {
-                    officePx(x + 7, y + 7, 3, 2, "#e8e0c8");
-                    officePx(x + 8, y + 7, 1, 2, "#b8b0a0");
-                } else if (a.activity === "delegating" && t % 2) {
-                    officePx(x + 8, y + 6, 2, 1, skin);
+                    officePx(x + 7, y + 7, 3, 2, "#f8fafc");
                 }
             }
 
@@ -2246,49 +2548,85 @@ export async function executeHermesSolution() {
         }
 
         function drawOfficeBubble(a, x, y) {
-            const t = officeFrame >> 4;
+            const t = officeFrame >> 3;
+
+            // Rest Bubble: 💤
+            if (a.behavior === "resting") {
+                const by = y - 6 - (t % 2);
+                officePx(x + 2, by, 7, 5, "#311042");
+                officePx(x + 3, by + 1, 3, 1, "#e879f9");
+                officePx(x + 4, by + 2, 2, 1, "#e879f9");
+                officePx(x + 3, by + 3, 3, 1, "#e879f9");
+                return;
+            }
+
+            // Coffee Bubble: ☕
+            if (a.behavior === "drinking") {
+                const by = y - 6 - (t % 2);
+                officePx(x + 2, by, 7, 5, "#451a03");
+                officePx(x + 4, by + 2, 3, 2, "#f59e0b");
+                if (t % 2) officePx(x + 4, by + 1, 1, 1, "#fde68a");
+                return;
+            }
+
+            // Meeting Bubble: 💬
+            if (a.behavior === "meeting") {
+                const by = y - 6 - (t % 2);
+                officePx(x + 2, by, 7, 5, "#1e1b4b");
+                officePx(x + 4, by + 2, 3, 2, "#818cf8");
+                return;
+            }
+
+            // Approval Request: Red !
             if (a.status === "waiting") {
-                const by = y - 6 - ((officeFrame >> 3) % 2);
-                officePx(x + 1, by, 6, 4, "#e8d8b0");
-                officePx(x + 2, by + 4, 1, 1, "#e8d8b0");
-                officePx(x + 4, by + 1, 1, 2, "#c9302f");
-                officePx(x + 4, by + 3, 1, 1, "#c9302f");
+                const by = y - 7 - ((officeFrame >> 2) % 2);
+                officePx(x + 1, by, 7, 5, "#450a0a");
+                officePx(x + 2, by + 5, 1, 1, "#450a0a");
+                officePx(x + 4, by + 1, 1, 2, "#ef4444");
+                officePx(x + 4, by + 4, 1, 1, "#ef4444");
             } else if (a.status === "working" && a.tool) {
-                officePx(x + 3, y - 4, 3, 3, "#e8c170");
-                officePx(x + 4, y - 3, 1, 1, "#1a1423");
+                officePx(x + 3, y - 4, 4, 3, "#f59e0b");
+                officePx(x + 4, y - 3, 1, 1, "#090d16");
             } else if (a.status === "thinking") {
                 for (let i = 0; i < 3; i++) {
-                    officePx(x + 2 + i * 2, y - 3, 1, 1, i <= (t % 4) ? "#cfc4e8" : "#4a4060");
+                    officePx(x + 2 + i * 2, y - 3, 1, 1, i <= (t % 4) ? "#38bdf8" : "#1e293b");
                 }
             } else if (a.status === "done") {
-                officePx(x + 2, y - 4, 1, 1, "#5fce7a");
-                officePx(x + 3, y - 3, 1, 1, "#5fce7a");
-                officePx(x + 4, y - 4, 1, 1, "#5fce7a");
-                officePx(x + 5, y - 5, 1, 1, "#5fce7a");
+                officePx(x + 2, y - 4, 1, 1, "#10b981");
+                officePx(x + 3, y - 3, 1, 1, "#10b981");
+                officePx(x + 4, y - 4, 1, 1, "#10b981");
+                officePx(x + 5, y - 5, 1, 1, "#10b981");
             }
         }
 
         function drawOfficeLabel(a, x, y) {
             if (!officeCtx) return;
-            officeCtx.font = "10px ui-monospace, Consolas, monospace";
+            officeCtx.font = "10px 'JetBrains Mono', Consolas, monospace";
             officeCtx.textAlign = "center";
-            officeCtx.fillStyle = a.kind === "subagent" ? "#e8c170" : "#cfc4e8";
+            officeCtx.fillStyle = a.kind === "subagent" ? "#fbbf24" : "#f1f5f9";
             officeCtx.fillText((a.label || 'agent').slice(0, 18), (x + 8) * officeScale, (y + 19) * officeScale);
 
-            const st = a.status === "waiting" ? "needs approval!" : a.status === "working" ? (a.tool || "working") : a.status;
+            const st = a.behavior === "resting" ? "lounge rest" :
+                       a.behavior === "drinking" ? "coffee break" :
+                       a.behavior === "meeting" ? "all-hands meeting" :
+                       a.status === "waiting" ? "needs approval!" :
+                       a.status === "working" ? (a.tool || "coding") : a.status;
+
             officeCtx.fillStyle = {
-                working: "#5fce7a",
-                thinking: "#c9a227",
-                idle: "#7a6f8f",
-                waiting: "#d84f6f",
-                done: "#5fce7a",
-                gone: "#555"
-            }[a.status] || "#7a6f8f";
+                working: "#10b981",
+                thinking: "#f59e0b",
+                idle: "#64748b",
+                waiting: "#f43f5e",
+                done: "#10b981",
+                gone: "#475569"
+            }[a.status] || "#38bdf8";
             officeCtx.fillText(st.slice(0, 18), (x + 8) * officeScale, (y + 22) * officeScale);
         }
 
         function getOfficeSeat(i, perRow) {
-            return { x: 10 + (i % perRow) * 34, y: 14 + Math.floor(i / perRow) * 32 };
+            const startX = 14;
+            const startY = 16;
+            return { x: startX + (i % perRow) * 36, y: startY + Math.floor(i / perRow) * 32 };
         }
 
         function stepOfficeChars(perRow) {
@@ -2302,18 +2640,37 @@ export async function executeHermesSolution() {
                     officeChars.set(a.id, c);
                 }
                 c.seat = seat;
-                const tx = c.phase === "out" ? 2 : c.seat.x + 2;
-                const ty = c.phase === "out" ? 2 : c.seat.y;
-                const dx = tx - c.x, dy = ty - c.y;
+
+                // Determine target waypoint based on autonomous behavior
+                let tx = c.seat.x + 2;
+                let ty = c.seat.y;
+
+                if (c.phase === "out") {
+                    tx = 2; ty = 2;
+                } else if (a.behavior === "resting" && officeZones.lounge) {
+                    tx = officeZones.lounge.x + 2 + (i % 3) * 7;
+                    ty = officeZones.lounge.y + 1;
+                } else if (a.behavior === "drinking" && officeZones.coffee) {
+                    tx = officeZones.coffee.x + (i % 2) * 6;
+                    ty = officeZones.coffee.y + 3;
+                } else if (a.behavior === "meeting" && officeZones.conference && officeZones.conference.spots.length) {
+                    const spot = officeZones.conference.spots[i % officeZones.conference.spots.length];
+                    tx = spot.x;
+                    ty = spot.y;
+                }
+
+                const dx = tx - c.x;
+                const dy = ty - c.y;
                 const dist = Math.hypot(dx, dy);
 
                 if (dist < OFFICE_WALK_SPEED) {
                     c.x = tx;
                     c.y = ty;
-                    if (c.phase === "in") c.phase = "seated";
+                    c.phase = (a.behavior && a.behavior !== "desk") ? a.behavior : "seated";
                 } else {
                     c.x += (dx / dist) * OFFICE_WALK_SPEED;
                     c.y += (dy / dist) * OFFICE_WALK_SPEED;
+                    c.phase = "walking";
                 }
 
                 if (c.lastStatus !== a.status) {
@@ -2350,35 +2707,54 @@ export async function executeHermesSolution() {
                 officeCv.height = H;
             }
 
-            const rowsAt = s => Math.ceil((officeAgents.length || 1) / Math.max(1, Math.floor((W / s - 8) / 34)));
             officeScale = 4;
-            while (officeScale > 2 && 14 + rowsAt(officeScale) * 32 * officeScale > H - 8 * officeScale && officeAgents.length) {
+            while (officeScale > 2 && (32 * officeScale * Math.ceil((officeAgents.length || 1) / 2)) > (H - 40 * officeScale)) {
                 officeScale--;
             }
 
             const gw = Math.floor(W / officeScale);
             const gh = Math.floor(H / officeScale);
+
+            // Configure dynamic zones
+            officeZones.coffee = { x: 12, y: Math.max(gh - 24, 40) };
+            officeZones.lounge = { x: Math.max(gw - 36, 60), y: Math.max(gh - 24, 40) };
+            const confX = Math.floor(gw / 2) - 16;
+            const confY = Math.max(16, Math.floor(gh / 2) - 8);
+            officeZones.conference = {
+                x: confX,
+                y: confY,
+                spots: [
+                    { x: confX + 4, y: confY - 5 },
+                    { x: confX + 14, y: confY - 5 },
+                    { x: confX + 24, y: confY - 5 },
+                    { x: confX - 4, y: confY + 4 },
+                    { x: confX + 33, y: confY + 4 },
+                    { x: confX + 4, y: confY + 14 },
+                    { x: confX + 14, y: confY + 14 },
+                    { x: confX + 24, y: confY + 14 }
+                ]
+            };
+
             drawOfficeRoom(gw, gh);
 
-            const perRow = Math.max(1, Math.floor((gw - 8) / 34));
+            const perRow = Math.max(1, Math.floor((gw - 20) / 38));
             stepOfficeChars(perRow);
 
+            // Draw Desks
             officeAgents.forEach((a, i) => {
                 const seat = getOfficeSeat(i, perRow);
                 drawOfficeDesk(seat.x, seat.y);
                 drawOfficeMonitor(seat.x, seat.y, a);
             });
 
+            // Draw Characters & Bubbles
             officeAgents.forEach((a, i) => {
                 const c = officeChars.get(a.id);
                 if (!c) return;
-                const seated = c.phase === "seated";
+                const seated = (c.phase !== "walking" && c.phase !== "out");
                 drawOfficeChar(a, c.x, c.y, seated);
-                if (seated) {
-                    const seat = getOfficeSeat(i, perRow);
-                    drawOfficeBubble(a, seat.x + 2, seat.y);
-                    drawOfficeLabel(a, seat.x, seat.y);
-                }
+                drawOfficeBubble(a, c.x, c.y);
+                drawOfficeLabel(a, c.x, c.y);
             });
 
             for (const [id, c] of officeChars) {
@@ -2388,6 +2764,46 @@ export async function executeHermesSolution() {
             }
 
             requestAnimationFrame(renderOffice);
+        }
+
+        // 2D Canvas Interactive Click & Hover
+        if (officeCv) {
+            officeCv.addEventListener('click', (e) => {
+                const rect = officeCv.getBoundingClientRect();
+                const mx = (e.clientX - rect.left) / officeScale;
+                const my = (e.clientY - rect.top) / officeScale;
+
+                let clickedAgent = null;
+                let minDist = 22;
+                for (const a of officeAgents) {
+                    const c = officeChars.get(a.id);
+                    if (c) {
+                        const d = Math.hypot(c.x + 4 - mx, c.y + 6 - my);
+                        if (d < minDist) {
+                            minDist = d;
+                            clickedAgent = a;
+                        }
+                    }
+                }
+                if (clickedAgent) {
+                    openMicroModal(clickedAgent.id);
+                }
+            });
+
+            officeCv.addEventListener('mousemove', (e) => {
+                const rect = officeCv.getBoundingClientRect();
+                const mx = (e.clientX - rect.left) / officeScale;
+                const my = (e.clientY - rect.top) / officeScale;
+                let hovering = false;
+                for (const a of officeAgents) {
+                    const c = officeChars.get(a.id);
+                    if (c && Math.hypot(c.x + 4 - mx, c.y + 6 - my) < 14) {
+                        hovering = true;
+                        break;
+                    }
+                }
+                officeCv.style.cursor = hovering ? 'pointer' : 'default';
+            });
         }
 
         function switchViewMode(mode) {
@@ -2400,15 +2816,15 @@ export async function executeHermesSolution() {
             const labelsContainer = document.getElementById('labels-container');
 
             if (mode === '3d') {
-                btn3d.className = 'px-2.5 py-1.5 rounded-lg text-xs font-bold bg-amber-400 text-slate-900 border-2 border-slate-800 transition flex items-center gap-1.5 shadow-sm';
-                btn2d.className = 'px-2.5 py-1.5 rounded-lg text-xs font-bold text-slate-700 hover:bg-slate-200 transition flex items-center gap-1.5';
+                btn3d.className = 'px-2.5 py-1.5 rounded-md text-xs font-semibold bg-amber-500 text-slate-950 transition flex items-center gap-1.5 shadow-sm';
+                btn2d.className = 'px-2.5 py-1.5 rounded-md text-xs font-semibold text-slate-400 hover:text-slate-200 transition flex items-center gap-1.5';
                 canvas3d.style.display = 'block';
                 officeContainer.classList.add('hidden');
                 labelsContainer.style.display = 'block';
-                showToast('🏝️ Mode: Taman 3D Voxel Garden');
+                showToast('🏝️ Mode: Taman 3D Voxel Studio');
             } else {
-                btn2d.className = 'px-2.5 py-1.5 rounded-lg text-xs font-bold bg-amber-400 text-slate-900 border-2 border-slate-800 transition flex items-center gap-1.5 shadow-sm';
-                btn3d.className = 'px-2.5 py-1.5 rounded-lg text-xs font-bold text-slate-700 hover:bg-slate-200 transition flex items-center gap-1.5';
+                btn2d.className = 'px-2.5 py-1.5 rounded-md text-xs font-semibold bg-amber-500 text-slate-950 transition flex items-center gap-1.5 shadow-sm';
+                btn3d.className = 'px-2.5 py-1.5 rounded-md text-xs font-semibold text-slate-400 hover:text-slate-200 transition flex items-center gap-1.5';
                 canvas3d.style.display = 'none';
                 officeContainer.classList.remove('hidden');
                 labelsContainer.style.display = 'none';
@@ -2419,7 +2835,7 @@ export async function executeHermesSolution() {
 
         async function fetchOfficeState() {
             try {
-                const res = await fetch('http://localhost:8765/state');
+                const res = await fetch(`${BRIDGE_ORIGIN}/state`);
                 if (res.ok) {
                     const data = await res.json();
                     if (data && Array.isArray(data.agents)) {
@@ -2432,9 +2848,9 @@ export async function executeHermesSolution() {
             } catch (e) {
                 if (officeAgents.length === 0) {
                     officeAgents = [
-                        { id: 'sess-hermes', label: 'hermes-core', kind: 'main', status: 'working', tool: 'write_file', activity: 'typing' },
-                        { id: 'sess-athena', label: 'athena-owl', kind: 'main', status: 'working', tool: 'read_file', activity: 'reading' },
-                        { id: 'sub-sample', label: 'sub-refactor', kind: 'subagent', status: 'idle', tool: '', activity: '' }
+                        { id: 'sess-hermes', label: 'hermes-core', kind: 'main', status: 'working', tool: 'write_file', activity: 'typing', behavior: 'desk' },
+                        { id: 'sess-athena', label: 'athena-owl', kind: 'main', status: 'working', tool: 'read_file', activity: 'reading', behavior: 'desk' },
+                        { id: 'sub-sample', label: 'sub-refactor', kind: 'subagent', status: 'idle', tool: '', activity: '', behavior: 'resting' }
                     ];
                 }
             }
@@ -2443,17 +2859,17 @@ export async function executeHermesSolution() {
         async function toggleDemoFeed() {
             playChime('select');
             try {
-                const res = await fetch('http://localhost:8765/api/demo/toggle');
+                const res = await fetch(`${BRIDGE_ORIGIN}/api/demo/toggle`);
                 if (res.ok) {
                     const data = await res.json();
                     const icon = document.getElementById('icon-demo-feed');
                     const label = document.getElementById('label-demo-feed');
                     if (data.demo_running) {
-                        icon.className = 'fa-solid fa-stop text-rose-600';
+                        icon.className = 'fa-solid fa-stop text-rose-500';
                         label.textContent = 'Hentikan';
                         showToast('▶ Simulasi Subagents & Tasks Aktif!');
                     } else {
-                        icon.className = 'fa-solid fa-play';
+                        icon.className = 'fa-solid fa-play text-emerald-400';
                         label.textContent = 'Simulasi';
                         showToast('⏹ Simulasi dihentikan.');
                     }
@@ -2468,21 +2884,19 @@ export async function executeHermesSolution() {
             renderRoster();
             renderInspector();
 
-            // Initial logs & default artifact
-            addTelemetryLog('HERMES CORE', '#f59e0b', 'Sistem Hermes Visual Agent Desk v3.8 siap di Taman Pixel 3D HD.');
-            addTelemetryLog('ATHENA OWL', '#10b981', 'Terhubung ke indeks pengetahuan & pencarian semantik.');
-            addTelemetryLog('HEPHAESTUS', '#f43f5e', 'Sandbox eksekusi kode siap menerima kompilasi.');
-            addTelemetryLog('IRIS PRISM', '#a855f7', 'Engine visual Pixel HD-2D berjalan pada 60 FPS.');
+            addTelemetryLog('HERMES CORE', '#f59e0b', 'Sistem Hermes Visual Agent Desk Pro siap di Studio Otonom.');
+            addTelemetryLog('ATHENA OWL', '#10b981', 'Koneksi pengetahuan semantik & riset aktif.');
+            addTelemetryLog('HEPHAESTUS', '#f43f5e', 'Sandbox eksekusi kode & DevOps siap.');
+            addTelemetryLog('IRIS PRISM', '#a855f7', 'Engine visual Dual-View (3D & 2D) aktif 60 FPS.');
 
             document.getElementById('artifact-viewer').textContent = PRESET_MISSIONS[0].artifact;
 
-            // Spawn a welcome packet
             setTimeout(() => spawnVisualPacket('hermes', 'athena', 0x10b981), 600);
             setTimeout(() => spawnVisualPacket('hermes', 'hephaestus', 0xf43f5e), 1000);
 
-            // Connect to local micro bridge
+            // Connect to local bridge
             checkBridgeStatus();
-            setInterval(checkBridgeStatus, 10000);
+            setInterval(checkBridgeStatus, 6000);
 
             // Connect to Hermes Pixel Office /state stream
             fetchOfficeState();
@@ -2490,6 +2904,12 @@ export async function executeHermesSolution() {
 
             startAutonomousGardenPulse();
             animate();
+
+            // Auto-switch to 2D view if requested via URL param ?view=2d
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('view') === '2d') {
+                switchViewMode('2d');
+            }
         };
     </script>
 </body>

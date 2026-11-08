@@ -19,6 +19,14 @@ from datetime import datetime
 from http.server import HTTPServer, SimpleHTTPRequestHandler
 import urllib.parse
 
+# Ensure UTF-8 output on Windows consoles
+if hasattr(sys.stdout, 'reconfigure'):
+    try:
+        sys.stdout.reconfigure(encoding='utf-8', errors='replace')
+        sys.stderr.reconfigure(encoding='utf-8', errors='replace')
+    except Exception:
+        pass
+
 PORT = 8765
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 DATA_DIR = os.path.join(BASE_DIR, "data")
@@ -162,15 +170,15 @@ class DeskBridgeHandler(SimpleHTTPRequestHandler):
         self.wfile.write(json.dumps(data, ensure_ascii=False).encode("utf-8"))
 
 def run():
-    server_address = ('', PORT)
+    server_address = ('0.0.0.0', PORT)
     httpd = HTTPServer(server_address, DeskBridgeHandler)
     print("=" * 65)
-    print(f"✨ Hermes Visual Agent Desk — Micro Bridge Aktif")
-    print(f"🌐 Akses Web : http://localhost:{PORT}")
-    print(f"📁 Data Path : {DATA_DIR}")
-    print(f"📄 Artefak   : {ARTIFACTS_DIR}")
+    print(f"[*] Hermes Visual Agent Desk - Micro Bridge Aktif")
+    print(f"[*] Web Access : http://localhost:{PORT} (atau http://127.0.0.1:{PORT})")
+    print(f"[*] Data Path  : {DATA_DIR}")
+    print(f"[*] Artifacts  : {ARTIFACTS_DIR}")
     print("=" * 65)
-    print("Tekan Ctrl+C untuk menghentikan server.")
+    print("Server siap menerima request.")
     try:
         httpd.serve_forever()
     except KeyboardInterrupt:

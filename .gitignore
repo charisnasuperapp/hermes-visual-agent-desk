@@ -1,19 +1,39 @@
-# Python
+# Python environment
 __pycache__/
 *.py[cod]
-*$py.class
-*.env
+*.pyo
+*.pyd
+*.egg-info/
 .venv/
-env/
+venv/
+.env
 
-# OS specific
+# OS/editor
 .DS_Store
-Thumbs.db
-desktop.ini
 
-# Local runtime logs
-data/*.jsonl
-data/*.tmp
-data/artifacts/*.md
-!data/.gitkeep
-!data/artifacts/.gitkeep
+# Runtime state (local only)
+state.json
+agents-state.json
+runtime-config.json
+*.log
+*.out
+*.pid
+*.backup*
+*.original
+cloudflared.pid
+cloudflared.out
+healthcheck.log
+backend.log
+
+# Generated / mutable assets (local only)
+assets/bg-history/
+assets/home-favorites/
+frontend/office_bg.png
+frontend/*.bak
+layers/
+desktop-pet/src-tauri/icons/*Logo.png
+
+# Electron local build artifacts
+electron-shell/node_modules/
+electron-shell/release/
+join-keys.json

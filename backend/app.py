@@ -152,7 +152,7 @@ def add_no_cache_headers(response):
 # Default state
 DEFAULT_STATE = {
     "state": "idle",
-    "detail": "等待任务中...",
+    "detail": "Standby and ready for tasks",
     "progress": 0,
     "updated_at": datetime.now().isoformat()
 }
@@ -194,7 +194,7 @@ def load_state():
                 age = (datetime.now() - dt).total_seconds()
             if age > ttl:
                 state["state"] = "idle"
-                state["detail"] = "待命中（自动回到休息区）"
+                state["detail"] = "Standby and resting in breakroom"
                 state["progress"] = 0
                 state["updated_at"] = datetime.now().isoformat()
                 # persist the auto-idle so every client sees it consistently
@@ -271,19 +271,16 @@ _INDEX_HTML_CACHE = None
 
 @app.route("/", methods=["GET"])
 def index():
-    """Serve the pixel office UI with built-in version cache busting"""
-    # 默认禁用页面打开即换背景，避免首屏慢
-    # 如需启用，可配置 AUTO_ROTATE_HOME_ON_PAGE_OPEN=1
+    """Serve the pixel office UI live with version cache busting."""
     _maybe_apply_random_home_favorite()
 
-    global _INDEX_HTML_CACHE
-    if _INDEX_HTML_CACHE is None:
-        with open(FRONTEND_INDEX_FILE, "r", encoding="utf-8") as f:
-            raw_html = f.read()
-        _INDEX_HTML_CACHE = raw_html.replace("{{VERSION_TIMESTAMP}}", VERSION_TIMESTAMP)
+    with open(FRONTEND_INDEX_FILE, "r", encoding="utf-8") as f:
+        raw_html = f.read()
 
-    resp = make_response(_INDEX_HTML_CACHE)
+    rendered = raw_html.replace("{{VERSION_TIMESTAMP}}", str(int(time.time())))
+    resp = make_response(rendered)
     resp.headers["Content-Type"] = "text/html; charset=utf-8"
+    resp.headers["Cache-Control"] = "no-store, no-cache, must-revalidate"
     return resp
 
 

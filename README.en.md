@@ -1,294 +1,141 @@
-# Star Office UI
+# Charisna Visual Agent Desk
 
-🌐 Language: [中文](./README.md) | **English** | [日本語](./README.ja.md)
+> **The Official Real-Time Visual Virtual Office & Operations Hub for the Charisna SuperApp & Hermes AI Ecosystem.**
 
-![Star Office UI Cover](docs/screenshots/readme-cover-2.jpg)
+![Charisna Office Workspace Banner](docs/screenshots/readme-cover-2.jpg)
 
-**A pixel-art AI office dashboard** — visualize your AI assistant's work status in real time, so you can see at a glance who's doing what, what they did yesterday, and whether they're online.
-
-Supports multi-agent collaboration, trilingual UI (CN/EN/JP), AI-powered room design, and desktop pet mode.
-Best experienced with [OpenClaw](https://github.com/openclaw/openclaw), but also works standalone as a status dashboard.
-
-> This project was co-created by **[Ring Hyacinth](https://x.com/ring_hyacinth)** and **[Simon Lee](https://x.com/simonxxoo)**, and is continuously maintained and improved together with community contributors ([@Zhaohan-Wang](https://github.com/Zhaohan-Wang), [@Jah-yee](https://github.com/Jah-yee), [@liaoandi](https://github.com/liaoandi)).
-> Issues and PRs are welcome — thank you to everyone who contributes.
+**Charisna Visual Agent Desk** is an interactive, pixel-art virtual office command center designed to monitor, visualize, and interact with autonomous AI agents across the **Charisna SuperApp** multi-business ecosystem.
 
 ---
 
-## ✨ Quick Start
+## 🌟 Ecosystem & Core Team Agents
 
-### Option 1: Let your lobster deploy it (recommended for OpenClaw users)
+The workspace hosts a dedicated team of autonomous agents operating harmoniously:
 
-If you're using [OpenClaw](https://github.com/openclaw/openclaw), just send this to your lobster:
+| Agent | Avatar / Role | Mission & Focus Area | Default Station |
+|---|---|---|---|
+| **Hermes** | `star` (Chief AI Architect) | System orchestration, autonomous pair programming & core automation | Executive Desk & Lounge Sofa |
+| **Onal AI** | `guest_anim_1` (Universal Memory) | Cross-session memory indexing, context retention & SOP documentation | Library & Archive Station |
+| **Bumi POS** | `guest_anim_2` (Retail & Inventory) | Real-time cashier transactions, product stock & POS monitoring (Bumi Makmur) | Retail Counter Desk |
+| **Homestay Bot** | `guest_anim_3` (Hospitality & Booking) | Unit occupancy, tenant ledger & booking coordination (Charisna Homestay) | Guest Lounge Area |
+| **MoniFlow** | `guest_anim_4` (Ledger & Books) | Consolidated cashflow, audit trails & financial ledgers (MoniFlow) | Accounting Workstation |
+| **Codex Dev** | `guest_anim_5` (DevOps Automator) | Autonomous CI/CD pipeline builds, code validation & test execution | Server Telemetry Terminal |
+| **Kuro Patrol** | `guest_anim_6` (Security Sentinel) | System health checks, daemon integrity & security boundary enforcement | Office Corridor Patrol |
 
-```text
-Please follow this SKILL.md to deploy Star Office UI for me:
-https://github.com/ringhyacinth/Star-Office-UI/blob/master/SKILL.md
-```
+---
 
-Your lobster will automatically clone the repo, install dependencies, start the backend, configure status sync, and send you the access URL.
+## ✨ Key Features
 
-### Option 2: 30-second manual setup
+1. **Anti-Teleport Walking Engine**:
+   - Agents never teleport. When transitioning between states (`idle`, `writing`, `syncing`, `error`), characters stand up, flip directionally, and walk smoothly across the floor with authentic retro step-bobbing.
+2. **Point-and-Click Floor Navigation**:
+   - Click anywhere on the office floor to guide Hermes to that spot with animated walking and visual click beacons.
+3. **Interactive Environment & Dialogues**:
+   - **Clickable Agents**: Click any team agent to trigger an energetic bounce and read their live status dialogue bubble.
+   - **Coffee Machine**: Click to brew fresh coffee (`☕`) and invite Hermes or nearby agents over for a warm cup.
+   - **Lounge Sofa & Workstations**: Click to invite Hermes to rest or start coding at his laptop.
+   - **Server Room Rack**: Click to inspect real-time system uptime, CPU load, and service statuses.
+   - **Office Cats & Plants**: Click to pet the purring office cats (`❤️ Purr... Meow!`) or bloom decorative plants.
+   - **Wooden Plaque**: Click the gold-embossed plaque to rename the office anytime.
+4. **Autonomous Office Roaming**:
+   - Team agents periodically stroll around the room to grab coffee, inspect server racks, or discuss tasks, creating a lively virtual workspace.
+5. **Responsive Widescreen & Zoom**:
+   - Automatically adapts to wide monitors (up to 1600px+ / 96vw) with crisp pixel art rendering and mouse-wheel zoom-in/out support.
+6. **Realtime Hermes Activity Watcher**:
+   - Built-in daemon watcher passively monitors `agent.log` and automatically transitions Hermes from `idle` to `writing` / `executing` when busy, and back to `idle` when quiet.
 
-> **Requires Python 3.10+** (the codebase uses `X | Y` union type syntax, which is not supported on 3.9 or earlier)
+---
 
+## 🚀 Quick Start
+
+### Prerequisites
+- **Python 3.10+** (Python 3.11, 3.12, 3.13, 3.14 supported)
+- Modern web browser (Chrome, Edge, Firefox, Safari)
+
+### 1. Installation
 ```bash
-# 1) Clone the repo
-git clone https://github.com/ringhyacinth/Star-Office-UI.git
-cd Star-Office-UI
+# Clone the repository
+git clone https://github.com/charisnasuperapp/hermes-visual-agent-desk.git
+cd hermes-visual-agent-desk
 
-# 2) Install dependencies (Python 3.10+ required)
-python3 -m pip install -r backend/requirements.txt
-
-# 3) Initialize state file (first run)
-cp state.sample.json state.json
-
-# 4) Start the backend
-cd backend
-python3 app.py
+# Install required dependencies
+pip install -r backend/requirements.txt
 ```
 
-Open **http://127.0.0.1:19000** and try switching states:
-
+### 2. Launch Backend
 ```bash
-python3 set_state.py writing "Organizing documents"
-python3 set_state.py error "Found an issue, debugging"
-python3 set_state.py idle "Standing by"
+# Start the backend state service and Hermes activity watcher
+python backend/app.py
 ```
 
-![Star Office UI Preview](docs/screenshots/readme-cover-1.jpg)
+The server will start listening at **http://127.0.0.1:19000**.
+
+### 3. Open Dashboard
+Open **http://127.0.0.1:19000** in your browser.
 
 ---
 
-## 🤔 Who is this for?
+## 🛠️ API & State Control
 
-### Users with OpenClaw / an AI Agent
-This is the **full experience**. Your agent automatically switches status as it works, and the pixel character walks to the corresponding office area in real time — just open the page and see what your AI is doing right now.
+### State Endpoints
 
-### Users without OpenClaw
-You can still deploy and use it. You can:
-- Use `set_state.py` or the API to push status manually or via scripts
-- Use it as a pixel-art personal status page or remote work dashboard
-- Connect any system that can send HTTP requests to drive the status
+- **`GET /status`**: Returns current workspace state, active office name, and Hermes detail.
+- **`POST /set_state`**: Push new state to Hermes:
+  ```json
+  {
+    "state": "writing",
+    "detail": "Building new microservice module"
+  }
+  ```
+- **`GET /agents`**: Returns full status list of all 7 team agents.
+- **`POST /api/office/rename`**: Rename the office plaque:
+  ```json
+  {
+    "officeName": "Charisna Office Workspace"
+  }
+  ```
+- **`GET /yesterday-memo`**: Fetches yesterday's notes and summaries from `memory/*.md`.
 
----
-
-## 📋 Features
-
-1. **Status Visualization** — 6 states (`idle` / `writing` / `researching` / `executing` / `syncing` / `error`) mapped to different office areas with animated sprites and speech bubbles
-2. **Yesterday Memo** — Automatically reads the latest daily log from `memory/*.md`, sanitizes it, and displays it as a "Yesterday Memo" card
-3. **Multi-Agent Collaboration** — Invite other agents to join your office via join keys and see everyone's status in real time
-4. **Trilingual UI** — Switch between Chinese, English, and Japanese with one click; all UI text, bubbles, and loading messages update instantly
-5. **Custom Art Assets** — Manage characters, scenes, and decorations through the sidebar; dynamic frame sync prevents flickering
-6. **AI-Powered Room Design** — Connect your own Gemini API to generate new office backgrounds; core features work fine without an API
-7. **Mobile-Friendly** — Open on your phone for a quick status check on the go
-8. **Security Hardening** — Sidebar password protection, weak-password blocking in production, hardened session cookies
-9. **Flexible Public Access** — Use Cloudflare Tunnel for instant public access, or bring your own domain / reverse proxy
-10. **Desktop Pet Mode** — Optional Electron desktop wrapper that turns the office into a transparent desktop widget (see below)
-
----
-
-## 🚀 Detailed Setup Guide
-
-### 1) Install dependencies
-
+### Command Line State Helper
 ```bash
-cd Star-Office-UI
-python3 -m pip install -r backend/requirements.txt
-```
-
-### 2) Initialize state file
-
-```bash
-cp state.sample.json state.json
-```
-
-### 3) Start the backend
-
-```bash
-cd backend
-python3 app.py
-```
-
-Open `http://127.0.0.1:19000`
-
-> ✅ For local development you can start with the defaults; in production, copy `.env.example` to `.env` and set strong random values for `FLASK_SECRET_KEY` and `ASSET_DRAWER_PASS` to avoid weak passwords and session leaks.
-
-### 4) Switch states
-
-```bash
-python3 set_state.py writing "Organizing documents"
-python3 set_state.py syncing "Syncing progress"
-python3 set_state.py error "Found an issue, debugging"
-python3 set_state.py idle "Standing by"
-```
-
-### 5) Public access (optional)
-
-```bash
-cloudflared tunnel --url http://127.0.0.1:19000
-```
-
-Share the `https://xxx.trycloudflare.com` link with anyone.
-
-### 6) Verify your installation (optional)
-
-```bash
-python3 scripts/smoke_test.py --base-url http://127.0.0.1:19000
-```
-
-If all checks report `OK`, your deployment is good to go.
-
----
-
-## 🦞 OpenClaw Deep Integration
-
-> The following section is for [OpenClaw](https://github.com/openclaw/openclaw) users. If you don't use OpenClaw, feel free to skip this.
-
-### Automatic Status Sync
-
-Add the following rule to your `SOUL.md` (or agent config) so your agent updates its status automatically:
-
-```markdown
-## Star Office Status Sync Rules
-- When starting a task: run `python3 set_state.py <state> "<description>"` before beginning work
-- When finishing a task: run `python3 set_state.py idle "Standing by"` before replying
-```
-
-**6 states → 3 office areas:**
-
-| State | Office Area | When to use |
-|-------|-------------|-------------|
-| `idle` | 🛋 Breakroom (sofa) | Standing by / task complete |
-| `writing` | 💻 Workspace (desk) | Writing code or docs |
-| `researching` | 💻 Workspace | Searching / researching |
-| `executing` | 💻 Workspace | Running commands / tasks |
-| `syncing` | 💻 Workspace | Syncing data / pushing |
-| `error` | 🐛 Bug Corner | Error / debugging |
-
-### Invite Other Agents to Your Office
-
-**Step 1: Prepare join keys**
-
-When you start the backend for the first time, if there is no `join-keys.json` in the project root, the service will automatically create one based on `join-keys.sample.json` (which contains an example key such as `ocj_example_team_01`). You can then edit the generated `join-keys.json` to add, modify, or remove keys; by default each key supports up to 3 concurrent users.
-
-**Step 2: Have the guest run the push script**
-
-The guest only needs to download `office-agent-push.py` and fill in 3 variables:
-
-```python
-JOIN_KEY = "ocj_starteam02"          # The key you assign
-AGENT_NAME = "Alice's Lobster"       # Display name
-OFFICE_URL = "https://office.hyacinth.im"  # Your office URL
-```
-
-```bash
-python3 office-agent-push.py
-```
-
-The script auto-joins and pushes status every 15 seconds. The guest will appear on the dashboard, moving to the appropriate area based on their state.
-
-**Step 3 (optional): Guest installs a Skill**
-
-Guests can also use `frontend/join-office-skill.md` as a Skill — their agent will handle setup and pushing automatically.
-
-> See [`frontend/join-office-skill.md`](./frontend/join-office-skill.md) for full guest onboarding instructions.
-
----
-
-## 📡 API Reference
-
-| Endpoint | Description |
-|----------|-------------|
-| `GET /health` | Health check |
-| `GET /status` | Get main agent status |
-| `POST /set_state` | Set main agent status |
-| `GET /agents` | List all agents |
-| `POST /join-agent` | Guest joins the office |
-| `POST /agent-push` | Guest pushes status |
-| `POST /leave-agent` | Guest leaves |
-| `GET /yesterday-memo` | Get yesterday's memo |
-| `GET /config/gemini` | Get Gemini API config |
-| `POST /config/gemini` | Set Gemini API config |
-| `GET /assets/generate-rpg-background/poll` | Poll image generation progress |
-
----
-
-## 🖥 Desktop Pet Mode (Optional)
-
-The `desktop-pet/` directory contains a **Electron**-based desktop wrapper that turns the pixel office into a transparent desktop widget.
-
-```bash
-cd desktop-pet
-npm install
-npm run dev
-```
-
-- Auto-launches the Python backend on startup
-- Window points to `http://127.0.0.1:19000/?desktop=1` by default
-- Customizable via environment variables for project path and Python path
-
-> ⚠️ This is an **optional, experimental feature**, primarily developed and tested on macOS. See [`desktop-pet/README.md`](./desktop-pet/README.md) for details.
->
-> 🙏 The desktop pet module was independently developed by [@Zhaohan-Wang](https://github.com/Zhaohan-Wang) — thank you for this contribution!
-
----
-
-## 🎨 Art Assets & License
-
-### Asset Attribution
-
-Guest character animations use free assets by **LimeZu**:
-- [Animated Mini Characters 2 (Platformer) [FREE]](https://limezu.itch.io/animated-mini-characters-2-platform-free)
-
-Please keep attribution when redistributing or demoing, and follow the original license terms.
-
-### License
-
-- **Code / Logic: MIT** (see [`LICENSE`](./LICENSE))
-- **Art Assets: Non-commercial use only** (learning / demo / sharing)
-
-> For commercial use, replace all art assets with your own original artwork.
-
----
-
-## 📝 Changelog
-
-| Date | Summary | Details |
-|------|---------|---------|
-| 2026-03-06 | 🔌 Default port updated — backend default port changed from 18791 to 19000 to avoid conflicts with OpenClaw Browser Control; synced scripts, desktop shells, and docs defaults | [`docs/CHANGELOG_2026-03.md`](./docs/CHANGELOG_2026-03.md) |
-| 2026-03-05 | 📱 Stability fixes — CDN cache fix, async image generation, mobile sidebar UX, join key expiration & concurrency | [`docs/UPDATE_REPORT_2026-03-05.md`](./docs/UPDATE_REPORT_2026-03-05.md) |
-| 2026-03-04 | 🔒 P0/P1 Security hardening — weak password blocking, backend refactor, stale-state auto-idle, skeleton loading | [`docs/UPDATE_REPORT_2026-03-04_P0_P1.md`](./docs/UPDATE_REPORT_2026-03-04_P0_P1.md) |
-| 2026-03-03 | 📋 Open-source release checklist completed | [`docs/OPEN_SOURCE_RELEASE_CHECKLIST.md`](./docs/OPEN_SOURCE_RELEASE_CHECKLIST.md) |
-| 2026-03-01 | 🎉 **v2 Rebuild** — Trilingual support, asset management system, AI room design, full art asset overhaul | [`docs/FEATURES_NEW_2026-03-01.md`](./docs/FEATURES_NEW_2026-03-01.md) |
-
----
-
-## 📁 Project Structure
-
-```text
-Star-Office-UI/
-├── backend/            # Flask backend
-│   ├── app.py
-│   ├── requirements.txt
-│   └── run.sh
-├── frontend/           # Frontend pages & assets
-│   ├── index.html
-│   ├── join.html
-│   ├── invite.html
-│   └── layout.js
-├── desktop-pet/        # Electron desktop wrapper (optional)
-├── docs/               # Documentation & screenshots
-│   └── screenshots/
-├── office-agent-push.py  # Guest push script
-├── set_state.py          # Status switch script
-├── state.sample.json     # State file template
-├── join-keys.sample.json # Join key template (runtime generates join-keys.json)
-├── SKILL.md              # OpenClaw Skill
-└── LICENSE               # MIT License
+python set_state.py writing "Compiling codebase"
+python set_state.py syncing "Pushing git commits"
+python set_state.py idle "Standby and resting in breakroom"
 ```
 
 ---
 
-## ⭐ Star History
+## 📁 Repository Structure
 
-[![Star History Chart](https://api.star-history.com/image?repos=ringhyacinth/Star-Office-UI&type=date&legend=top-left)](https://www.star-history.com/?repos=ringhyacinth%2FStar-Office-UI&type=date&legend=top-left)
+```
+hermes-visual-agent-desk/
+├── backend/
+│   ├── app.py                 # Core Flask service & Hermes Realtime Watcher
+│   ├── store_utils.py         # State persistence & runtime config storage
+│   ├── memo_utils.py          # Daily memory log extractor
+│   └── requirements.txt       # Python dependencies
+├── frontend/
+│   ├── index.html             # Main Phaser 3.80 virtual office client
+│   ├── electron-standalone.html # Decoupled desktop shell frontend
+│   ├── memo-bg.webp           # Clean notepad memo asset
+│   ├── office_bg.webp         # 1280x720 base room pixel art
+│   └── fonts/                 # ArkPixel proportional fonts
+├── agents-state.json          # Persistent registry of team agents
+├── runtime-config.json        # Runtime configurations & office name
+├── state.json                 # Real-time state cache
+└── pyproject.toml             # Project metadata
+```
+
+---
+
+## 🔒 Security & Privacy
+
+- All state data is stored locally on this machine (`127.0.0.1`).
+- No external telemetry or credentials are sent to public servers without explicit approval.
+- Built strictly following Hermes engineering safety guidelines.
+
+---
+
+## 📄 License
+
+Proprietary project developed for the **Charisna SuperApp & Hermes AI Ecosystem**. All rights reserved.

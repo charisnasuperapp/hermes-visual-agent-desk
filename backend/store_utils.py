@@ -86,17 +86,22 @@ def _normalize_user_model(model_name: str) -> str:
 
 
 def load_runtime_config(path: str) -> dict:
-    """Load runtime config (gemini_api_key, gemini_model) from env and optional JSON file."""
+    """Load runtime config (gemini_api_key, gemini_model, office_name) from env and optional JSON file."""
     base = {
         "gemini_api_key": os.getenv("GEMINI_API_KEY") or os.getenv("GOOGLE_API_KEY") or "",
         "gemini_model": _normalize_user_model(os.getenv("GEMINI_MODEL") or "nanobanana-pro"),
+        "office_name": os.getenv("OFFICE_NAME") or "Charisna Office Workspace",
     }
     if os.path.exists(path):
         try:
             data = _load_json(path)
             if isinstance(data, dict):
-                base.update({k: data.get(k, base.get(k)) for k in ["gemini_api_key", "gemini_model"]})
+                for k, v in data.items():
+                    if v is not None:
+                        base[k] = v
                 base["gemini_model"] = _normalize_user_model(base.get("gemini_model") or "nanobanana-pro")
+                if not base.get("office_name"):
+                    base["office_name"] = "Charisna Office Workspace"
         except Exception:
             pass
     return base

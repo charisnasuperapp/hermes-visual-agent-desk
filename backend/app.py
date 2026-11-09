@@ -208,20 +208,34 @@ def load_state():
     return state
 
 
-def get_office_name_from_identity():
-    """Read office display name from OpenClaw workspace IDENTITY.md (Name field) -> 'XXX的办公室'."""
-    if not os.path.isfile(IDENTITY_FILE):
-        return None
+def get_office_name() -> str:
+    """Read office display name: runtime-config > IDENTITY.md > default 'Charisna Office Workspace'."""
     try:
-        with open(IDENTITY_FILE, "r", encoding="utf-8") as f:
-            content = f.read()
-        m = re.search(r"-\s*\*\*Name:\*\*\s*(.+)", content)
-        if m:
-            name = m.group(1).strip().replace("\r", "").split("\n")[0].strip()
-            return f"{name}的办公室" if name else None
+        cfg = load_runtime_config()
+        custom_name = (cfg.get("office_name") or cfg.get("officeName") or "").strip()
+        if custom_name:
+            return custom_name
     except Exception:
         pass
-    return None
+
+    if os.path.isfile(IDENTITY_FILE):
+        try:
+            with open(IDENTITY_FILE, "r", encoding="utf-8") as f:
+                c = f.read()
+            m = re.search(r"-\s*\*\*Name:\*\*\s*(.+)", c)
+            if m:
+                name = m.group(1).strip().replace("\r", "").split("\n")[0].strip()
+                if name:
+                    return f"{name} Office"
+        except Exception:
+            pass
+
+    return "Charisna Office Workspace"
+
+
+def get_office_name_from_identity():
+    """Backward compatibility alias."""
+    return get_office_name()
 
 
 def save_state(state: dict):
@@ -1152,12 +1166,27 @@ def leave_agent():
 
 @app.route("/status", methods=["GET"])
 def get_status():
-    """Get current main state (backward compatibility). Optionally include officeName from IDENTITY.md."""
+    """Get current main state. Includes officeName."""
     state = load_state()
-    office_name = get_office_name_from_identity()
-    if office_name:
-        state["officeName"] = office_name
+    state["officeName"] = get_office_name()
     return jsonify(state)
+
+
+@app.route("/api/office/name", methods=["GET"])
+def office_name_get():
+    """Get current office name."""
+    return jsonify({"ok": True, "officeName": get_office_name()})
+
+
+@app.route("/api/office/rename", methods=["POST"])
+def office_name_rename():
+    """Rename office and persist in runtime-config.json."""
+    data = request.get_json(silent=True) or {}
+    new_name = (data.get("officeName") or data.get("name") or data.get("office_name") or "").strip()
+    if not new_name:
+        new_name = "Charisna Office Workspace"
+    save_runtime_config({"office_name": new_name})
+    return jsonify({"ok": True, "officeName": new_name})
 
 
 @app.route("/agent-push", methods=["POST"])

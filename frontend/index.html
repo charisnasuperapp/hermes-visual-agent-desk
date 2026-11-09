@@ -18045,33 +18045,9 @@ function toggleBrokerPanel() {
 
 
                 .catch(error => {
-
-
-
-                    console.error('拉取访客列表失败:', error);
-
-
-
-                    // 即使拉取失败，demo 也要能渲染
-
-
-
-                    if (DEMO_MODE) {
-
-
-
-                        renderGuestAgentList();
-
-
-
-                        renderGuestAgentsInScene();
-
-
-
-                    }
-
-
-
+                    console.warn('Visitor fetch error, keeping default agents:', error);
+                    renderGuestAgentList();
+                    renderGuestAgentsInScene();
                 });
 
 

@@ -2193,7 +2193,7 @@ def _start_hermes_activity_watcher():
                 for line in reversed(lines):
                     if "Turn ended:" in line or "Sending response" in line:
                         detected_state = "idle"
-                        detected_detail = "Tugas selesai (Standby)"
+                        detected_detail = "Standby & Siap Melayani Perintah Raja"
                         break
                     elif "agent.tool_executor: tool" in line:
                         if "returned error" in line:

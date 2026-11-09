@@ -577,82 +577,51 @@
 
 
 
+                .live-activity-card {
+            margin-top: 14px;
+            padding: 10px 14px;
+            background: rgba(15, 23, 42, 0.85);
+            border: 1px solid rgba(99, 102, 241, 0.35);
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.4);
+        }
+        .activity-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .activity-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #10b981;
+            box-shadow: 0 0 8px #10b981;
+            animation: pulse-dot 2s infinite ease-in-out;
+            transition: background 0.3s ease, box-shadow 0.3s ease;
+        }
+        @keyframes pulse-dot {
+            0%, 100% { transform: scale(1); opacity: 0.9; }
+            50% { transform: scale(1.3); opacity: 1; box-shadow: 0 0 12px currentColor; }
+        }
+        .activity-title {
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: #94a3b8;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+        }
         #status-text {
-
-
-
-            position: absolute;
-
-
-
-            bottom: 12px;
-
-
-
-            left: 12px;
-
-
-
-            transform: none;
-
-
-
-            color: #eee;
-
-
-
-            font-size: 14px;
-
-
-
-            background: rgba(0,0,0,0.7);
-
-
-
-            padding: 8px 12px;
-
-
-
-            border-radius: 4px;
-
-
-
-            max-width: calc(100% - 24px);
-
-
-
+            color: #f1f5f9;
+            font-size: 13px;
             text-align: left;
-
-
-
-            font-family: 'ArkPixel', 'Courier New', monospace;
-
-
-
-            z-index: 30;
-
-
-
-            pointer-events: none;
-
-
-
-            white-space: nowrap;
-
-
-
-            overflow: hidden;
-
-
-
-            text-overflow: ellipsis;
-
-
-
-            line-height: 1.2;
-
-
-
+            font-family: 'Consolas', 'Segoe UI', -apple-system, monospace;
+            line-height: 1.4;
+            word-break: break-word;
+            min-height: 20px;
         }
 
 
@@ -4858,7 +4827,7 @@
 
 
 
-            <div id="status-text">Ready</div>
+            
 
 
 
@@ -4970,7 +4939,15 @@
 
 
 
-        </div>
+        
+            <div class="live-activity-card">
+                <div class="activity-header">
+                    <span class="activity-dot" id="activity-dot"></span>
+                    <span class="activity-title">Live Activity</span>
+                </div>
+                <div id="status-text">Standby & Siap Melayani Perintah Raja</div>
+            </div>
+</div>
 
 
 
@@ -13059,67 +13036,12 @@ function toggleBrokerPanel() {
 
 
 
-            const st = document.getElementById('status-text');
+            // status-text resides cleanly in Hermes Status control-bar
 
 
 
-            const gameContainer = document.getElementById('game-container');
 
-
-
-            if (st && gameContainer) {
-
-
-
-                if (rect && rect.width > 0 && rect.height > 0) {
-
-
-
-                    const localLeft = Math.max(8, Math.round(rect.left - gameContainer.getBoundingClientRect().left + 14));
-
-
-
-                    const localBottom = 14;
-
-
-
-                    st.style.left = localLeft + 'px';
-
-
-
-                    st.style.bottom = localBottom + 'px';
-
-
-
-                    st.style.maxWidth = Math.max(120, Math.floor(rect.width - 28)) + 'px';
-
-
-
-                } else {
-
-
-
-                    st.style.left = '14px';
-
-
-
-                    st.style.bottom = '14px';
-
-
-
-                    st.style.maxWidth = 'calc(100% - 28px)';
-
-
-
-                }
-
-
-
-            }
-
-
-
-        }
+                    }
 
 
 
@@ -20742,7 +20664,24 @@ function toggleBrokerPanel() {
 
 
 
-                            typewriterTarget = nextLine;
+                            
+                        const actDot = document.getElementById('activity-dot');
+                        if (actDot) {
+                            if (nextState === 'writing') {
+                                actDot.style.background = '#3b82f6';
+                                actDot.style.boxShadow = '0 0 10px #3b82f6';
+                            } else if (nextState === 'syncing') {
+                                actDot.style.background = '#a855f7';
+                                actDot.style.boxShadow = '0 0 10px #a855f7';
+                            } else if (nextState === 'error') {
+                                actDot.style.background = '#ef4444';
+                                actDot.style.boxShadow = '0 0 10px #ef4444';
+                            } else {
+                                actDot.style.background = '#10b981';
+                                actDot.style.boxShadow = '0 0 10px #10b981';
+                            }
+                        }
+typewriterTarget = nextLine;
 
 
 

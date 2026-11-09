@@ -49,6 +49,7 @@ FRONTEND_ELECTRON_STANDALONE_FILE = os.path.join(FRONTEND_DIR, "electron-standal
 STATE_FILE = os.path.join(ROOT_DIR, "state.json")
 AGENTS_STATE_FILE = os.path.join(ROOT_DIR, "agents-state.json")
 JOIN_KEYS_FILE = os.path.join(ROOT_DIR, "join-keys.json")
+MEMO_FILE = os.path.join(ROOT_DIR, "memo.json")
 FRONTEND_PATH = Path(FRONTEND_DIR)
 ASSET_ALLOWED_EXTS = {".png", ".webp", ".jpg", ".jpeg", ".gif", ".svg", ".avif"}
 ASSET_TEMPLATE_ZIP = os.path.join(ROOT_DIR, "assets-replace-template.zip")
@@ -1313,6 +1314,53 @@ def health():
     })
 
 
+def load_memo():
+    if os.path.exists(MEMO_FILE):
+        try:
+            with open(MEMO_FILE, "r", encoding="utf-8") as f:
+                return json.load(f)
+        except Exception:
+            pass
+    default_data = {
+        "date": datetime.now().strftime("%Y-%m-%d"),
+        "memo": "1. Monitoring konsolidasi kasir Bumi Makmur POS tiap pergantian shift.\n2. Verifikasi status reservasi dan kebersihan unit Charisna Homestay.\n3. Validasi rekonsiliasi arus kas MoniFlow agar pembukuan nol selisih.\n4. Hermes memimpin pengawasan otomasi workspace dan integrasi sistem.",
+        "author": "Raja / Hermes HQ",
+        "updated_at": datetime.now().isoformat()
+    }
+    save_memo(default_data)
+    return default_data
+
+
+def save_memo(data):
+    try:
+        with open(MEMO_FILE, "w", encoding="utf-8") as f:
+            json.dump(data, f, ensure_ascii=False, indent=2)
+        return True
+    except Exception as e:
+        logger.error(f"Failed to save memo: {e}")
+        return False
+
+
+@app.route("/api/memo", methods=["GET", "POST"])
+def api_memo():
+    """Persistent executive memo and briefing endpoint for Charisna ecosystem"""
+    if request.method == "POST":
+        req = request.get_json(silent=True) or {}
+        memo_text = req.get("memo", "").strip()
+        data = {
+            "date": req.get("date") or datetime.now().strftime("%Y-%m-%d"),
+            "memo": memo_text,
+            "author": req.get("author") or "Raja / Hermes HQ",
+            "updated_at": datetime.now().isoformat()
+        }
+        if save_memo(data):
+            return jsonify({"success": True, "data": data})
+        return jsonify({"success": False, "msg": "Failed to write memo.json"}), 500
+    else:
+        data = load_memo()
+        return jsonify({"success": True, "data": data})
+
+
 @app.route("/yesterday-memo", methods=["GET"])
 def get_yesterday_memo():
     """获取昨日小日记"""
@@ -1348,9 +1396,11 @@ def get_yesterday_memo():
                 "memo": memo_content
             })
         else:
+            memo_data = load_memo()
             return jsonify({
-                "success": False,
-                "msg": "No yesterday memo found"
+                "success": True,
+                "date": memo_data.get("date", yesterday_str),
+                "memo": memo_data.get("memo", "")
             })
     except Exception as e:
         return jsonify({

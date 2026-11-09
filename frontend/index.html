@@ -4766,6 +4766,462 @@
 
 
 
+    
+        /* ==========================================================================
+           CHARISNA EXECUTIVE 3-PANEL BOTTOM DASHBOARD OVERHAUL
+           ========================================================================== */
+        #bottom-panels {
+            display: grid !important;
+            grid-template-columns: 1fr 1.08fr 1fr !important;
+            gap: 18px !important;
+            width: 100% !important;
+            max-width: 1600px !important;
+            margin: 18px auto 36px !important;
+            box-sizing: border-box !important;
+            padding: 0 4px !important;
+        }
+
+        #memo-panel, #control-bar, #guest-agent-panel {
+            background: #0d131f !important;
+            border: 1px solid rgba(99, 102, 241, 0.35) !important;
+            border-radius: 12px !important;
+            box-shadow: 0 10px 28px rgba(0, 0, 0, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.08) !important;
+            padding: 14px 16px !important;
+            display: flex !important;
+            flex-direction: column !important;
+            height: 420px !important;
+            box-sizing: border-box !important;
+            overflow: hidden !important;
+            position: relative !important;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+        }
+
+        /* Suppress legacy bevel and pixel borders */
+        #memo-panel::before, #memo-panel::after,
+        #control-bar::before, #control-bar::after,
+        #guest-agent-panel::before, #guest-agent-panel::after {
+            display: none !important;
+        }
+
+        /* Card Header */
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            padding-bottom: 10px;
+            margin-bottom: 12px;
+            flex-shrink: 0;
+        }
+        .card-title-wrap {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+        }
+        .card-icon {
+            font-size: 18px;
+            line-height: 1;
+        }
+        .card-title {
+            font-size: 12.5px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            color: #f1f5f9;
+            text-transform: uppercase;
+        }
+        .card-subtitle {
+            font-size: 10.5px;
+            color: #94a3b8;
+            margin-top: 2px;
+        }
+        .badge-indigo {
+            background: rgba(99, 102, 241, 0.2);
+            border: 1px solid rgba(99, 102, 241, 0.4);
+            color: #a5b4fc;
+            font-size: 11px;
+            font-weight: 600;
+            padding: 3px 8px;
+            border-radius: 6px;
+            white-space: nowrap;
+        }
+
+        /* Panel 1: Pillars & Memo */
+        .pillars-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 6px;
+            margin-bottom: 10px;
+            flex-shrink: 0;
+        }
+        .pillar-card {
+            background: rgba(30, 41, 59, 0.55);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 7px;
+            padding: 6px 9px;
+        }
+        .pillar-top {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-bottom: 2px;
+        }
+        .p-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            display: inline-block;
+            flex-shrink: 0;
+        }
+        .p-dot-green { background: #10b981; box-shadow: 0 0 6px #10b981; }
+        .p-dot-blue { background: #3b82f6; box-shadow: 0 0 6px #3b82f6; }
+        .p-name {
+            font-size: 11px;
+            font-weight: 600;
+            color: #e2e8f0;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .p-desc {
+            font-size: 9.5px;
+            color: #94a3b8;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .memo-area-container {
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+            overflow: hidden;
+        }
+        .memo-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 6px;
+            flex-shrink: 0;
+        }
+        .memo-bar-title {
+            font-size: 11px;
+            font-weight: 600;
+            color: #cbd5e1;
+        }
+        .btn-primary-sm {
+            background: #4f46e5;
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            padding: 4px 10px;
+            font-size: 11px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+        .btn-primary-sm:hover { background: #4338ca; }
+        .memo-textarea {
+            width: 100%;
+            flex-grow: 1;
+            background: #080c14;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 8px 10px;
+            color: #e2e8f0;
+            font-size: 11.5px;
+            line-height: 1.5;
+            resize: none;
+            outline: none;
+            box-sizing: border-box;
+            font-family: inherit;
+        }
+        .memo-textarea:focus {
+            border-color: #6366f1;
+            box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.25);
+        }
+        .memo-toast {
+            font-size: 11px;
+            margin-top: 4px;
+            min-height: 16px;
+            font-weight: 500;
+        }
+
+        /* Panel 2: Command Center */
+        .activity-chip {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(16, 185, 129, 0.15);
+            border: 1px solid rgba(16, 185, 129, 0.35);
+            color: #34d399;
+            font-size: 11px;
+            font-weight: 600;
+            padding: 3px 8px;
+            border-radius: 6px;
+        }
+        .activity-banner {
+            background: rgba(15, 23, 42, 0.75);
+            border: 1px solid rgba(99, 102, 241, 0.25);
+            border-radius: 8px;
+            padding: 7px 11px;
+            margin-bottom: 10px;
+            flex-shrink: 0;
+        }
+        .banner-lbl {
+            font-size: 10px;
+            color: #818cf8;
+            text-transform: uppercase;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            margin-bottom: 2px;
+        }
+        .banner-val {
+            font-size: 11.5px;
+            color: #f8fafc;
+            font-weight: 500;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .sub-lbl {
+            font-size: 10.5px;
+            font-weight: 600;
+            color: #94a3b8;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+        }
+        .mode-section {
+            margin-bottom: 10px;
+            flex-shrink: 0;
+        }
+        .mode-chips {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 6px;
+        }
+        .chip-btn {
+            background: #1e293b !important;
+            border: 1px solid rgba(255, 255, 255, 0.08) !important;
+            color: #cbd5e1 !important;
+            border-radius: 7px !important;
+            padding: 7px 4px !important;
+            font-size: 11px !important;
+            font-weight: 600 !important;
+            cursor: pointer !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            gap: 5px !important;
+            transition: all 0.15s !important;
+            background-image: none !important;
+        }
+        .chip-btn:hover {
+            background: #334155 !important;
+            border-color: rgba(99, 102, 241, 0.4) !important;
+        }
+        .chip-btn.active {
+            background: rgba(99, 102, 241, 0.25) !important;
+            border-color: #6366f1 !important;
+            color: #ffffff !important;
+            box-shadow: 0 0 10px rgba(99, 102, 241, 0.3) !important;
+        }
+        .c-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            display: inline-block;
+            flex-shrink: 0;
+        }
+        .dot-idle { background: #10b981; }
+        .dot-work { background: #3b82f6; }
+        .dot-sync { background: #a855f7; }
+        .dot-alert { background: #ef4444; }
+
+        .tactical-section {
+            margin-bottom: 10px;
+            flex-shrink: 0;
+        }
+        .tactical-actions {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 7px;
+        }
+        .tactical-action-btn {
+            background: #1e1b4b !important;
+            border: 1px solid #4338ca !important;
+            color: #e0e7ff !important;
+            border-radius: 8px !important;
+            padding: 8px 6px !important;
+            font-size: 11px !important;
+            font-weight: 700 !important;
+            cursor: pointer !important;
+            transition: all 0.15s !important;
+            background-image: none !important;
+            text-align: center !important;
+        }
+        .tactical-action-btn:hover {
+            background: #3730a3 !important;
+            border-color: #6366f1 !important;
+            transform: translateY(-1px) !important;
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.35) !important;
+        }
+        .btn-boardroom { border-color: #4f46e5 !important; }
+        .btn-breakroom { border-color: #059669 !important; background: #064e3b !important; color: #d1fae5 !important; }
+        .btn-breakroom:hover { background: #047857 !important; }
+        .btn-workstations { border-color: #d97706 !important; background: #78350f !important; color: #fef3c7 !important; }
+        .btn-workstations:hover { background: #b45309 !important; }
+
+        .utility-row {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 6px;
+            margin-top: auto;
+            flex-shrink: 0;
+        }
+        .util-action-btn {
+            background: #1e293b !important;
+            border: 1px solid rgba(255, 255, 255, 0.08) !important;
+            color: #94a3b8 !important;
+            border-radius: 6px !important;
+            padding: 6px 4px !important;
+            font-size: 10px !important;
+            font-weight: 500 !important;
+            cursor: pointer !important;
+            transition: all 0.15s !important;
+            background-image: none !important;
+        }
+        .util-action-btn:hover {
+            background: #334155 !important;
+            color: #f1f5f9 !important;
+        }
+
+        /* Panel 3: Agent Roster */
+        .agent-roster-list {
+            flex-grow: 1;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 7px;
+            padding-right: 4px;
+        }
+        .agent-roster-list::-webkit-scrollbar { width: 5px; }
+        .agent-roster-list::-webkit-scrollbar-track { background: transparent; }
+        .agent-roster-list::-webkit-scrollbar-thumb { background: #334155; border-radius: 3px; }
+
+        .roster-card {
+            background: rgba(30, 41, 59, 0.45);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 8px;
+            padding: 7px 9px;
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            transition: all 0.15s;
+        }
+        .roster-card:hover {
+            background: rgba(30, 41, 59, 0.85);
+            border-color: rgba(99, 102, 241, 0.35);
+        }
+        .roster-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 7px;
+            object-fit: cover;
+            background: #080c14;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            image-rendering: pixelated;
+            flex-shrink: 0;
+        }
+        .roster-content {
+            flex-grow: 1;
+            min-width: 0;
+        }
+        .roster-header-row {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-bottom: 2px;
+        }
+        .roster-name {
+            font-size: 11.5px;
+            font-weight: 700;
+            color: #f8fafc;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .roster-role-chip {
+            font-size: 9px;
+            font-weight: 600;
+            color: #818cf8;
+            background: rgba(99, 102, 241, 0.15);
+            padding: 1px 5px;
+            border-radius: 4px;
+            white-space: nowrap;
+        }
+        .roster-desc {
+            font-size: 9.5px;
+            color: #94a3b8;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            margin-bottom: 2px;
+        }
+        .roster-meta-row {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            font-size: 9px;
+        }
+        .roster-dept {
+            color: #64748b;
+        }
+        .roster-state-chip {
+            color: #cbd5e1;
+            display: inline-flex;
+            align-items: center;
+            gap: 3px;
+        }
+        .roster-action-group {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            flex-shrink: 0;
+        }
+        .btn-roster-btn {
+            border: 1px solid rgba(255, 255, 255, 0.1) !important;
+            background: #1e293b !important;
+            color: #cbd5e1 !important;
+            border-radius: 5px !important;
+            padding: 3px 7px !important;
+            font-size: 9.5px !important;
+            font-weight: 600 !important;
+            cursor: pointer !important;
+            white-space: nowrap !important;
+            transition: all 0.15s !important;
+            background-image: none !important;
+        }
+        .btn-roster-btn.btn-locate:hover {
+            background: #4f46e5 !important;
+            color: #ffffff !important;
+            border-color: #6366f1 !important;
+        }
+        .btn-roster-btn.btn-talk:hover {
+            background: #0284c7 !important;
+            color: #ffffff !important;
+            border-color: #38bdf8 !important;
+        }
+
+        @media (max-width: 1100px) {
+            #bottom-panels {
+                grid-template-columns: 1fr !important;
+                height: auto !important;
+            }
+            #memo-panel, #control-bar, #guest-agent-panel {
+                height: 380px !important;
+            }
+        }
+
     </style>
 
 
@@ -4843,157 +5299,150 @@
 
 
 
+        <!-- CHARISNA EXECUTIVE 3-PANEL BOTTOM DASHBOARD -->
     <div id="bottom-panels">
 
-
-
-        <!-- Memo 面板 -->
-
-
-
+        <!-- Panel 1: Executive Briefing & Directives -->
         <div id="memo-panel">
-
-
-
-            <div id="memo-title">MEMO & NOTES</div>
-
-
-
-            <div id="memo-date"></div>
-
-
-
-            <div class="memo-decoration">─ ─ ─ ─ ─</div>
-
-
-
-            <div id="memo-content">
-
-
-
-                <div id="memo-placeholder">No notes for yesterday</div>
-
-
-
-            </div>
-
-
-
-            <div class="memo-decoration">─ ─ ─ ─ ─</div>
-
-
-
-        </div>
-
-
-
-        
-
-
-
-        <!-- 状态控制栏 -->
-
-
-
-        <div id="control-bar">
-
-
-
-            <div id="control-bar-title">Hermes Status</div>
-
-
-
-            <div id="control-buttons">
-
-
-
-                <button id="btn-state-idle" onclick="setState('idle','Standby')">Idle</button>
-
-
-
-                <button id="btn-state-writing" onclick="setState('writing','Working')">Work</button>
-
-
-
-                <button id="btn-state-syncing" onclick="setState('syncing','Syncing')">Sync</button>
-
-
-
-                <button id="btn-state-error" onclick="setState('error','Alert')">Alert</button>
-
-
-
-                <button id="btn-open-drawer" onclick="toggleAssetDrawer()">Decorate Room</button>
-
-
-
-                <button id="btn-rename-office" onclick="promptRenameOffice()">🏷️ Rename Office</button>
-
-
-
-                <button id="btn-toggle-room-size" onclick="toggleRoomSize()">🔍 Zoom View</button>
-
-
-
-            </div>
-
-
-
-        
-            <div class="live-activity-card">
-                <div class="activity-header">
-                    <span class="activity-dot" id="activity-dot"></span>
-                    <span class="activity-title">Live Activity</span>
+            <div class="card-header">
+                <div class="card-title-wrap">
+                    <span class="card-icon">📋</span>
+                    <div>
+                        <div class="card-title">Executive Briefing & Directives</div>
+                        <div class="card-subtitle">SOP & Konsolidasi Ekosistem Charisna</div>
+                    </div>
                 </div>
-                <div id="status-text">Standby & Siap Melayani Perintah Raja</div>
-            </div>
-</div>
-
-
-
-
-
-
-
-        <!-- Guest Agent 名单面板（右下角） -->
-
-
-
-        <div id="guest-agent-panel">
-
-
-
-            <div id="guest-agent-panel-title">AGENT & VISITOR LIST</div>
-
-
-
-            <div id="guest-agent-list">
-
-
-
-                <div style="color:#9ca3af;font-size:12px;text-align:center;padding:20px 0;">Loading agents...</div>
-
-
-
+                <div id="memo-date-badge" class="badge-indigo">10 Nov 2026</div>
             </div>
 
-
-
+            <!-- 4 Core Business Pillars Realtime Chips -->
+            <div class="pillars-container">
+                <div class="pillar-card">
+                    <div class="pillar-top">
+                        <span class="p-dot p-dot-green"></span>
+                        <span class="p-name">Bumi Makmur POS</span>
+                    </div>
+                    <div class="p-desc">Kasir & Stok Terverifikasi</div>
+                </div>
+                <div class="pillar-card">
+                    <div class="pillar-top">
+                        <span class="p-dot p-dot-green"></span>
+                        <span class="p-name">Charisna Homestay</span>
+                    </div>
+                    <div class="p-desc">Unit & Reservasi Siap Huni</div>
+                </div>
+                <div class="pillar-card">
+                    <div class="pillar-top">
+                        <span class="p-dot p-dot-green"></span>
+                        <span class="p-name">MoniFlow MM</span>
+                    </div>
+                    <div class="p-desc">Audit Ledger Sinkron (Nol Selisih)</div>
+                </div>
+                <div class="pillar-card">
+                    <div class="pillar-top">
+                        <span class="p-dot p-dot-blue"></span>
+                        <span class="p-name">Hermes HQ Daemon</span>
+                    </div>
+                    <div class="p-desc">Orkestrasi Port 19000 Aktif</div>
+                </div>
             </div>
 
-
-
+            <!-- Memo Textarea & Save Action -->
+            <div class="memo-area-container">
+                <div class="memo-bar">
+                    <span class="memo-bar-title">📝 Catatan & Instruksi Harian Raja:</span>
+                    <button id="btn-save-memo" class="btn-primary-sm" onclick="saveExecutiveMemo()">💾 Simpan Arahan</button>
+                </div>
+                <textarea id="memo-input" class="memo-textarea" placeholder="Tulis instruksi harian untuk agen ekosistem di sini..."></textarea>
+                <div id="memo-status-msg" class="memo-toast"></div>
+            </div>
         </div>
 
+        <!-- Panel 2: Hermes HQ Command Center -->
+        <div id="control-bar">
+            <div class="card-header">
+                <div class="card-title-wrap">
+                    <span class="card-icon">⚡</span>
+                    <div>
+                        <div class="card-title">Hermes HQ Command Center</div>
+                        <div class="card-subtitle">Kontrol Mode Operasi & Manuver Taktis</div>
+                    </div>
+                </div>
+                <div class="activity-chip" id="activity-chip">
+                    <span class="activity-dot" id="activity-dot"></span>
+                    <span id="activity-chip-text">Standby</span>
+                </div>
+            </div>
 
+            <!-- Live Activity Message Box -->
+            <div class="activity-banner">
+                <div class="banner-lbl">Aktivitas Realtime Hermes:</div>
+                <div id="status-text" class="banner-val">Standby & Siap Melayani Perintah Raja</div>
+            </div>
+
+            <!-- Operating Mode Pills -->
+            <div class="mode-section">
+                <div class="sub-lbl">Mode Operasional:</div>
+                <div class="mode-chips">
+                    <button id="btn-state-idle" class="chip-btn active" onclick="setExecutiveState('idle','Standby')">
+                        <span class="c-dot dot-idle"></span> Standby
+                    </button>
+                    <button id="btn-state-writing" class="chip-btn" onclick="setExecutiveState('writing','Working')">
+                        <span class="c-dot dot-work"></span> Working
+                    </button>
+                    <button id="btn-state-syncing" class="chip-btn" onclick="setExecutiveState('syncing','Syncing')">
+                        <span class="c-dot dot-sync"></span> Syncing
+                    </button>
+                    <button id="btn-state-error" class="chip-btn" onclick="setExecutiveState('error','Alert')">
+                        <span class="c-dot dot-alert"></span> Alert
+                    </button>
+                </div>
+            </div>
+
+            <!-- Tactical Maneuver Commands (Interactive Dijkstra Corridors) -->
+            <div class="tactical-section">
+                <div class="sub-lbl">Komando Pergerakan Taktis (Dijkstra Nav):</div>
+                <div class="tactical-actions">
+                    <button class="tactical-action-btn btn-boardroom" onclick="callAllToBoardroom()" title="Arahkan semua agen berkumpul di meja rapat untuk briefing">
+                        📢 Rapat Pleno
+                    </button>
+                    <button class="tactical-action-btn btn-breakroom" onclick="sendAllToBreakroom()" title="Arahkan semua agen rehat santai dan minum kopi di pantry">
+                        ☕ Istirahat Santai
+                    </button>
+                    <button class="tactical-action-btn btn-workstations" onclick="returnAllToWorkstations()" title="Semua agen kembali ke meja dan workstation masing-masing">
+                        ⚡ Kembali ke Pos
+                    </button>
+                </div>
+            </div>
+
+            <!-- Quick Utilities -->
+            <div class="utility-row">
+                <button class="util-action-btn" onclick="promptRenameOffice()">🏷️ Ganti Nama</button>
+                <button class="util-action-btn" onclick="toggleAssetDrawer()">🎨 Kustom Ruangan</button>
+                <button class="util-action-btn" onclick="resetCameraView()">🔍 Reset Kamera</button>
+            </div>
+        </div>
+
+        <!-- Panel 3: Active Staff & Agent Directory -->
+        <div id="guest-agent-panel">
+            <div class="card-header">
+                <div class="card-title-wrap">
+                    <span class="card-icon">👥</span>
+                    <div>
+                        <div class="card-title">Direktori Tim & Agen</div>
+                        <div class="card-subtitle">7 Personel Aktif Kampus Kantor</div>
+                    </div>
+                </div>
+                <div class="badge-indigo" id="agent-count-badge">7 Online</div>
+            </div>
+
+            <!-- Scrollable Agent Roster List -->
+            <div id="guest-agent-list" class="agent-roster-list">
+                <!-- Rendered dynamically by renderGuestAgentList() -->
+            </div>
+        </div>
 
     </div>
-
-
-
-    
-
-
 
     <div id="asset-highlight"></div>
 
@@ -8102,93 +8551,23 @@ function ensureMemoBgVisible() {
 
 
 
-        async function loadMemo() {
-
-
-
-            const memoDate = document.getElementById('memo-date');
-
-
-
-            const memoContent = document.getElementById('memo-content');
-
-
-
-            
-
-
-
-            try {
-
-
-
-                const response = await fetch('/yesterday-memo?t=' + Date.now(), { cache: 'no-store' });
-
-
-
-                const data = await response.json();
-
-
-
-                
-
-
-
-                if (data.success && data.memo) {
-
-
-
-                    memoDate.textContent = data.date || '';
-
-
-
-                    memoContent.innerHTML = data.memo.replace(/\n/g, '<br>');
-
-
-
-                } else {
-
-
-
-                    const noMemoMsg = (uiLang === 'zh') ? '暂无昨日日记' : (uiLang === 'ja') ? '昨日の日記はありません' : 'No yesterday memo recorded';
-
-
-
-                    memoContent.innerHTML = `<div id="memo-placeholder">${noMemoMsg}</div>`;
-
-
-
-                }
-
-
-
-            } catch (e) {
-
-
-
-                console.error('Failed to load memo:', e);
-
-
-
-                const failMemoMsg = (uiLang === 'zh') ? '加载失败' : (uiLang === 'ja') ? '読み込み失敗' : 'Failed to load memo';
-
-
-
-                memoContent.innerHTML = `<div id="memo-placeholder">${failMemoMsg}</div>`;
-
-
-
+                async function loadMemo() {
+            if (typeof window.loadExecutiveMemo === 'function') {
+                return window.loadExecutiveMemo();
             }
-
-
-
+            try {
+                const response = await fetch('/api/memo?t=' + Date.now(), { cache: 'no-store' });
+                const data = await response.json();
+                if (data.success && data.data) {
+                    const dateBadge = document.getElementById('memo-date-badge');
+                    if (dateBadge && data.data.date) dateBadge.textContent = data.data.date;
+                    const memoInput = document.getElementById('memo-input');
+                    if (memoInput && data.data.memo) memoInput.value = data.data.memo;
+                }
+            } catch (e) {
+                console.error('Failed to load memo:', e);
+            }
         }
-
-
-
-
-
-
 
         // 更新加载进度
 
@@ -8868,7 +9247,80 @@ function ensureMemoBgVisible() {
 
 
 
-        let guestAgents = [];
+                const INITIAL_STAFF = [
+            {
+                agentId: "star",
+                name: "Hermes",
+                role: "Chief Architect",
+                isMain: true,
+                department: "Executive Suite",
+                state: "idle",
+                detail: "Memimpin orkestrasi sistem dan otomasi workspace",
+                avatar: "/static/hermes_avatar.png"
+            },
+            {
+                agentId: "onal",
+                name: "Onal AI",
+                role: "Universal Memory",
+                isMain: false,
+                department: "Boardroom / Analytics",
+                state: "writing",
+                detail: "Sinkronisasi memori harian dan SOP ekosistem",
+                avatar: "/static/guest_role_1.png"
+            },
+            {
+                agentId: "bumi",
+                name: "Bumi POS",
+                role: "Inventory & Kasir",
+                isMain: false,
+                department: "Boardroom / Retail Ops",
+                state: "syncing",
+                detail: "Monitoring transaksi kasir dan stok Bumi Makmur",
+                avatar: "/static/guest_role_2.png"
+            },
+            {
+                agentId: "homestay",
+                name: "Homestay Bot",
+                role: "Tenant & Booking",
+                isMain: false,
+                department: "Boardroom / Hospitality",
+                state: "idle",
+                detail: "Katalog unit kamar dan reservasi Charisna Homestay",
+                avatar: "/static/guest_role_3.png"
+            },
+            {
+                agentId: "moniflow",
+                name: "MoniFlow",
+                role: "Ledger & Books",
+                isMain: false,
+                department: "Boardroom / Finance",
+                state: "writing",
+                detail: "Validasi arus kas dan jurnal audit konsolidasi",
+                avatar: "/static/guest_role_4.png"
+            },
+            {
+                agentId: "codex",
+                name: "Codex Dev",
+                role: "System Engineer",
+                isMain: false,
+                department: "Datacenter Rack A",
+                state: "writing",
+                detail: "Pipeline build otomasi dan script execution",
+                avatar: "/static/guest_role_5.png"
+            },
+            {
+                agentId: "kuro",
+                name: "Kuro Patrol",
+                role: "Watchdog & Security",
+                isMain: false,
+                department: "Datacenter Rack B",
+                state: "idle",
+                detail: "Security sentinel, firewall & background watcher",
+                avatar: "/static/guest_role_6.png"
+            }
+        ];
+
+        let guestAgents = [...INITIAL_STAFF];
 
 
 
@@ -15725,257 +16177,326 @@ function toggleBrokerPanel() {
 
 
 
-        function renderGuestAgentList() {
-
-
-
+                function renderGuestAgentList() {
             const list = document.getElementById('guest-agent-list');
-
-
-
             if (!list) return;
 
-
-
-
-
-
-
-            const visitors = getMergedVisitors();
-
-
-
-
-
-
-
-            const I18N_AGENTS = {
-
-
-
-                en: {
-
-
-
-                    empty: 'No active agents or visitors',
-
-
-
-                    unnamed: 'Agent',
-
-
-
-                    status: { approved: 'Online', pending: 'Pending', rejected: 'Rejected', offline: 'Offline' },
-
-
-
-                    state: { idle: 'Idle', writing: 'Working', researching: 'Researching', executing: 'Executing', syncing: 'Syncing', error: 'Alert' },
-
-
-
-                    btnProfile: 'Status',
-
-
-
-                    btnLeave: 'Leave'
-
-
-
-                },
-
-
-
-                zh: {
-
-
-
-                    empty: '暂无访客',
-
-
-
-                    unnamed: '未命名访客',
-
-
-
-                    status: { approved: '已授权', pending: '待授权', rejected: '已拒绝', offline: '离线' },
-
-
-
-                    state: { idle: '待命', writing: '工作', researching: '调研', executing: '执行', syncing: '同步', error: '报警' },
-
-
-
-                    btnProfile: '状态',
-
-
-
-                    btnLeave: '离开房间'
-
-
-
-                },
-
-
-
-                ja: {
-
-
-
-                    empty: '訪問者はいません',
-
-
-
-                    unnamed: '名前なし',
-
-
-
-                    status: { approved: '認証済み', pending: '保留中', rejected: '拒否済み', offline: 'オフライン' },
-
-
-
-                    state: { idle: '待機', writing: '作業', researching: '調査', executing: '実行', syncing: '同期', error: '警告' },
-
-
-
-                    btnProfile: 'ステータス',
-
-
-
-                    btnLeave: '退室'
-
-
-
-                }
-
-
-
+            const agentsToShow = (guestAgents && guestAgents.length > 0) ? guestAgents : INITIAL_STAFF;
+
+            const avatarMap = {
+                star: '/static/hermes_avatar.png',
+                onal: '/static/guest_role_1.png',
+                bumi: '/static/guest_role_2.png',
+                homestay: '/static/guest_role_3.png',
+                moniflow: '/static/guest_role_4.png',
+                codex: '/static/guest_role_5.png',
+                kuro: '/static/guest_role_6.png'
             };
 
+            const deptMap = {
+                star: 'Executive Suite',
+                onal: 'Boardroom / Analytics',
+                bumi: 'Boardroom / Retail Ops',
+                homestay: 'Boardroom / Hospitality',
+                moniflow: 'Boardroom / Finance',
+                codex: 'Datacenter Rack A',
+                kuro: 'Datacenter Rack B'
+            };
 
+            const stateDisplay = {
+                idle: { label: 'Standby', dot: 'dot-idle' },
+                writing: { label: 'Working', dot: 'dot-work' },
+                researching: { label: 'Researching', dot: 'dot-work' },
+                syncing: { label: 'Syncing', dot: 'dot-sync' },
+                error: { label: 'Alert', dot: 'dot-alert' }
+            };
 
-            const agentLang = I18N_AGENTS[uiLang] || I18N_AGENTS.en;
+            const countBadge = document.getElementById('agent-count-badge');
+            if (countBadge) countBadge.textContent = `${agentsToShow.length} Online`;
 
-
-
-
-
-
-
-            if (visitors.length === 0) {
-
-
-
-                list.innerHTML = `<div style="color:#9ca3af;font-size:12px;text-align:center;padding:20px 0;">${agentLang.empty}</div>`;
-
-
-
-                return;
-
-
-
-            }
-
-
-
-
-
-
-
-            list.innerHTML = visitors.map(agent => {
-
-
-
-                const name = agent.name || agentLang.unnamed;
-
-
-
-                const authStatus = agent.authStatus || 'approved';
-
-
-
-                const state = agent.state || 'idle';
-
-
-
-                const statusText = agentLang.status[authStatus] || authStatus;
-
-
-
-                const stateText = agentLang.state[state] || state;
-
-
-
-                const subtitle = `${statusText} · ${stateText}`;
-
-
-
-
-
-
-
-                const pendingActions = `<button onclick="showAgentDialogue({ agentId: '${agent.agentId}', name: '${name}', detail: '${(agent.detail || '').replace(/'/g, "\\'")}' })">${agentLang.btnProfile}</button><button class="leave-btn" onclick="leaveGuestAgent('${agent.agentId}','${name}')">${agentLang.btnLeave}</button>`;
-
-
-
-
-
-
+            list.innerHTML = agentsToShow.map(agent => {
+                const id = agent.agentId || 'agent';
+                const name = agent.name || id;
+                const role = agent.role || 'Specialist';
+                const dept = agent.department || deptMap[id] || 'HQ Campus';
+                const st = stateDisplay[agent.state] || stateDisplay.idle;
+                const avatar = avatarMap[id] || '/static/hermes_avatar.png';
+                const detail = (agent.detail || '').replace(/"/g, '&quot;');
 
                 return `
-
-
-
-                  <div class="guest-agent-item" data-name="${name}">
-
-
-
-                    <div>
-
-
-
-                      <div class="guest-agent-name">${name}</div>
-
-
-
-                      <div style="font-size:11px;color:#cbd5e1;">${subtitle}</div>
-
-
-
+                  <div class="roster-card" data-agent-id="${id}">
+                    <img src="${avatar}" class="roster-avatar" alt="${name}" onerror="this.src='/static/hermes_avatar.png'" />
+                    <div class="roster-content">
+                      <div class="roster-header-row">
+                        <span class="roster-name">${name}</span>
+                        <span class="roster-role-chip">${role}</span>
+                      </div>
+                      <div class="roster-desc">${detail}</div>
+                      <div class="roster-meta-row">
+                        <span class="roster-dept">📍 ${dept}</span>
+                        <span class="roster-state-chip"><span class="c-dot ${st.dot}"></span> ${st.label}</span>
+                      </div>
                     </div>
-
-
-
-                    <div class="guest-agent-buttons">
-
-
-
-                      ${pendingActions}
-
-
-
+                    <div class="roster-action-group">
+                      <button class="btn-roster-btn btn-locate" onclick="focusOnAgent('${id}')" title="Sorot & Zoom ke posisi agen di kantor">📍 Sorot</button>
+                      <button class="btn-roster-btn btn-talk" onclick="triggerAgentTalk('${id}')" title="Ajak agen ini bicara">💬 Bicara</button>
                     </div>
-
-
-
                   </div>
-
-
-
                 `;
-
-
-
             }).join('');
-
-
-
         }
 
+        /* ── Tactical Movements & Executive Controls ── */
+        window.callAllToBoardroom = function() {
+            if (!game) return;
+            const banner = document.getElementById('office-name-display');
+            if (banner) banner.textContent = 'Ruang Rapat Pleno - Sesi Koordinasi Seluruh Tim';
 
+            if (game.cameras && game.cameras.main) {
+                game.cameras.main.pan(1060, 580, 800, 'Power2');
+                game.cameras.main.zoomTo(1.35, 800, 'Power2');
+            }
 
+            const boardroomSpots = {
+                onal:     { x: 960,  y: 645, speech: "Laporan knowledge base & SOP ekosistem siap dibahas!" },
+                moniflow: { x: 1020, y: 645, speech: "Jurnal audit kas MoniFlow siap diverifikasi tanpa selisih!" },
+                bumi:     { x: 1080, y: 645, speech: "Rekap transaksi kasir & stok Bumi Makmur siap!" },
+                homestay: { x: 1140, y: 645, speech: "Data unit dan okupansi Charisna Homestay aman!" },
+                codex:    { x: 970,  y: 545, speech: "CI/CD pipeline dan server background daemon normal!" },
+                kuro:     { x: 1025, y: 545, speech: "Perimeter keamanan sistem & firewall terpantau hijau!" }
+            };
 
+            if (typeof walkStarTo === 'function') {
+                walkStarTo(1070, 510, () => {
+                    showBubbleAbove(1070, 430, "📢 Rapat pleno dimulai! Mari review target ekosistem Charisna.", 4500);
+                });
+            }
 
+            Object.keys(boardroomSpots).forEach(agentId => {
+                const spot = boardroomSpots[agentId];
+                const g = guestSprites[agentId];
+                if (g && g.sprite) {
+                    const path = getRealisticOfficePath(g.sprite.x, g.sprite.y, spot.x, spot.y);
+                    walkSpriteAlongPath(g.sprite, g.nameText, path, 140, () => {
+                        showBubbleAbove(spot.x, spot.y - 56, spot.speech, 4000);
+                    });
+                }
+            });
 
+            const statusTextEl = document.getElementById('status-text');
+            if (statusTextEl) statusTextEl.textContent = '📢 Rapat Pleno Berlangsung di Meja Konferensi';
+        };
+
+        window.sendAllToBreakroom = function() {
+            if (!game) return;
+            const banner = document.getElementById('office-name-display');
+            if (banner) banner.textContent = 'Kitchen & Breakroom - Waktu Istirahat & Santai Tim';
+
+            if (game.cameras && game.cameras.main) {
+                game.cameras.main.pan(1030, 260, 800, 'Power2');
+                game.cameras.main.zoomTo(1.35, 800, 'Power2');
+            }
+
+            const breakroomSpots = {
+                onal:     { x: 920,  y: 180, speech: "☕ Mengambil kopi hangat di mesin espresso..." },
+                bumi:     { x: 915,  y: 285, speech: "🥪 Santai sejenak di meja makan breakroom..." },
+                homestay: { x: 955,  y: 285, speech: "🧃 Menikmati camilan setelah rekap kamar..." },
+                moniflow: { x: 1030, y: 360, speech: "🛋️ Duduk rileks di beanbag setelah hitung buku..." },
+                codex:    { x: 1230, y: 360, speech: "🕹️ Coba high-score baru di mesin arcade!" },
+                kuro:     { x: 1170, y: 280, speech: "🍵 Duduk di sofa sambil memantau sinyal patroli..." }
+            };
+
+            if (typeof walkStarTo === 'function') {
+                walkStarTo(1110, 280, () => {
+                    showBubbleAbove(1110, 200, "☕ Waktu istirahat tim! Nikmati kopi dan rehat sejenak.", 4500);
+                });
+            }
+
+            Object.keys(breakroomSpots).forEach(agentId => {
+                const spot = breakroomSpots[agentId];
+                const g = guestSprites[agentId];
+                if (g && g.sprite) {
+                    const path = getRealisticOfficePath(g.sprite.x, g.sprite.y, spot.x, spot.y);
+                    walkSpriteAlongPath(g.sprite, g.nameText, path, 140, () => {
+                        showBubbleAbove(spot.x, spot.y - 56, spot.speech, 4000);
+                    });
+                }
+            });
+
+            const statusTextEl = document.getElementById('status-text');
+            if (statusTextEl) statusTextEl.textContent = '☕ Seluruh Agen Menikmati Waktu Istirahat di Breakroom';
+        };
+
+        window.returnAllToWorkstations = function() {
+            if (!game) return;
+            const banner = document.getElementById('office-name-display');
+            if (banner) banner.textContent = 'Charisna Office Workspace (Full Campus)';
+
+            if (game.cameras && game.cameras.main) {
+                game.cameras.main.pan(640, 360, 800, 'Power2');
+                game.cameras.main.zoomTo(1.0, 800, 'Power2');
+            }
+
+            if (typeof walkStarTo === 'function') {
+                walkStarTo(420, 290, () => {
+                    showBubbleAbove(420, 210, "⚡ Hermes kembali ke meja utama. Siap menerima instruksi Raja!", 3500);
+                });
+            }
+
+            Object.keys(AGENT_HOME_POINTS).forEach(agentId => {
+                const home = AGENT_HOME_POINTS[agentId];
+                const g = guestSprites[agentId];
+                if (g && g.sprite) {
+                    const path = getRealisticOfficePath(g.sprite.x, g.sprite.y, home.x, home.y);
+                    walkSpriteAlongPath(g.sprite, g.nameText, path, 140, () => {
+                        showBubbleAbove(home.x, home.y - 56, "Kembali ke pos workstation.", 2500);
+                    });
+                }
+            });
+
+            const statusTextEl = document.getElementById('status-text');
+            if (statusTextEl) statusTextEl.textContent = 'Standby & Siap Melayani Perintah Raja';
+        };
+
+        window.focusOnAgent = function(agentId) {
+            if (!game || !game.cameras || !game.cameras.main) return;
+            let targetX = 640, targetY = 360;
+            let spriteObj = null;
+
+            if (agentId === 'star') {
+                targetX = star ? star.x : 420;
+                targetY = star ? star.y : 290;
+                spriteObj = star;
+            } else if (guestSprites[agentId] && guestSprites[agentId].sprite) {
+                targetX = guestSprites[agentId].sprite.x;
+                targetY = guestSprites[agentId].sprite.y;
+                spriteObj = guestSprites[agentId].sprite;
+            }
+
+            game.cameras.main.pan(targetX, targetY - 25, 600, 'Power2');
+            game.cameras.main.zoomTo(1.65, 600, 'Power2');
+
+            if (spriteObj && game.tweens) {
+                game.tweens.add({
+                    targets: spriteObj,
+                    y: spriteObj.y - 16,
+                    duration: 160,
+                    yoyo: true,
+                    repeat: 2,
+                    ease: 'Sine.easeInOut'
+                });
+            }
+
+            const agent = (guestAgents || []).find(a => a.agentId === agentId) || { agentId, name: agentId };
+            setTimeout(() => {
+                if (typeof showAgentDialogue === 'function') {
+                    showAgentDialogue(agent);
+                }
+            }, 300);
+        };
+
+        window.triggerAgentTalk = function(agentId) {
+            const agent = (guestAgents || []).find(a => a.agentId === agentId) || { agentId, name: agentId };
+            if (typeof showAgentDialogue === 'function') {
+                showAgentDialogue(agent);
+            }
+        };
+
+        window.resetCameraView = function() {
+            if (!game || !game.cameras || !game.cameras.main) return;
+            game.cameras.main.pan(640, 360, 600, 'Power2');
+            game.cameras.main.zoomTo(1.0, 600, 'Power2');
+            const banner = document.getElementById('office-name-display');
+            if (banner) banner.textContent = 'Charisna Office Workspace (Full Campus)';
+        };
+
+        window.setExecutiveState = function(state, text) {
+            document.querySelectorAll('.mode-chips .chip-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            const activeBtn = document.getElementById('btn-state-' + state);
+            if (activeBtn) activeBtn.classList.add('active');
+
+            const statusTextEl = document.getElementById('status-text');
+            if (statusTextEl) statusTextEl.textContent = text || state;
+
+            const activityChipText = document.getElementById('activity-chip-text');
+            if (activityChipText) activityChipText.textContent = text || state;
+
+            const activityDot = document.getElementById('activity-dot');
+            if (activityDot) {
+                activityDot.className = 'activity-dot ' + (
+                    state === 'writing' ? 'dot-blue' :
+                    state === 'syncing' ? 'dot-purple' :
+                    state === 'error' ? 'dot-red' : 'dot-green'
+                );
+            }
+
+            if (typeof window.setState === 'function') {
+                window.setState(state, text);
+            }
+        };
+
+        window.loadExecutiveMemo = async function() {
+            try {
+                const res = await fetch('/api/memo?t=' + Date.now(), { cache: 'no-store' });
+                const json = await res.json();
+                if (json.success && json.data) {
+                    const dateBadge = document.getElementById('memo-date-badge');
+                    if (dateBadge && json.data.date) {
+                        dateBadge.textContent = json.data.date;
+                    }
+                    const textarea = document.getElementById('memo-input');
+                    if (textarea && json.data.memo) {
+                        textarea.value = json.data.memo;
+                    }
+                }
+            } catch (e) {
+                console.error('Failed to load executive memo:', e);
+            }
+        };
+
+        window.saveExecutiveMemo = async function() {
+            const textarea = document.getElementById('memo-input');
+            const statusMsg = document.getElementById('memo-status-msg');
+            const saveBtn = document.getElementById('btn-save-memo');
+            if (!textarea) return;
+
+            const memoText = textarea.value.trim();
+            if (saveBtn) saveBtn.textContent = 'Menyimpan...';
+
+            try {
+                const res = await fetch('/api/memo', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        memo: memoText,
+                        date: new Date().toISOString().split('T')[0],
+                        author: 'Raja / Hermes HQ'
+                    })
+                });
+                const json = await res.json();
+                if (json.success) {
+                    if (statusMsg) {
+                        statusMsg.textContent = '✅ Arahan berhasil disimpan ke memo.json!';
+                        statusMsg.style.display = 'block';
+                        statusMsg.style.color = '#34d399';
+                        setTimeout(() => { statusMsg.style.display = 'none'; }, 3500);
+                    }
+                } else {
+                    throw new Error(json.msg || 'Gagal menyimpan');
+                }
+            } catch (e) {
+                if (statusMsg) {
+                    statusMsg.textContent = '❌ Gagal: ' + e.message;
+                    statusMsg.style.display = 'block';
+                    statusMsg.style.color = '#f87171';
+                    setTimeout(() => { statusMsg.style.display = 'none'; }, 4000);
+                }
+            } finally {
+                if (saveBtn) saveBtn.textContent = '💾 Simpan Arahan';
+            }
+        };
 
         function getAreaRect(area) {
 
@@ -17782,7 +18303,19 @@ function toggleBrokerPanel() {
 
 
 
-                    guestAgents = Array.isArray(data) ? data : [];
+                    if (Array.isArray(data) && data.length > 0) {
+                        const dataMap = {};
+                        data.forEach(a => { dataMap[a.agentId] = a; });
+                        guestAgents = INITIAL_STAFF.map(initAgent => {
+                            const live = dataMap[initAgent.agentId];
+                            return live ? { ...initAgent, ...live } : initAgent;
+                        });
+                        data.forEach(a => {
+                            if (!guestAgents.find(g => g.agentId === a.agentId)) {
+                                guestAgents.push(a);
+                            }
+                        });
+                    }
 
 
 

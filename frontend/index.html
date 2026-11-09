@@ -4843,12 +4843,12 @@
 
     <div id="main-stage">
         <div id="department-switcher" class="pixel-dept-bar">
-            <button class="dept-tab active" data-room="grand_office" onclick="switchDepartmentRoom('grand_office')">🏢 Grand Office</button>
-            <button class="dept-tab" data-room="bumi_pos" onclick="switchDepartmentRoom('bumi_pos')">🛒 Bumi Makmur</button>
-            <button class="dept-tab" data-room="homestay" onclick="switchDepartmentRoom('homestay')">🏨 Homestay Suite</button>
-            <button class="dept-tab" data-room="moniflow" onclick="switchDepartmentRoom('moniflow')">📚 MoniFlow & Archive</button>
-            <button class="dept-tab" data-room="cyber_lab" onclick="switchDepartmentRoom('cyber_lab')">⚡ DevOps Cyber-Lab</button>
-            <button class="dept-tab" data-room="hermes_hq" onclick="switchDepartmentRoom('hermes_hq')">🏛️ Hermes HQ</button>
+            <button class="dept-tab active" data-room="overview" onclick="switchDepartmentRoom('overview')">🏢 Full Campus Overview</button>
+            <button class="dept-tab" data-room="boardroom" onclick="switchDepartmentRoom('boardroom')">📊 Boardroom Strategy</button>
+            <button class="dept-tab" data-room="servers" onclick="switchDepartmentRoom('servers')">⚡ DevOps Datacenter</button>
+            <button class="dept-tab" data-room="hermes" onclick="switchDepartmentRoom('hermes')">🏛️ Hermes Lounge & Study</button>
+            <button class="dept-tab" data-room="breakroom" onclick="switchDepartmentRoom('breakroom')">☕ Kitchen & Gaming Lounge</button>
+            <button class="dept-tab" data-room="dormitory" onclick="switchDepartmentRoom('dormitory')">🛏️ Team Rest Dormitory</button>
         </div>
         <div id="game-container">
 
@@ -6234,242 +6234,132 @@
 
 
 
-        function getRealisticOfficePath(startX, startY, destX, destY) {
-
-
-
-            const getZone = (x, y) => {
-
-
-
-                if (x < 360) return 'LEFT';
-
-
-
-                if (x >= 360 && x <= 800) return 'CENTER';
-
-
-
-                if (x > 800 && y < 380) return 'SERVER';
-
-
-
-                return 'RIGHT_CORRIDOR';
-
-
-
-            };
-
-
-
-
-
-
-
-            const fromZone = getZone(startX, startY);
-
-
-
-            const toZone = getZone(destX, destY);
-
-
-
-
-
-
-
-            if (fromZone === toZone) {
-
-
-
-                return [{ x: destX, y: destY }];
-
-
-
-            }
-
-
-
-
-
-
-
-            const waypoints = [];
-
-
-
-
-
-
-
-            // Step 1: Safely leave source room into the main open hallway (y: 580)
-
-
-
-            if (fromZone === 'SERVER') {
-
-
-
-                waypoints.push({ x: 880, y: 330 }); // Step out of server room
-
-
-
-                waypoints.push({ x: 880, y: 580 }); // Down the corridor to hallway
-
-
-
-            } else if (fromZone === 'LEFT') {
-
-
-
-                waypoints.push({ x: 360, y: 580 }); // Doorway between Left and Center
-
-
-
-            } else if (fromZone === 'CENTER') {
-
-
-
-                if (startY < 530) {
-
-
-
-                    waypoints.push({ x: startX, y: 580 }); // Step down into open lounge hallway
-
-
-
-                }
-
-
-
-            } else if (fromZone === 'RIGHT_CORRIDOR') {
-
-
-
-                waypoints.push({ x: 810, y: 580 }); // Doorway between Center and Right
-
-
-
-            }
-
-
-
-
-
-
-
-            // Step 2: Traverse open hallway to target room doorway
-
-
-
-            if (toZone === 'LEFT') {
-
-
-
-                waypoints.push({ x: 360, y: 580 });
-
-
-
-            } else if (toZone === 'CENTER') {
-
-
-
-                waypoints.push({ x: Math.max(440, Math.min(760, destX)), y: 580 });
-
-
-
-            } else if (toZone === 'SERVER') {
-
-
-
-                waypoints.push({ x: 880, y: 580 });
-
-
-
-                waypoints.push({ x: 880, y: 330 });
-
-
-
-            } else if (toZone === 'RIGHT_CORRIDOR') {
-
-
-
-                waypoints.push({ x: 810, y: 580 });
-
-
-
-            }
-
-
-
-
-
-
-
-            // Step 3: Arrive at final destination point
-
-
-
-            waypoints.push({ x: destX, y: destY });
-
-
-
-
-
-
-
-            // Deduplicate consecutive close waypoints
-
-
-
-            const filtered = [];
-
-
-
-            waypoints.forEach(wp => {
-
-
-
-                if (filtered.length === 0) {
-
-
-
-                    filtered.push(wp);
-
-
-
-                } else {
-
-
-
-                    const last = filtered[filtered.length - 1];
-
-
-
-                    const dist = Math.hypot(wp.x - last.x, wp.y - last.y);
-
-
-
-                    if (dist > 12) filtered.push(wp);
-
-
-
-                }
-
-
-
+        
+        // ── 22-Node Mansion Navigation Graph & Dijkstra Pathfinding (Strict Anti-Tembus Tembok) ──
+        const MANSION_NODES = {
+            'OFFICE_DESK':       { x: 125, y: 345 },
+            'OFFICE_DOOR':       { x: 270, y: 360 },
+            'LOUNGE_RUG':        { x: 400, y: 360 },
+            'LOUNGE_CHAIR':      { x: 485, y: 215 },
+            'SERVER_AREA':       { x: 670, y: 220 },
+            'SERVER_CORR':       { x: 670, y: 330 },
+            'BEDROOM_IN':        { x: 680, y: 420 },
+            'BEDROOM_DOOR':      { x: 680, y: 490 },
+            'CROSSROADS':        { x: 780, y: 420 },
+            'KITCHEN_DOOR':      { x: 840, y: 360 },
+            'DINING_TABLE':      { x: 915, y: 300 },
+            'BREAKROOM_COFFEE':  { x: 920, y: 180 },
+            'GAMING_LOUNGE':     { x: 1120, y: 270 },
+            'ARCADE':            { x: 1230, y: 360 },
+            'AQUARIUM_CORR':     { x: 680, y: 600 },
+            'DORM_DOOR':         { x: 560, y: 510 },
+            'DORM_AISLE':        { x: 300, y: 590 },
+            'CONF_DOOR':         { x: 900, y: 510 },
+            'CONF_TABLE_LEFT':   { x: 980, y: 590 },
+            'CONF_TABLE_MID':    { x: 1060, y: 590 },
+            'CONF_TABLE_RIGHT':  { x: 1140, y: 590 },
+            'CONF_CHART':        { x: 1070, y: 520 }
+        };
+
+        const MANSION_EDGES = [
+            ['OFFICE_DESK', 'OFFICE_DOOR'],
+            ['OFFICE_DOOR', 'LOUNGE_RUG'],
+            ['LOUNGE_RUG', 'LOUNGE_CHAIR'],
+            ['LOUNGE_RUG', 'CROSSROADS'],
+            ['LOUNGE_RUG', 'DORM_DOOR'],
+            ['LOUNGE_CHAIR', 'SERVER_AREA'],
+            ['SERVER_AREA', 'SERVER_CORR'],
+            ['SERVER_CORR', 'CROSSROADS'],
+            ['BEDROOM_IN', 'BEDROOM_DOOR'],
+            ['BEDROOM_DOOR', 'CROSSROADS'],
+            ['BEDROOM_DOOR', 'AQUARIUM_CORR'],
+            ['CROSSROADS', 'KITCHEN_DOOR'],
+            ['CROSSROADS', 'AQUARIUM_CORR'],
+            ['CROSSROADS', 'CONF_DOOR'],
+            ['KITCHEN_DOOR', 'DINING_TABLE'],
+            ['DINING_TABLE', 'BREAKROOM_COFFEE'],
+            ['DINING_TABLE', 'GAMING_LOUNGE'],
+            ['GAMING_LOUNGE', 'ARCADE'],
+            ['AQUARIUM_CORR', 'DORM_DOOR'],
+            ['DORM_DOOR', 'DORM_AISLE'],
+            ['CONF_DOOR', 'CONF_CHART'],
+            ['CONF_DOOR', 'CONF_TABLE_LEFT'],
+            ['CONF_CHART', 'CONF_TABLE_MID'],
+            ['CONF_TABLE_LEFT', 'CONF_TABLE_MID'],
+            ['CONF_TABLE_MID', 'CONF_TABLE_RIGHT']
+        ];
+
+        const MANSION_ADJ = {};
+        Object.keys(MANSION_NODES).forEach(k => { MANSION_ADJ[k] = []; });
+        MANSION_EDGES.forEach(([u, v]) => {
+            const duv = Math.hypot(MANSION_NODES[u].x - MANSION_NODES[v].x, MANSION_NODES[u].y - MANSION_NODES[v].y);
+            MANSION_ADJ[u].push({ node: v, dist: duv });
+            MANSION_ADJ[v].push({ node: u, dist: duv });
+        });
+
+        function findNearestMansionNode(x, y) {
+            let best = null, minDist = Infinity;
+            Object.keys(MANSION_NODES).forEach(k => {
+                const d = Math.hypot(MANSION_NODES[k].x - x, MANSION_NODES[k].y - y);
+                if (d < minDist) { minDist = d; best = k; }
             });
+            return best;
+        }
 
+        function getRealisticOfficePath(startX, startY, destX, destY) {
+            const directDist = Math.hypot(startX - destX, startY - destY);
+            if (directDist < 35) {
+                return [{ x: destX, y: destY }];
+            }
 
+            const startNode = findNearestMansionNode(startX, startY);
+            const endNode = findNearestMansionNode(destX, destY);
 
+            if (startNode === endNode) {
+                return [{ x: destX, y: destY }];
+            }
 
+            const dist = {};
+            const prev = {};
+            const unvisited = new Set(Object.keys(MANSION_NODES));
 
+            Object.keys(MANSION_NODES).forEach(k => { dist[k] = Infinity; });
+            dist[startNode] = 0;
 
+            while (unvisited.size > 0) {
+                let curr = null;
+                let smallest = Infinity;
+                unvisited.forEach(node => {
+                    if (dist[node] < smallest) { smallest = dist[node]; curr = node; }
+                });
 
-            return filtered;
+                if (!curr || smallest === Infinity || curr === endNode) break;
+                unvisited.delete(curr);
 
+                MANSION_ADJ[curr].forEach(({ node: nxt, dist: d }) => {
+                    if (!unvisited.has(nxt)) return;
+                    const alt = dist[curr] + d;
+                    if (alt < dist[nxt]) {
+                        dist[nxt] = alt;
+                        prev[nxt] = curr;
+                    }
+                });
+            }
 
+            const pathNodes = [];
+            let cur = endNode;
+            while (cur) {
+                pathNodes.unshift(cur);
+                cur = prev[cur];
+            }
 
+            const resultWaypoints = [];
+            pathNodes.forEach(name => {
+                resultWaypoints.push({ x: MANSION_NODES[name].x, y: MANSION_NODES[name].y });
+            });
+            resultWaypoints.push({ x: destX, y: destY });
+
+            return resultWaypoints;
         }
 
 
@@ -7243,29 +7133,14 @@
 
 
             const destinations = [
-
-
-
-                { x: 1140, y: 350, msg: (uiLang === 'zh') ? "☕ 正在接一杯热咖啡..." : "☕ Getting a warm cup of coffee..." },
-
-
-
-                { x: 950, y: 520, msg: (uiLang === 'zh') ? "🌿 正在给绿植浇水..." : "🌿 Watering the office plants..." },
-
-
-
-                { x: 970, y: 320, msg: (uiLang === 'zh') ? "💻 正在检查服务器机柜状态..." : "💻 Checking server rack metrics..." },
-
-
-
-                { x: 620, y: 580, msg: (uiLang === 'zh') ? "📋 正在与团队讨论架构..." : "📋 Discussing architecture tasks..." },
-
-
-
-                { x: 230, y: 520, msg: (uiLang === 'zh') ? "📝 正在同步开发计划..." : "📝 Syncing task roadmap..." }
-
-
-
+                { x: 920,  y: 180, msg: "☕ Mengambil secangkir kopi hangat di pantry..." },
+                { x: 955,  y: 560, msg: "💧 Mengambil air mineral di galon ruang rapat..." },
+                { x: 655,  y: 620, msg: "🐟 Mengamati ikan di akuarium lorong utama..." },
+                { x: 1120, y: 270, msg: "🛋️ Istirahat sejenak di sofa ruang santai..." },
+                { x: 1230, y: 360, msg: "🕹️ Mencoba mini-game di mesin arcade..." },
+                { x: 670,  y: 220, msg: "💻 Memeriksa log dan metrik rak server datacenter..." },
+                { x: 300,  y: 590, msg: "🛏️ Mengecek inventaris dan loker di asrama tim..." },
+                { x: 1070, y: 520, msg: "📈 Menganalisis grafik performa di papan presentasi..." }
             ];
 
 
@@ -8802,11 +8677,13 @@ function ensureMemoBgVisible() {
 
 
 
-        let game, star, sofa, serverroom, officeBgSprite, areas = {}, currentState = 'idle', pendingDesiredState = null, statusText, lastFetch = 0, lastBlink = 0, lastBubble = 0, targetX = 660, targetY = 170, bubble = null, typewriterText = '', typewriterTarget = '', typewriterIndex = 0, lastTypewriter = 0, syncAnimSprite = null, syncAnimPlayable = false, catBubble = null, selectionBoxGraphics = null;
-
-
-
-        const IDLE_SOFA_ANCHOR = { x: 798, y: 272 }; // 统一中心锚点（原 sofa 左上 670,144 的中心）
+        let game, star, sofa, serverroom, officeBgSprite, areas = {
+                door: { x: 780, y: 420 },         // Central crossroads
+                writing: { x: 125, y: 345 },      // Master Study Desk
+                researching: { x: 1060, y: 590 },  // Boardroom Conference Table
+                error: { x: 670, y: 180 },        // Server Racks & Red Beacon
+                breakroom: { x: 485, y: 215 }     // Hermes Executive Armchair
+            }; // 统一中心锚点（原 sofa 左上 670,144 的中心）
 
 
 
@@ -16267,12 +16144,12 @@ function toggleBrokerPanel() {
 
 
         const AGENT_HOME_POINTS = {
-            onal:     { x: 128, y: 276 },
-            bumi:     { x: 348, y: 276 },
-            homestay: { x: 568, y: 276 },
-            moniflow: { x: 128, y: 496 },
-            codex:    { x: 348, y: 496 },
-            kuro:     { x: 568, y: 496 }
+            onal:     { x: 980,  y: 590 }, // Boardroom Chair 1 (Universal Memory & Analytics)
+            moniflow: { x: 1030, y: 590 }, // Boardroom Chair 2 (Finance & Books)
+            homestay: { x: 1085, y: 590 }, // Boardroom Chair 3 (Tenant & Booking)
+            bumi:     { x: 1140, y: 590 }, // Boardroom Chair 4 (POS & Inventory)
+            codex:    { x: 605,  y: 220 }, // Datacenter Server Rack 1 (DevOps & Engineering)
+            kuro:     { x: 730,  y: 220 }  // Sentinel Post & Red Beacon (Security & Patrol)
         };
 
 
@@ -16458,85 +16335,11 @@ function toggleBrokerPanel() {
 
 
         
-        // Multi-Room Department System
-        window.currentRoomId = 'grand_office';
-
-        const ROOM_CONFIGS = {
-            grand_office: {
-                texture: 'room_grand_office',
-                name: 'Grand Corporate Office Workspace',
-                hermesPos: { x: 910, y: 390 },
-                workstations: {
-                    onal:     { x: 128, y: 276 },
-                    bumi:     { x: 348, y: 276 },
-                    homestay: { x: 568, y: 276 },
-                    moniflow: { x: 128, y: 496 },
-                    codex:    { x: 348, y: 496 },
-                    kuro:     { x: 568, y: 496 }
-                },
-                doorway: { x: 760, y: 400 },
-                walkableBounds: { minX: 60, maxX: 1220, minY: 200, maxY: 660 },
-                breakroom: { x: 910, y: 390 }
-            },
-            bumi_pos: {
-                texture: 'room_bumi_pos',
-                name: 'Bumi Makmur Retail Store & Inventory Hub',
-                hermesPos: { x: 500, y: 380 },
-                workstations: {
-                    bumi: { x: 288, y: 376 }
-                },
-                doorway: { x: 640, y: 400 },
-                walkableBounds: { minX: 120, maxX: 1160, minY: 210, maxY: 650 },
-                breakroom: { x: 500, y: 380 }
-            },
-            homestay: {
-                texture: 'room_homestay',
-                name: 'Charisna Homestay Hospitality Reception & Suite',
-                hermesPos: { x: 900, y: 360 },
-                workstations: {
-                    homestay: { x: 268, y: 376 }
-                },
-                doorway: { x: 640, y: 400 },
-                walkableBounds: { minX: 120, maxX: 1160, minY: 210, maxY: 650 },
-                breakroom: { x: 900, y: 360 }
-            },
-            moniflow: {
-                texture: 'room_moniflow',
-                name: 'MoniFlow & Archive Financial Treasury Study',
-                hermesPos: { x: 540, y: 450 },
-                workstations: {
-                    moniflow: { x: 268, y: 396 },
-                    onal:     { x: 868, y: 396 }
-                },
-                doorway: { x: 640, y: 400 },
-                walkableBounds: { minX: 120, maxX: 1160, minY: 210, maxY: 650 },
-                breakroom: { x: 540, y: 450 }
-            },
-            cyber_lab: {
-                texture: 'room_cyber_lab',
-                name: 'DevOps & Cyber-Lab Datacenter Hub',
-                hermesPos: { x: 640, y: 420 },
-                workstations: {
-                    codex: { x: 308, y: 396 },
-                    kuro:  { x: 828, y: 396 }
-                },
-                doorway: { x: 640, y: 400 },
-                walkableBounds: { minX: 120, maxX: 1160, minY: 210, maxY: 650 },
-                breakroom: { x: 640, y: 420 }
-            },
-            hermes_hq: {
-                texture: 'room_hermes_hq',
-                name: 'Hermes Executive Master Suite',
-                hermesPos: { x: 640, y: 400 },
-                workstations: {},
-                doorway: { x: 640, y: 400 },
-                walkableBounds: { minX: 120, maxX: 1160, minY: 210, maxY: 650 },
-                breakroom: { x: 640, y: 400 }
-            }
-        };
+        
+        // Full Mansion Camera & Department Focus System
+        window.currentRoomId = 'overview';
 
         window.switchDepartmentRoom = function(roomId) {
-            if (!ROOM_CONFIGS[roomId]) return;
             window.currentRoomId = roomId;
 
             document.querySelectorAll('.dept-tab').forEach(tab => {
@@ -16544,23 +16347,26 @@ function toggleBrokerPanel() {
                 else tab.classList.remove('active');
             });
 
-            const cfg = ROOM_CONFIGS[roomId];
-            if (officeBgSprite && game && game.textures.exists(cfg.texture)) {
-                officeBgSprite.setTexture(cfg.texture);
-            }
+            if (!game || !game.cameras || !game.cameras.main) return;
+            const cam = game.cameras.main;
+
+            const targets = {
+                overview:  { x: 640,  y: 360, zoom: 1.0, name: 'Charisna Office Workspace (Full Campus)' },
+                boardroom: { x: 1060, y: 600, zoom: 1.5, name: 'Executive Boardroom & Strategy Center' },
+                servers:   { x: 670,  y: 220, zoom: 1.5, name: 'Datacenter Server Racks & Cyber Sentinel' },
+                hermes:    { x: 320,  y: 280, zoom: 1.4, name: 'Hermes Executive Lounge & Master Study' },
+                breakroom: { x: 1030, y: 260, zoom: 1.4, name: 'Kitchen, Dining & Gaming Breakroom' },
+                dormitory: { x: 280,  y: 580, zoom: 1.4, name: 'Team Quarters & Rest Dormitory' }
+            };
+
+            const target = targets[roomId] || targets.overview;
+            cam.pan(target.x, target.y, 800, 'Power2');
+            cam.zoomTo(target.zoom, 800, 'Power2');
 
             const banner = document.getElementById('office-name-display');
-            if (banner) banner.textContent = cfg.name;
-
-            if (sofa) sofa.setVisible(false);
-            if (sofaShadow) sofaShadow.setVisible(false);
-
-            if (star && cfg.hermesPos) {
-                star.setPosition(cfg.hermesPos.x, cfg.hermesPos.y);
-            }
-
-            renderGuestAgentsInScene();
+            if (banner) banner.textContent = target.name;
         };
+
 
         function renderGuestAgentsInScene() {
 
@@ -16746,7 +16552,7 @@ function toggleBrokerPanel() {
 
 
 
-                            sprite = game.add.sprite(p.x, p.y, animKey).setOrigin(0.5, 1).setScale(1.3);
+                            sprite = game.add.sprite(p.x, p.y, animKey).setOrigin(0.5, 1).setScale(1.2);
 
 
 
@@ -18804,7 +18610,7 @@ function toggleBrokerPanel() {
 
 
 
-            sofaShadow.setDepth(9);
+            sofaShadow.setDepth(9); sofaShadow.setVisible(false);
 
 
 
@@ -18812,7 +18618,7 @@ function toggleBrokerPanel() {
 
 
 
-            sofa.setDepth(10);
+            sofa.setDepth(10); sofa.setVisible(false);
 
 
 

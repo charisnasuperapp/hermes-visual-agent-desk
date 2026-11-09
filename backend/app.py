@@ -9,6 +9,7 @@ if hasattr(sys.stdout, 'reconfigure'):
         pass
 from flask import Flask, jsonify, send_from_directory, make_response, request, session
 from datetime import datetime, timedelta
+import time
 import json
 import os
 import random
@@ -2071,7 +2072,127 @@ def assets_upload():
         return jsonify({"ok": False, "msg": str(e)}), 500
 
 
+
+def _start_hermes_activity_watcher():
+    """Background daemon that monitors local Hermes Agent logs & database activity,
+    automatically updating Star Office UI state.json in real time so the character
+    moves dynamically according to Hermes's actual busyness!
+    """
+    hermes_log_file = os.path.expanduser(r"~\AppData\Local\hermes\logs\agent.log")
+
+    def watcher_loop():
+        print("[*] Hermes Realtime Activity Watcher: AKTIF (memantau agent.log)")
+        last_state = None
+        last_detail = None
+
+        while True:
+            try:
+                if not os.path.exists(hermes_log_file):
+                    time.sleep(2)
+                    continue
+
+                mtime = os.path.getmtime(hermes_log_file)
+                time_since_mtime = time.time() - mtime
+
+                # If the log hasn't had any new writes in over 14 seconds, Hermes is idle
+                if time_since_mtime > 14:
+                    if last_state != "idle":
+                        curr = load_state()
+                        if curr.get("state") != "idle":
+                            curr["state"] = "idle"
+                            curr["detail"] = "Standby & siap bertugas"
+                            curr["updated_at"] = datetime.now().isoformat()
+                            save_state(curr)
+                            last_state = "idle"
+                            last_detail = curr["detail"]
+                            print("[Hermes Watcher] Activity quiet (>14s) -> idle")
+                    time.sleep(1.2)
+                    continue
+
+                # Read recent chunk of agent.log
+                with open(hermes_log_file, "r", encoding="utf-8", errors="ignore") as f:
+                    f.seek(0, os.SEEK_END)
+                    sz = f.tell()
+                    f.seek(max(0, sz - 6144), os.SEEK_SET)
+                    chunk = f.read()
+
+                lines = [l.strip() for l in chunk.splitlines() if l.strip()]
+                if not lines:
+                    time.sleep(1.2)
+                    continue
+
+                detected_state = "idle"
+                detected_detail = "Standby"
+
+                for line in reversed(lines):
+                    if "Turn ended:" in line or "Sending response" in line:
+                        detected_state = "idle"
+                        detected_detail = "Tugas selesai (Standby)"
+                        break
+                    elif "agent.tool_executor: tool" in line:
+                        if "returned error" in line:
+                            detected_state = "error"
+                            detected_detail = "Hermes Tool Error"
+                        else:
+                            m = re.search(r'tool\s+(\w+)', line)
+                            tool_name = m.group(1) if m else "tool"
+                            if tool_name in ("write_file", "patch", "edit_file", "save"):
+                                detected_state = "writing"
+                                detected_detail = f"Coding ({tool_name})"
+                            elif tool_name in ("read_file", "search_files", "grep", "web_search", "fetch"):
+                                detected_state = "researching"
+                                detected_detail = f"Riset ({tool_name})"
+                            elif tool_name in ("terminal", "run_command", "bash"):
+                                detected_state = "executing"
+                                detected_detail = f"Terminal ({tool_name})"
+                            else:
+                                detected_state = "writing"
+                                detected_detail = f"Hermes: {tool_name}"
+                        break
+                    elif "agent.conversation_loop: API call" in line:
+                        m = re.search(r'API call #(\d+)', line)
+                        num = m.group(1) if m else ""
+                        detected_state = "writing"
+                        detected_detail = f"Hermes berpikir (API Call #{num})"
+                        break
+                    elif "tools.file_tools: Creating new local environment" in line or "run_agent: OpenAI client created" in line:
+                        detected_state = "writing"
+                        detected_detail = "Hermes menyiapkan lingkungan kerja..."
+                        break
+
+                if detected_state != last_state or detected_detail != last_detail:
+                    curr = load_state()
+                    curr["state"] = detected_state
+                    curr["detail"] = detected_detail
+                    curr["updated_at"] = datetime.now().isoformat()
+                    save_state(curr)
+
+                    # Keep agents-state.json in sync
+                    try:
+                        agents = _store_load_agents_state(ROOT_DIR)
+                        for ag in agents:
+                            if ag.get("isMain"):
+                                ag["state"] = detected_state
+                                ag["detail"] = detected_detail
+                                ag["updated_at"] = datetime.now().isoformat()
+                                ag["area"] = "breakroom" if detected_state == "idle" else ("error" if detected_state == "error" else "writing")
+                        _store_save_agents_state(ROOT_DIR, agents)
+                    except Exception:
+                        pass
+
+                    last_state = detected_state
+                    last_detail = detected_detail
+                    print(f"[Hermes Live Watcher] State -> {detected_state}: {detected_detail}")
+
+            except Exception:
+                pass
+            time.sleep(1.0)
+
+    th = threading.Thread(target=watcher_loop, daemon=True, name="hermes-activity-watcher")
+    th.start()
+
 if __name__ == "__main__":
+    _start_hermes_activity_watcher()
     raw_port = os.environ.get("STAR_BACKEND_PORT", "19000")
     try:
         backend_port = int(raw_port)

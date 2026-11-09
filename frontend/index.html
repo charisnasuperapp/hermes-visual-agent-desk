@@ -27,8 +27,9 @@
         /* 底部面板容器 */
         #main-stage {
             position: relative;
-            width: 1280px;
-            transition: transform .25s ease;
+            width: min(1560px, 96vw);
+            max-width: 1600px;
+            transition: transform .25s ease, width .3s ease;
             will-change: transform;
         }
         body.drawer-open #main-stage {
@@ -38,21 +39,27 @@
         #bottom-panels {
             display: flex;
             gap: 20px;
-            width: 1280px;
-            max-width: none;
-            justify-content: flex-start;
+            width: 100%;
+            max-width: 1600px;
+            justify-content: space-between;
             margin-top: 20px;
+        }
+        #memo-panel, #control-bar, #guest-agent-panel {
+            flex: 1 1 0px;
+            min-width: 320px;
         }
         #game-container {
             position: relative;
             border: 0;
             image-rendering: pixelated;
-            width: 1280px;
-            height: 720px;
-            max-width: none;
-            max-height: none;
-            aspect-ratio: auto;
+            width: 100%;
+            aspect-ratio: 16 / 9;
+            height: auto;
+            max-height: 82vh;
             overflow: hidden;
+            border-radius: 8px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+            cursor: pointer;
         }
         #game-container canvas {
             width: 100% !important;
@@ -705,7 +712,31 @@
             background-color: transparent !important;
             filter: brightness(1.04);
         }
-                #btn-rename-office {
+                        #btn-toggle-room-size {
+            grid-column: 1 / -1;
+            height: 40px;
+            background: #1e3a5f;
+            border: 3px solid #3b82f6;
+            color: #93c5fd;
+            font-family: 'ArkPixel', monospace;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: inset 0 0 0 2px #172554;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.15s ease;
+            margin-top: 2px;
+        }
+        #btn-toggle-room-size:hover {
+            background: #2563eb;
+            color: #ffffff;
+            filter: brightness(1.1);
+        }
+
+        #btn-rename-office {
             grid-column: 1 / -1;
             height: 44px;
             background: #232c3d;
@@ -1198,6 +1229,7 @@
                 <button id="btn-state-error" onclick="setState('error','报警中')">报警</button>
                 <button id="btn-open-drawer" onclick="toggleAssetDrawer()">装修房间</button>
                 <button id="btn-rename-office" onclick="promptRenameOffice()">🏷️ Ganti Nama Kantor</button>
+                <button id="btn-toggle-room-size" onclick="toggleRoomSize()">🔍 Perbesar Ruangan</button>
             </div>
         </div>
 
@@ -1418,7 +1450,308 @@
             loadingEl.textContent = `${base}${p}`;
         }
 
-                async function promptRenameOffice() {
+                        // Interactive Agent Dialogue System
+        const AGENT_DIALOGUES = {
+            star: [
+                "Siap menerima arahan, Raja! Seluruh sistem workspace berjalan aman terkendali.",
+                "Hermes siap mengorkestrasi task multi-agent untuk Raja kapan saja!",
+                "Kondisi kantor sangat kondusif hari ini, Raja. Mari kita mulai otomasi berikutnya!"
+            ],
+            onal: [
+                "Semua memori penting, ringkasan sesi, dan SOP tersimpan aman di Universal Memory!",
+                "Aku selalu mencatat setiap keputusan arsitektur Raja agar tidak terlupakan.",
+                "Memory bank terhubung dan terindeks optimal, Raja!"
+            ],
+            bumi: [
+                "Sistem POS Bumi Makmur online! Seluruh inventaris dan transaksi kasir sinkron.",
+                "Stok sembako dan logistik toko terpantau aman tanpa kendala, Raja.",
+                "Laporan penjualan harian Bumi Makmur siap direview kapan saja!"
+            ],
+            homestay: [
+                "Kamar Charisna Homestay bersih dan siap huni. Reservasi tamu terpantau lancar!",
+                "Semua keluhan tamu dan status sewa unit terkontrol dengan baik, Raja.",
+                "Tingkat okupansi homestay stabil dan nyaman!"
+            ],
+            moniflow: [
+                "Jurnal keuangan dan arus kas keluarga/bisnis terverifikasi rapi, Raja.",
+                "Audit ledger konsolidasi balance tanpa selisih sepeser pun!",
+                "Semua pos pengeluaran dan pemasukan tercatat transparan."
+            ],
+            codex: [
+                "Pipeline DevOps dan skrip otomasi siap dieksekusi tanpa error!",
+                "Build test lulus 100%. Environment lokal dan server sinkron sempurna.",
+                "Sedang memantau integritas repository GitHub dan daemon background."
+            ],
+            kuro: [
+                "Patroli keamanan kantor selesai! Semua file config dan socket aman terlindungi.",
+                "Healthcheck server stabil 100%. Tak ada celah atau memory leak, Raja!",
+                "Sentinel siap siaga menjaga integritas workspace 24/7."
+            ]
+        };
+
+        let activeDialogues = {};
+
+        function showBubbleAbove(x, y, text, duration = 3500) {
+            if (!game) return;
+            const bubbleKey = `bubble_${Math.round(x)}_${Math.round(y)}`;
+            if (activeDialogues[bubbleKey]) {
+                activeDialogues[bubbleKey].destroy();
+                delete activeDialogues[bubbleKey];
+            }
+            const isTouch = IS_TOUCH_DEVICE;
+            const fontSize = isTouch ? 13 : 12;
+            const textWidth = Math.min(320, Math.max(100, text.length * 8.5 + 24));
+            const bg = game.add.rectangle(x, y, textWidth, 32, 0x111827, 0.94);
+            bg.setStrokeStyle(2, 0x60a5fa);
+            const txt = game.add.text(x, y, text, {
+                fontFamily: 'ArkPixel, monospace',
+                fontSize: fontSize + 'px',
+                fill: '#f3f4f6',
+                align: 'center',
+                wordWrap: { width: textWidth - 16 }
+            }).setOrigin(0.5);
+            const container = game.add.container(0, 0, [bg, txt]);
+            container.setDepth(3500);
+            activeDialogues[bubbleKey] = container;
+            setTimeout(() => {
+                if (container && container.scene) {
+                    container.destroy();
+                }
+                delete activeDialogues[bubbleKey];
+            }, duration);
+        }
+
+        function showAgentDialogue(agent) {
+            if (!agent) return;
+            const id = agent.agentId || 'star';
+            const quotes = AGENT_DIALOGUES[id] || [agent.detail || "Sedang bekerja aktif di workspace."];
+            const quote = quotes[Math.floor(Math.random() * quotes.length)];
+            const g = (id === 'star') ? { sprite: star } : guestSprites[id];
+            if (!g || !g.sprite) return;
+            const targetX = g.sprite.x;
+            const targetY = (id === 'star') ? (g.sprite.y - 85) : (g.sprite.y - 125);
+            showBubbleAbove(targetX, targetY, `[${agent.name || id}]: ${quote}`, 4200);
+        }
+
+        // Smooth Walking Engine for Star
+        let starWalkTween = null;
+        let starBobTween = null;
+        let isStarWalking = false;
+
+        function walkStarTo(targetX, targetY, onComplete) {
+            if (!star || !game) return;
+            if (starWalkTween) { starWalkTween.stop(); starWalkTween = null; }
+            if (starBobTween) { starBobTween.stop(); starBobTween = null; }
+
+            // If working at desk, switch from desk sprite to walking star
+            if (!star.visible && window.starWorking && window.starWorking.visible) {
+                window.starWorking.setVisible(false);
+                star.setPosition(217, 343);
+            }
+            star.setVisible(true);
+
+            const dx = targetX - star.x;
+            const dy = targetY - star.y;
+            const dist = Math.sqrt(dx * dx + dy * dy);
+
+            if (dist < 8) {
+                isStarWalking = false;
+                if (onComplete) onComplete();
+                return;
+            }
+
+            isStarWalking = true;
+            // Face direction of movement (star default faces right if flipX is true, or adjust based on sprite)
+            star.flipX = dx > 0;
+
+            const duration = Math.max(500, (dist / 170) * 1000);
+
+            starBobTween = game.tweens.add({
+                targets: star,
+                scaleY: IDLE_STAR_SCALE * 0.94,
+                scaleX: IDLE_STAR_SCALE * 1.06,
+                yoyo: true,
+                repeat: Math.floor(duration / 220),
+                duration: 110,
+                ease: 'Quad.easeInOut'
+            });
+
+            starWalkTween = game.tweens.add({
+                targets: star,
+                x: targetX,
+                y: targetY,
+                duration: duration,
+                ease: 'Linear',
+                onComplete: () => {
+                    if (starBobTween) { starBobTween.stop(); starBobTween = null; }
+                    star.setScale(IDLE_STAR_SCALE);
+                    isStarWalking = false;
+                    starWalkTween = null;
+                    if (onComplete) onComplete();
+                }
+            });
+        }
+
+        let isInitialStatusLoaded = false;
+
+        function handleStarStateTransition(nextState) {
+            if (!isInitialStatusLoaded) {
+                isInitialStatusLoaded = true;
+                applyVisualState(nextState);
+                return;
+            }
+
+            if (nextState === 'writing' || nextState === 'researching') {
+                // Walk to desk
+                walkStarTo(217, 343, () => {
+                    star.setVisible(false);
+                    if (window.starWorking) {
+                        window.starWorking.setVisible(true);
+                        window.starWorking.anims.play('star_working', true);
+                    }
+                });
+            } else if (nextState === 'idle') {
+                // Walk to sofa
+                if (window.starWorking && window.starWorking.visible) {
+                    window.starWorking.setVisible(false);
+                    star.setPosition(217, 343);
+                    star.setVisible(true);
+                }
+                walkStarTo(IDLE_SOFA_ANCHOR.x, IDLE_SOFA_ANCHOR.y, () => {
+                    star.setScale(IDLE_STAR_SCALE);
+                    star.anims.play('star_idle', true);
+                    sofa.setTexture('sofa_idle');
+                });
+            } else if (nextState === 'syncing') {
+                walkStarTo(1050, 480, () => {
+                    // Syncing station
+                });
+            } else if (nextState === 'error') {
+                walkStarTo(980, 260, () => {
+                    // Error station
+                });
+            }
+        }
+
+        // Click marker for floor click
+        function createClickMarker(x, y) {
+            if (!game) return;
+            const ring = game.add.circle(x, y, 14, 0x60a5fa, 0.45);
+            ring.setStrokeStyle(2, 0x93c5fd, 0.85);
+            ring.setDepth(2000);
+            game.tweens.add({
+                targets: ring,
+                scale: 1.8,
+                alpha: 0,
+                duration: 450,
+                ease: 'Quad.easeOut',
+                onComplete: () => ring.destroy()
+            });
+        }
+
+        // Autonomous office roaming
+        let lastRoamTime = 0;
+        const ROAM_INTERVAL = 16000;
+
+        function checkAutonomousRoaming(time) {
+            if (time - lastRoamTime < ROAM_INTERVAL) return;
+            lastRoamTime = time;
+
+            const visitors = getMergedVisitors();
+            if (!visitors || visitors.length === 0) return;
+
+            const eligible = visitors.filter(v => guestSprites[v.agentId] && !guestTweens[v.agentId]?.move?.isPlaying);
+            if (eligible.length === 0) return;
+
+            const luckyAgent = eligible[Math.floor(Math.random() * eligible.length)];
+            const g = guestSprites[luckyAgent.agentId];
+            if (!g || !g.sprite) return;
+
+            const destinations = [
+                { x: 640, y: 440, msg: "☕ Mengambil kopi hangat..." },
+                { x: 970, y: 520, msg: "🌿 Menyiram tanaman hias..." },
+                { x: 1020, y: 310, msg: "💻 Mengecek status server..." },
+                { x: 420, y: 560, msg: "📋 Mendiskusikan task..." },
+                { x: 140, y: 570, msg: "🐱 Mengelus kucing kantor..." }
+            ];
+
+            const dest = destinations[Math.floor(Math.random() * destinations.length)];
+            const origPos = getAgentHomePoint(luckyAgent.agentId) || { x: g.sprite.x, y: g.sprite.y };
+
+            const dx = dest.x - g.sprite.x;
+            g.sprite.flipX = dx < 0;
+
+            const dist = Phaser.Math.Distance.Between(g.sprite.x, g.sprite.y, dest.x, dest.y);
+            const duration = Math.min(3800, Math.max(1400, dist * 5));
+
+            if (guestTweens[luckyAgent.agentId]?.move) guestTweens[luckyAgent.agentId].move.stop();
+            if (guestTweens[luckyAgent.agentId]?.name) guestTweens[luckyAgent.agentId].name.stop();
+
+            const moveTween = game.tweens.add({
+                targets: g.sprite,
+                x: dest.x,
+                y: dest.y,
+                duration: duration,
+                ease: 'Linear',
+                onComplete: () => {
+                    showBubbleAbove(g.sprite.x, g.sprite.y - 120, dest.msg, 3000);
+
+                    setTimeout(() => {
+                        if (!g.sprite || !g.sprite.scene) return;
+                        const backDx = origPos.x - g.sprite.x;
+                        g.sprite.flipX = backDx < 0;
+                        const backDist = Phaser.Math.Distance.Between(g.sprite.x, g.sprite.y, origPos.x, origPos.y);
+                        const backDur = Math.min(3800, Math.max(1400, backDist * 5));
+
+                        game.tweens.add({
+                            targets: g.sprite,
+                            x: origPos.x,
+                            y: origPos.y,
+                            duration: backDur,
+                            ease: 'Linear'
+                        });
+                        game.tweens.add({
+                            targets: g.nameText,
+                            x: origPos.x,
+                            y: origPos.y - 120,
+                            duration: backDur,
+                            ease: 'Linear'
+                        });
+                    }, 4500);
+                }
+            });
+
+            const nameTween = game.tweens.add({
+                targets: g.nameText,
+                x: dest.x,
+                y: dest.y - 120,
+                duration: duration,
+                ease: 'Linear'
+            });
+
+            guestTweens[luckyAgent.agentId] = { move: moveTween, name: nameTween };
+        }
+
+        let isRoomMaximized = false;
+        function toggleRoomSize() {
+            const stage = document.getElementById('main-stage');
+            const btn = document.getElementById('btn-toggle-room-size');
+            isRoomMaximized = !isRoomMaximized;
+            if (isRoomMaximized) {
+                stage.style.width = '98vw';
+                stage.style.maxWidth = '1920px';
+                if (btn) btn.textContent = '🔍 Normal Ruangan';
+            } else {
+                stage.style.width = 'min(1560px, 96vw)';
+                stage.style.maxWidth = '1600px';
+                if (btn) btn.textContent = '🔍 Perbesar Ruangan';
+            }
+            if (game && game.scale) {
+                game.scale.refresh();
+            }
+        }
+
+        async function promptRenameOffice() {
             const currentName = window.officeNameFromServer || (typeof t === 'function' ? t('officeTitle') : 'Charisna Office Workspace');
             const promptMsg = uiLang === 'zh' ? '请输入办公室新名称：' :
                              uiLang === 'ja' ? '新しいオフィス名を入力してください：' :
@@ -3560,8 +3893,23 @@ function toggleBrokerPanel() {
             return { x: randomInt(rect.x1, rect.x2), y: randomInt(rect.y1, rect.y2) };
         }
 
-        function getAreaPoint(area, idx) {
-            // 非 demo 访客：仍用固定点位，避免每次轮询都抖动。
+        const AGENT_HOME_POINTS = {
+            onal:     { x: 380, y: 560 },
+            bumi:     { x: 500, y: 580 },
+            homestay: { x: 720, y: 480 },
+            moniflow: { x: 280, y: 620 },
+            codex:    { x: 990, y: 320 },
+            kuro:     { x: 860, y: 580 }
+        };
+
+        function getAgentHomePoint(agentId) {
+            return AGENT_HOME_POINTS[agentId] || null;
+        }
+
+        function getAreaPoint(area, idx, agentId) {
+            if (agentId && AGENT_HOME_POINTS[agentId]) {
+                return AGENT_HOME_POINTS[agentId];
+            }
             const map = {
                 breakroom: [
                     { x: 511, y: 262 },
@@ -3614,7 +3962,7 @@ function toggleBrokerPanel() {
                 const idx = area === 'breakroom' ? idxBreak++ : area === 'error' ? idxError++ : idxWrite++;
                 const p = isDemo
                     ? randomPointInRect(getAreaRect(area))
-                    : getAreaPoint(area, idx);
+                    : getAreaPoint(area, idx, id);
 
                 if (!guestSprites[id]) {
                     // 优先用图标：demo visitor 有专门映射
@@ -3681,6 +4029,17 @@ function toggleBrokerPanel() {
                     }).setOrigin(0.5);
                     nameText.setDepth(2601);
 
+                    sprite.setInteractive({ useHandCursor: true });
+                    sprite.on('pointerdown', () => {
+                        game.tweens.add({
+                            targets: sprite,
+                            scaleY: 4.5,
+                            scaleX: 3.5,
+                            yoyo: true,
+                            duration: 150
+                        });
+                        showAgentDialogue(agent);
+                    });
                     guestSprites[id] = { sprite, nameText };
                 } else {
                     const g = guestSprites[id];
@@ -3715,10 +4074,34 @@ function toggleBrokerPanel() {
                         });
                         guestTweens[id] = { move: moveTween, name: nameTween };
                     } else {
-                        g.sprite.x = p.x;
-                        g.sprite.y = p.y + yOffset;
-                        g.nameText.x = p.x;
-                        g.nameText.y = (p.y + yOffset) - 120;
+                        const targetX = p.x;
+                        const targetY = p.y + yOffset;
+                        const dx = targetX - g.sprite.x;
+                        const dy = targetY - g.sprite.y;
+                        const dist = Math.sqrt(dx * dx + dy * dy);
+
+                        if (dist > 8) {
+                            g.sprite.flipX = dx < 0;
+                            if (guestTweens[id] && guestTweens[id].move) guestTweens[id].move.stop();
+                            if (guestTweens[id] && guestTweens[id].name) guestTweens[id].name.stop();
+
+                            const duration = Math.min(3800, Math.max(1200, dist * 5));
+                            const moveTween = game.tweens.add({
+                                targets: g.sprite,
+                                x: targetX,
+                                y: targetY,
+                                duration: duration,
+                                ease: 'Linear'
+                            });
+                            const nameTween = game.tweens.add({
+                                targets: g.nameText,
+                                x: targetX,
+                                y: (targetY - 120),
+                                duration: duration,
+                                ease: 'Linear'
+                            });
+                            guestTweens[id] = { move: moveTween, name: nameTween };
+                        }
                     }
 
                     g.nameText.setText(agent.name || '访客');
@@ -4172,6 +4555,90 @@ function toggleBrokerPanel() {
             game.add.text(plaqueX - 190, plaqueY, '⭐', { fontFamily: 'ArkPixel, monospace', fontSize: '20px' }).setOrigin(0.5);
             game.add.text(plaqueX + 190, plaqueY, '⭐', { fontFamily: 'ArkPixel, monospace', fontSize: '20px' }).setOrigin(0.5);
             window.officePlaqueText = plaqueText;
+
+            // Make Star interactive (click to talk)
+            star.setInteractive({ useHandCursor: true });
+            star.on('pointerdown', () => {
+                game.tweens.add({
+                    targets: star,
+                    scaleY: IDLE_STAR_SCALE * 1.25,
+                    scaleX: IDLE_STAR_SCALE * 0.85,
+                    yoyo: true,
+                    duration: 150
+                });
+                showAgentDialogue({ agentId: 'star', name: 'Hermes' });
+            });
+
+            // Make sofa interactive (click to invite Star to relax)
+            sofa.setInteractive({ useHandCursor: true });
+            sofa.on('pointerdown', () => {
+                showBubbleAbove(IDLE_SOFA_ANCHOR.x, IDLE_SOFA_ANCHOR.y - 100, "🛋️ Sofa Santai Hermes", 2500);
+                walkStarTo(IDLE_SOFA_ANCHOR.x, IDLE_SOFA_ANCHOR.y, () => {
+                    star.setScale(IDLE_STAR_SCALE);
+                    star.anims.play('star_idle', true);
+                });
+            });
+
+            // Make desk interactive (click to invite Star to work)
+            desk.setInteractive({ useHandCursor: true });
+            desk.on('pointerdown', () => {
+                showBubbleAbove(218, 300, "💻 Meja Kerja & Workstation", 2500);
+                walkStarTo(217, 343, () => {
+                    star.setVisible(false);
+                    if (window.starWorking) {
+                        window.starWorking.setVisible(true);
+                        window.starWorking.anims.play('star_working', true);
+                    }
+                });
+            });
+
+            // Make coffee machine interactive (brews coffee and Star walks over)
+            coffeeMachine.setInteractive({ useHandCursor: true });
+            coffeeMachine.on('pointerdown', () => {
+                game.tweens.add({
+                    targets: coffeeMachine,
+                    scaleY: 1.15,
+                    scaleX: 0.9,
+                    yoyo: true,
+                    duration: 160
+                });
+                showBubbleAbove(659, 290, "☕ Bzzzt... Kopi segar diseduh!", 3500);
+                walkStarTo(600, 420, () => {
+                    showBubbleAbove(star.x, star.y - 80, "☕ Ahh... mantap! Kopi siap temani coding.", 3000);
+                });
+            });
+
+            // Make serverroom interactive (click to check server HUD)
+            serverroom.setInteractive({ useHandCursor: true });
+            serverroom.on('pointerdown', () => {
+                game.tweens.add({
+                    targets: serverroom,
+                    scaleY: 1.08,
+                    scaleX: 0.95,
+                    yoyo: true,
+                    duration: 150
+                });
+                showBubbleAbove(1021, 80, "⚡ Hermes Server: 99.9% Uptime | CPU: 12% | All OK", 3800);
+            });
+
+            // Floor click: point-and-click walking!
+            game.input.on('pointerdown', (pointer, currentlyOver) => {
+                if (currentlyOver && currentlyOver.length > 0) return;
+                const clickX = pointer.worldX;
+                const clickY = pointer.worldY;
+                if (clickX < 80 || clickX > 1200 || clickY < 120 || clickY > 660) return;
+                createClickMarker(clickX, clickY);
+                walkStarTo(clickX, clickY);
+            });
+
+            // Mouse wheel zoom support
+            game.input.on('wheel', (pointer, gameObjects, deltaX, deltaY) => {
+                const cam = game.cameras.main;
+                const zoomFactor = deltaY > 0 ? 0.96 : 1.04;
+                const newZoom = Phaser.Math.Clamp(cam.zoom * zoomFactor, 0.75, 1.6);
+                cam.setZoom(newZoom);
+                clampCameraScroll();
+            });
 
             // Make plaque clickable to rename office
             plaqueBg.setInteractive({ useHandCursor: true });
@@ -4755,14 +5222,17 @@ function toggleBrokerPanel() {
                         const nextState = normalizeState(data.state);
                         const stateInfo = STATES[nextState] || STATES.idle;
                         // If we're mid-transition, don't restart the path every poll
-                        const changed = (pendingDesiredState === null) && (nextState !== currentState);
+                        const changed = (nextState !== currentState);
                         const nextLine = '[' + stateInfo.name + '] ' + (data.detail || '...');
-                        // 不论 changed 与否，都按服务端最新状态强制一次视觉同步，避免动画卡旧状态
                         pendingDesiredState = null;
-                        if (currentState !== nextState) {
+                        if (changed) {
+                            const oldState = currentState;
                             currentState = nextState;
+                            handleStarStateTransition(nextState);
+                        } else if (!isInitialStatusLoaded) {
+                            isInitialStatusLoaded = true;
+                            applyVisualState(nextState);
                         }
-                        applyVisualState(nextState);
 
                         if (changed) {
                             typewriterTarget = nextLine;

@@ -1279,22 +1279,22 @@
                     </div>
                     <div id="asset-move-result" class="asset-sub" style="margin-top:4px; margin-bottom:6px;"></div>
                     <div id="asset-broker-panel">
-                        <div class="asset-sub" style="margin-bottom:6px;">写你的风格主题（严格保持原始房间结构，只改变视觉风格）</div>
-                        <textarea id="asset-broker-prompt" placeholder="例如：像素风赛博东京夜景，霓虹灯、雨夜地面反光、蓝紫主色"></textarea>
+                        <div id="asset-broker-sub" class="asset-sub" style="margin-bottom:6px;">Describe your style theme (keeps office layout, transforms visual aesthetics)</div>
+                        <textarea id="asset-broker-prompt" placeholder="e.g. Pixel cyberpunk Tokyo night, neon glow, rainy reflections, cyan & purple"></textarea>
                         <div class="asset-toolbar" style="margin-top:6px; gap:8px; align-items:center; justify-content:flex-start;">
-                            <span id="speed-mode-label" class="asset-sub" style="min-width:62px;">生成模式</span>
+                            <span id="speed-mode-label" class="asset-sub" style="min-width:62px;">Model Mode</span>
                             <button id="speed-fast-btn" type="button" onclick="setSpeedMode('fast')" style="background:#22c55e;color:#052e16;border-color:#16a34a;">🍌2</button>
                             <button id="speed-quality-btn" type="button" onclick="setSpeedMode('quality')" style="background:#334155;color:#e5e7eb;border-color:#475569;">🍌Pro</button>
                         </div>
                         <details id="asset-gemini-panel" style="margin-top:6px; border:0; border-top:1px solid rgba(148,163,184,.18); border-radius:0; padding:8px 0 0; background:transparent;">
-                            <summary id="gemini-panel-summary" style="cursor:pointer; color:#cbd5e1;">🔐 API 设置（可折叠）</summary>
+                            <summary id="gemini-panel-summary" style="cursor:pointer; color:#cbd5e1;">🔐 API Settings (Expand)</summary>
                             <div id="asset-gemini-config" style="display:block; margin-top:6px;">
-                                <div id="gemini-config-hint" class="asset-sub" style="margin-bottom:4px;">可选：填写你的生图 API Key（留空不影响基础功能）</div>
-                                <div class="asset-sub" style="margin-bottom:6px;"><a id="gemini-api-doc-link" href="https://ai.google.dev/gemini-api/docs/api-key?hl=zh-cn" target="_blank" rel="noopener noreferrer">📘 如何申请 Google API Key</a></div>
+                                <div id="gemini-config-hint" class="asset-sub" style="margin-bottom:4px;">Optional: Provide your Gemini Image Generation API Key</div>
+                                <div class="asset-sub" style="margin-bottom:6px;"><a id="gemini-api-doc-link" href="https://ai.google.dev/gemini-api/docs/api-key" target="_blank" rel="noopener noreferrer">📘 How to get a Google AI Studio API Key</a></div>
                                 <div id="gemini-mask-status" class="asset-sub" style="margin-bottom:6px; color:#a7f3d0;"></div>
                                 <div class="asset-toolbar" style="gap:6px; flex-wrap:wrap;">
-                                    <input id="gemini-api-key-input" type="password" placeholder="粘贴 GEMINI_API_KEY（不会回显）" style="min-width:220px; flex:1;" autocomplete="new-password" />
-                                    <button id="btn-save-gemini-key" onclick="saveGeminiConfigFromUI()">保存 Key</button>
+                                    <input id="gemini-api-key-input" type="password" placeholder="Paste GEMINI_API_KEY (hidden)" style="min-width:220px; flex:1;" autocomplete="new-password" />
+                                    <button id="btn-save-gemini-key" onclick="saveGeminiConfigFromUI()">Save Key</button>
                                 </div>
                                 <div id="gemini-config-msg" class="asset-sub" style="margin-top:4px;"></div>
                             </div>
@@ -1651,7 +1651,21 @@
 
         // Autonomous office roaming
         let lastRoamTime = 0;
-        const ROAM_INTERVAL = 16000;
+        const ROAM_INTERVAL = 14000;
+
+        function isAgentCurrentlyBusy(agentId) {
+            const entry = guestTweens[agentId];
+            if (!entry) return false;
+            if (entry.isRoaming) return true;
+            if (entry.move) {
+                if (typeof entry.move.isPlaying === 'function') {
+                    if (entry.move.isPlaying()) return true;
+                } else if (entry.move.isPlaying) {
+                    return true;
+                }
+            }
+            return false;
+        }
 
         function checkAutonomousRoaming(time) {
             if (time - lastRoamTime < ROAM_INTERVAL) return;
@@ -1660,7 +1674,7 @@
             const visitors = getMergedVisitors();
             if (!visitors || visitors.length === 0) return;
 
-            const eligible = visitors.filter(v => guestSprites[v.agentId] && !guestTweens[v.agentId]?.move?.isPlaying);
+            const eligible = visitors.filter(v => guestSprites[v.agentId] && !isAgentCurrentlyBusy(v.agentId));
             if (eligible.length === 0) return;
 
             const luckyAgent = eligible[Math.floor(Math.random() * eligible.length)];
@@ -1668,11 +1682,11 @@
             if (!g || !g.sprite) return;
 
             const destinations = [
-                { x: 640, y: 440, msg: "☕ Mengambil kopi hangat..." },
-                { x: 970, y: 520, msg: "🌿 Menyiram tanaman hias..." },
-                { x: 1020, y: 310, msg: "💻 Mengecek status server..." },
-                { x: 420, y: 560, msg: "📋 Mendiskusikan task..." },
-                { x: 140, y: 570, msg: "🐱 Mengelus kucing kantor..." }
+                { x: 640, y: 440, msg: (uiLang === 'zh') ? "☕ 正在接一杯热咖啡..." : "☕ Getting a warm cup of coffee..." },
+                { x: 970, y: 520, msg: (uiLang === 'zh') ? "🌿 正在给绿植浇水..." : "🌿 Watering the office plants..." },
+                { x: 1020, y: 310, msg: (uiLang === 'zh') ? "💻 正在检查服务器机柜状态..." : "💻 Checking server rack metrics..." },
+                { x: 420, y: 560, msg: (uiLang === 'zh') ? "📋 正在与团队讨论架构..." : "📋 Discussing architecture tasks..." },
+                { x: 140, y: 570, msg: (uiLang === 'zh') ? "🐱 正在摸摸办公室小猫..." : "🐱 Petting the office cat..." }
             ];
 
             const dest = destinations[Math.floor(Math.random() * destinations.length)];
@@ -1681,11 +1695,15 @@
             const dx = dest.x - g.sprite.x;
             g.sprite.flipX = dx < 0;
 
-            const dist = Phaser.Math.Distance.Between(g.sprite.x, g.sprite.y, dest.x, dest.y);
+            const dist = Math.hypot(dest.x - g.sprite.x, dest.y - g.sprite.y);
             const duration = Math.min(3800, Math.max(1400, dist * 5));
 
-            if (guestTweens[luckyAgent.agentId]?.move) guestTweens[luckyAgent.agentId].move.stop();
-            if (guestTweens[luckyAgent.agentId]?.name) guestTweens[luckyAgent.agentId].name.stop();
+            if (guestTweens[luckyAgent.agentId]?.move) {
+                try { guestTweens[luckyAgent.agentId].move.stop(); } catch (e) {}
+            }
+            if (guestTweens[luckyAgent.agentId]?.name) {
+                try { guestTweens[luckyAgent.agentId].name.stop(); } catch (e) {}
+            }
 
             const moveTween = game.tweens.add({
                 targets: g.sprite,
@@ -1697,26 +1715,33 @@
                     showBubbleAbove(g.sprite.x, g.sprite.y - 120, dest.msg, 3000);
 
                     setTimeout(() => {
-                        if (!g.sprite || !g.sprite.scene) return;
+                        if (!g.sprite || !g.sprite.scene) {
+                            delete guestTweens[luckyAgent.agentId];
+                            return;
+                        }
                         const backDx = origPos.x - g.sprite.x;
                         g.sprite.flipX = backDx < 0;
-                        const backDist = Phaser.Math.Distance.Between(g.sprite.x, g.sprite.y, origPos.x, origPos.y);
+                        const backDist = Math.hypot(origPos.x - g.sprite.x, origPos.y - g.sprite.y);
                         const backDur = Math.min(3800, Math.max(1400, backDist * 5));
 
-                        game.tweens.add({
+                        const backMove = game.tweens.add({
                             targets: g.sprite,
                             x: origPos.x,
                             y: origPos.y,
                             duration: backDur,
-                            ease: 'Linear'
+                            ease: 'Linear',
+                            onComplete: () => {
+                                delete guestTweens[luckyAgent.agentId];
+                            }
                         });
-                        game.tweens.add({
+                        const backName = game.tweens.add({
                             targets: g.nameText,
                             x: origPos.x,
                             y: origPos.y - 120,
                             duration: backDur,
                             ease: 'Linear'
                         });
+                        guestTweens[luckyAgent.agentId] = { move: backMove, name: backName, isRoaming: true };
                     }, 4500);
                 }
             });
@@ -1729,7 +1754,7 @@
                 ease: 'Linear'
             });
 
-            guestTweens[luckyAgent.agentId] = { move: moveTween, name: nameTween };
+            guestTweens[luckyAgent.agentId] = { move: moveTween, name: nameTween, isRoaming: true };
         }
 
         let isRoomMaximized = false;
@@ -1965,11 +1990,13 @@ function ensureMemoBgVisible() {
                     memoDate.textContent = data.date || '';
                     memoContent.innerHTML = data.memo.replace(/\n/g, '<br>');
                 } else {
-                    memoContent.innerHTML = '<div id="memo-placeholder">暂无昨日日记</div>';
+                    const noMemoMsg = (uiLang === 'zh') ? '暂无昨日日记' : (uiLang === 'ja') ? '昨日の日記はありません' : 'No yesterday memo recorded';
+                    memoContent.innerHTML = `<div id="memo-placeholder">${noMemoMsg}</div>`;
                 }
             } catch (e) {
-                console.error('加载 memo 失败:', e);
-                memoContent.innerHTML = '<div id="memo-placeholder">加载失败</div>';
+                console.error('Failed to load memo:', e);
+                const failMemoMsg = (uiLang === 'zh') ? '加载失败' : (uiLang === 'ja') ? '読み込み失敗' : 'Failed to load memo';
+                memoContent.innerHTML = `<div id="memo-placeholder">${failMemoMsg}</div>`;
             }
         }
 
@@ -3861,10 +3888,6 @@ function toggleBrokerPanel() {
             if (!list) return;
 
             const visitors = getMergedVisitors();
-            if (visitors.length === 0) {
-                list.innerHTML = '<div style="color:#9ca3af;font-size:12px;text-align:center;padding:20px 0;">暂无访客</div>';
-                return;
-            }
 
             const I18N_AGENTS = {
                 en: {
@@ -4071,7 +4094,7 @@ function toggleBrokerPanel() {
                     const yOffset = (DEMO_MODE && (agent.agentId === 'demo_mercury' || agent.name === '水星')) ? 10 : 0;
 
                     const nameTextY = isDemo ? ((p.y + yOffset) - 80) : ((p.y + yOffset) - 120);
-                    const nameText = game.add.text(p.x, nameTextY, agent.name || '访客', {
+                    const nameText = game.add.text(p.x, nameTextY, agent.name || (uiLang === 'zh' ? '访客' : 'Visitor'), {
                         fontFamily: 'ArkPixel, monospace',
                         fontSize: isDemo ? '16px' : '15px',
                         fill: '#ffffff',
@@ -4155,7 +4178,7 @@ function toggleBrokerPanel() {
                         }
                     }
 
-                    g.nameText.setText(agent.name || '访客');
+                    g.nameText.setText(agent.name || (uiLang === 'zh' ? '访客' : 'Visitor'));
                 }
             });
 
@@ -4192,15 +4215,34 @@ function toggleBrokerPanel() {
                 : null;
 
             const statusThoughtsMap = {
-                idle: ['我在休息区待命', '先放松一下，等下一步任务', '我在休息充电中'],
-                writing: ['我在工作区处理任务', '正在整理文档与执行中', '工作区专注推进中'],
-                researching: ['我在调研模式，搜集信息', '正在查资料和验证线索', '研究中，稍后同步结论'],
-                executing: ['执行中，正在跑流程', '我在工作区推进任务', '正在把计划落地执行'],
-                syncing: ['同步中，马上更新状态', '正在同步进度到系统', '数据同步中请稍候'],
-                error: ['我在 bug 区排查问题', '检测到异常，正在修复', '报警中，先定位再处理']
+                en: {
+                    idle: ['Taking a quick breather in the lounge', 'Standing by, ready for instructions, Raja', 'Recharging energy for the next task'],
+                    writing: ['Focused on coding & system operations', 'Drafting documentation and workflows', 'Pushing commits and optimizing pipeline'],
+                    researching: ['Analyzing codebase architecture', 'Gathering telemetry and verifying data', 'Researching technical implementation'],
+                    executing: ['Executing automated deployment pipelines', 'Orchestrating agents and workflows', 'Running task loop with zero downtime'],
+                    syncing: ['Syncing workspace status with cloud', 'Updating audit log to cloud', 'Data sync in progress'],
+                    error: ['Debugging exception in error zone', 'Root-cause analysis underway', 'Isolating issue and patching']
+                },
+                zh: {
+                    idle: ['我在休息区待命', '先放松一下，等下一步任务', '我在休息充电中'],
+                    writing: ['我在工作区处理任务', '正在整理文档与执行中', '工作区专注推进中'],
+                    researching: ['我在调研模式，搜集信息', '正在查资料和验证线索', '研究中，稍后同步结论'],
+                    executing: ['执行中，正在跑流程', '我在工作区推进任务', '正在把计划落地执行'],
+                    syncing: ['同步中，马上更新状态', '正在同步进度到系统', '数据同步中请稍候'],
+                    error: ['我在 bug 区排查问题', '检测到异常，正在修复', '报警中，先定位再处理']
+                },
+                ja: {
+                    idle: ['休憩エリアでひと休み。', 'スタンバイ中、いつでも指示をどうぞ。', '次のタスクに向けてエネルギー充電中。'],
+                    writing: ['デスクで作業に集中しています。', 'ドキュメント整理とワークフロー更新中。', 'コミットとパイプライン最適化中。'],
+                    researching: ['コードベースとアーキテクチャを調査中。', '技術データを収集中。', '調査結果をまとめています。'],
+                    executing: ['パイプラインを順調に実行中。', 'タスクを自動化してデプロイ中。', 'プロセスを確実に進行中。'],
+                    syncing: ['クラウドへステータスを同期中。', '監査ログを更新中。', 'データ同期が進行しています。'],
+                    error: ['エラー領域で原因を追跡中。', '例外ログを解析して修正中。', '迅速にトラブルシューティング中。']
+                }
             };
+            const langMap = statusThoughtsMap[uiLang] || statusThoughtsMap.en;
             const agentState = (guestAgents.find(a => a.agentId === id) || {}).state || 'idle';
-            const thoughts = statusThoughtsMap[agentState] || statusThoughtsMap.idle;
+            const thoughts = langMap[agentState] || langMap.idle;
             const text = (demoVisitor && demoVisitor.bubbleText) ? demoVisitor.bubbleText : thoughts[Math.floor(Math.random() * thoughts.length)];
 
             if (guestBubbles[id]) {
@@ -5150,6 +5192,9 @@ function toggleBrokerPanel() {
             // 移动 + 小踱步
             moveStar(time);
 
+            // Autonomous roaming for agents in office
+            checkAutonomousRoaming(time);
+
             // guest 随机想法泡泡
             maybeShowGuestBubble(time);
 
@@ -5311,16 +5356,16 @@ function toggleBrokerPanel() {
         }
 
         function moveStar(time) {
-            // Use pending state if available (for target area during transition)
+            // Star movement is managed by the smooth tween engine (walkStarTo)
+            // Skip legacy frame-by-frame position modifications to prevent jitter and snap-back
+            if (isStarWalking) return;
+            return;
+
             const effectiveState = pendingDesiredState || currentState;
             const stateInfo = STATES[effectiveState] || STATES.idle;
             const baseTarget = areas[stateInfo.area] || areas.breakroom;
 
-            // idle 时锁定位置（不走任何移动路径）
             if (effectiveState === 'idle') {
-                if (star && star.visible) {
-                    star.setPosition(IDLE_SOFA_ANCHOR.x, IDLE_SOFA_ANCHOR.y);
-                }
                 isMoving = false;
                 return;
             }

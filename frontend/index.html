@@ -4672,67 +4672,6 @@ function toggleBrokerPanel() {
                 });
             });
 
-            // Make desk interactive (click to invite Star to work)
-            desk.setInteractive({ useHandCursor: true });
-            desk.on('pointerdown', () => {
-                showBubbleAbove(218, 300, "💻 Meja Kerja & Workstation", 2500);
-                walkStarTo(217, 343, () => {
-                    star.setVisible(false);
-                    if (window.starWorking) {
-                        window.starWorking.setVisible(true);
-                        window.starWorking.anims.play('star_working', true);
-                    }
-                });
-            });
-
-            // Make coffee machine interactive (brews coffee and Star walks over)
-            coffeeMachine.setInteractive({ useHandCursor: true });
-            coffeeMachine.on('pointerdown', () => {
-                game.tweens.add({
-                    targets: coffeeMachine,
-                    scaleY: 1.15,
-                    scaleX: 0.9,
-                    yoyo: true,
-                    duration: 160
-                });
-                showBubbleAbove(659, 290, "☕ Bzzzt... Kopi segar diseduh!", 3500);
-                walkStarTo(600, 420, () => {
-                    showBubbleAbove(star.x, star.y - 80, "☕ Ahh... mantap! Kopi siap temani coding.", 3000);
-                });
-            });
-
-            // Make serverroom interactive (click to check server HUD)
-            serverroom.setInteractive({ useHandCursor: true });
-            serverroom.on('pointerdown', () => {
-                game.tweens.add({
-                    targets: serverroom,
-                    scaleY: 1.08,
-                    scaleX: 0.95,
-                    yoyo: true,
-                    duration: 150
-                });
-                showBubbleAbove(1021, 80, "⚡ Hermes Server: 99.9% Uptime | CPU: 12% | All OK", 3800);
-            });
-
-            // Floor click: point-and-click walking!
-            game.input.on('pointerdown', (pointer, currentlyOver) => {
-                if (currentlyOver && currentlyOver.length > 0) return;
-                const clickX = pointer.worldX;
-                const clickY = pointer.worldY;
-                if (clickX < 80 || clickX > 1200 || clickY < 120 || clickY > 660) return;
-                createClickMarker(clickX, clickY);
-                walkStarTo(clickX, clickY);
-            });
-
-            // Mouse wheel zoom support
-            game.input.on('wheel', (pointer, gameObjects, deltaX, deltaY) => {
-                const cam = game.cameras.main;
-                const zoomFactor = deltaY > 0 ? 0.96 : 1.04;
-                const newZoom = Phaser.Math.Clamp(cam.zoom * zoomFactor, 0.75, 1.6);
-                cam.setZoom(newZoom);
-                clampCameraScroll();
-            });
-
             // Make plaque clickable to rename office
             plaqueBg.setInteractive({ useHandCursor: true });
             plaqueText.setInteractive({ useHandCursor: true });
@@ -4827,6 +4766,22 @@ function toggleBrokerPanel() {
             coffeeMachine.setDepth(99);
             coffeeMachine.anims.play('coffee_machine', true);
 
+            // Make coffee machine interactive (brews coffee and Star walks over)
+            coffeeMachine.setInteractive({ useHandCursor: true });
+            coffeeMachine.on('pointerdown', () => {
+                game.tweens.add({
+                    targets: coffeeMachine,
+                    scaleY: 1.15,
+                    scaleX: 0.9,
+                    yoyo: true,
+                    duration: 160
+                });
+                showBubbleAbove(659, 290, (uiLang === 'zh') ? "☕ 正在煮一杯热咖啡..." : "☕ Brewing fresh hot coffee...", 3500);
+                walkStarTo(600, 420, () => {
+                    showBubbleAbove(star.x, star.y - 80, (uiLang === 'zh') ? "☕ 咖啡好了，继续专注！" : "☕ Ahh... delicious! Coffee ready to fuel coding.", 3000);
+                });
+            });
+
             // Server room animation
             const serverFrameMax = Math.max(0, (this.textures.get('serverroom')?.frameTotal || 1) - 2);
             this.anims.create({
@@ -4841,9 +4796,35 @@ function toggleBrokerPanel() {
             serverroom.anims.stop();
             serverroom.setFrame(0);
 
+            // Make serverroom interactive (click to check server HUD)
+            serverroom.setInteractive({ useHandCursor: true });
+            serverroom.on('pointerdown', () => {
+                game.tweens.add({
+                    targets: serverroom,
+                    scaleY: 1.08,
+                    scaleX: 0.95,
+                    yoyo: true,
+                    duration: 150
+                });
+                showBubbleAbove(1021, 80, "⚡ Hermes Server: 99.9% Uptime | CPU: 12% | All OK", 3800);
+            });
+
             // Desk at (218,417) (v2)
             const desk = this.add.image(218, 417, 'desk_v2').setOrigin(0.5);
             desk.setDepth(1001);  // desk above starWorking
+
+            // Make desk interactive (click to invite Star to work)
+            desk.setInteractive({ useHandCursor: true });
+            desk.on('pointerdown', () => {
+                showBubbleAbove(218, 300, (uiLang === 'zh') ? "💻 工作站 & 办公桌" : "💻 Workstation & Desk", 2500);
+                walkStarTo(217, 343, () => {
+                    star.setVisible(false);
+                    if (window.starWorking) {
+                        window.starWorking.setVisible(true);
+                        window.starWorking.anims.play('star_working', true);
+                    }
+                });
+            });
 
             // Random flower pot at (310,390), default scale 0.8 (top layer)
             const flowerFrameCount = Math.max(1, FLOWERS_FRAME_COLS * FLOWERS_FRAME_ROWS); // 动态帧数
@@ -5110,6 +5091,26 @@ function toggleBrokerPanel() {
                 // Position overlay next to mouse
                 coordsOverlay.style.left = (pointer.x + 18) + 'px';
                 coordsOverlay.style.top = (pointer.y + 18) + 'px';
+            });
+
+            // Floor click: point-and-click walking!
+            game.input.on('pointerdown', (pointer, currentlyOver) => {
+                if (panEnabled) return;
+                if (currentlyOver && currentlyOver.length > 0) return;
+                const clickX = pointer.worldX;
+                const clickY = pointer.worldY;
+                if (clickX < 80 || clickX > 1200 || clickY < 120 || clickY > 660) return;
+                createClickMarker(clickX, clickY);
+                walkStarTo(clickX, clickY);
+            });
+
+            // Mouse wheel zoom support
+            game.input.on('wheel', (pointer, gameObjects, deltaX, deltaY) => {
+                const cam = game.cameras.main;
+                const zoomFactor = deltaY > 0 ? 0.96 : 1.04;
+                const newZoom = Phaser.Math.Clamp(cam.zoom * zoomFactor, 0.75, 1.6);
+                cam.setZoom(newZoom);
+                clampCameraScroll();
             });
 
             // 加载昨日 memo

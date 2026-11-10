@@ -117,16 +117,18 @@
 
         .pixel-dept-bar {
             display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
+            flex-wrap: nowrap;
+            overflow-x: auto;
+            scrollbar-width: thin;
+            gap: 6px;
             margin-bottom: 8px;
-            padding: 8px 12px;
+            padding: 8px 130px 8px 12px;
             background: rgba(18, 22, 34, 0.95);
             border: 2px solid #2a344d;
             border-radius: 8px;
             box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
             align-items: center;
-            justify-content: center;
+            justify-content: flex-start;
             width: 100%;
             box-sizing: border-box;
         }
@@ -4766,7 +4768,7 @@
 
 
 
-    
+
         /* ==========================================================================
            CHARISNA EXECUTIVE 3-PANEL BOTTOM DASHBOARD OVERHAUL
            ========================================================================== */
@@ -5214,7 +5216,7 @@
 
         @media (max-width: 1100px) {
             #bottom-panels {
-                grid-template-columns: 1fr !important;
+                grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
                 height: auto !important;
             }
             #memo-panel, #control-bar, #guest-agent-panel {
@@ -5222,6 +5224,25 @@
             }
         }
 
+        @media (min-width: 701px) and (max-width: 1100px) {
+            #guest-agent-panel { grid-column: 1 / -1; width: 100% !important; max-width: none !important; }
+            .agent-roster-list { display: grid !important; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; align-content: start; }
+        }
+        #office-caption {
+            position: absolute; left: 50%; bottom: 14px; transform: translateX(-50%);
+            z-index: 30; max-width: min(720px, calc(100% - 32px));
+            padding: 10px 16px; border: 1px solid #8ac8d5; border-radius: 8px;
+            background: rgba(9, 20, 34, .96); color: #fff;
+            font: 600 15px/1.45 Arial, sans-serif; text-align: center;
+            box-shadow: 0 8px 24px rgba(0,0,0,.5); pointer-events: none;
+        }
+        #office-caption[hidden] { display: none; }
+        #pan-toggle { display: none !important; }
+        .mode-chips button:disabled { opacity: 1 !important; cursor: default !important; }
+        @media (max-width: 700px) {
+            #bottom-panels { grid-template-columns: minmax(0, 1fr) !important; }
+            #memo-panel, #control-bar, #guest-agent-panel { min-width: 0 !important; height: auto !important; min-height: 320px; }
+        }
     </style>
 
 
@@ -5262,7 +5283,7 @@
 
 
 
-    
+
 
 
 
@@ -5280,10 +5301,11 @@
 
 
             <div id="game-skeleton"><div class="hint">Entering pixel office…</div></div>
+            <div id="office-caption" role="status" aria-live="polite" hidden></div>
 
 
 
-            
+
 
 
 
@@ -5291,7 +5313,7 @@
 
 
 
-    
+
 
 
 
@@ -5322,21 +5344,21 @@
                         <span class="p-dot p-dot-green"></span>
                         <span class="p-name">Bumi Makmur POS</span>
                     </div>
-                    <div class="p-desc">Kasir & Stok Terverifikasi</div>
+                    <div class="p-desc">Menunggu data kasir & stok</div>
                 </div>
                 <div class="pillar-card">
                     <div class="pillar-top">
                         <span class="p-dot p-dot-green"></span>
                         <span class="p-name">Charisna Homestay</span>
                     </div>
-                    <div class="p-desc">Unit & Reservasi Siap Huni</div>
+                    <div class="p-desc">Menunggu data unit & reservasi</div>
                 </div>
                 <div class="pillar-card">
                     <div class="pillar-top">
                         <span class="p-dot p-dot-green"></span>
                         <span class="p-name">MoniFlow MM</span>
                     </div>
-                    <div class="p-desc">Audit Ledger Sinkron (Nol Selisih)</div>
+                    <div class="p-desc">Menunggu data pembukuan</div>
                 </div>
                 <div class="pillar-card">
                     <div class="pillar-top">
@@ -5382,18 +5404,18 @@
 
             <!-- Operating Mode Pills -->
             <div class="mode-section">
-                <div class="sub-lbl">Mode Operasional:</div>
+                <div class="sub-lbl">Status Hermes (otomatis):</div>
                 <div class="mode-chips">
-                    <button id="btn-state-idle" class="chip-btn active" onclick="setExecutiveState('idle','Standby')">
+                    <button id="btn-state-idle" class="chip-btn active" disabled title="Status otomatis dari aktivitas Hermes">
                         <span class="c-dot dot-idle"></span> Standby
                     </button>
-                    <button id="btn-state-writing" class="chip-btn" onclick="setExecutiveState('writing','Working')">
+                    <button id="btn-state-writing" class="chip-btn" disabled title="Status otomatis dari aktivitas Hermes">
                         <span class="c-dot dot-work"></span> Working
                     </button>
-                    <button id="btn-state-syncing" class="chip-btn" onclick="setExecutiveState('syncing','Syncing')">
+                    <button id="btn-state-syncing" class="chip-btn" disabled title="Status otomatis dari aktivitas Hermes">
                         <span class="c-dot dot-sync"></span> Syncing
                     </button>
-                    <button id="btn-state-error" class="chip-btn" onclick="setExecutiveState('error','Alert')">
+                    <button id="btn-state-error" class="chip-btn" disabled title="Status otomatis dari aktivitas Hermes">
                         <span class="c-dot dot-alert"></span> Alert
                     </button>
                 </div>
@@ -5430,7 +5452,7 @@
                     <span class="card-icon">👥</span>
                     <div>
                         <div class="card-title">Direktori Tim & Agen</div>
-                        <div class="card-subtitle">7 Personel Aktif Kampus Kantor</div>
+                        <div class="card-subtitle">7 agen terdaftar di kantor</div>
                     </div>
                 </div>
                 <div class="badge-indigo" id="agent-count-badge">7 Online</div>
@@ -5868,7 +5890,7 @@
 
 
 
-    <button id="pan-toggle" style="position:fixed; top:calc(env(safe-area-inset-top, 0px) + 12px); left:12px; z-index:999999; padding:8px 10px; font-family:ArkPixel,monospace; font-size:13px; cursor:pointer; border:2px solid #333; border-radius:5px; background:#333; color:#fff;">
+    <button id="pan-toggle" style="position:fixed; bottom:calc(env(safe-area-inset-bottom, 0px) + 12px); right:12px; z-index:999999; padding:8px 10px; font-family:ArkPixel,monospace; font-size:13px; cursor:pointer; border:2px solid #333; border-radius:5px; background:#333; color:#fff;">
 
 
 
@@ -5880,7 +5902,7 @@
 
 
 
-    <div id="lang-toggle-group" style="position:fixed; top:calc(env(safe-area-inset-top, 0px) + 52px); left:12px; z-index:1000002; display:flex; gap:2px; align-items:center;">
+    <div id="lang-toggle-group" style="position:fixed; bottom:calc(env(safe-area-inset-bottom, 0px) + 60px); right:12px; z-index:1000002; display:flex; gap:2px; align-items:center;">
 
 
 
@@ -5905,6 +5927,7 @@
 
 
     <script src="/static/vendor/phaser-3.80.1.min.js?v={{VERSION_TIMESTAMP}}"></script>
+    <script src="/static/office_navigation.js?v={{VERSION_TIMESTAMP}}"></script>
 
 
 
@@ -6468,125 +6491,37 @@
 
 
 
-        function showBubbleAbove(x, y, text, duration = 3500) {
-
-
-
+        let captionTimer = null;
+        function showBubbleAbove(x, y, message, duration = 4500) {
             if (!game) return;
-
-
-
-            const bubbleKey = `bubble_${Math.round(x)}_${Math.round(y)}`;
-
-
-
-            if (activeDialogues[bubbleKey]) {
-
-
-
-                activeDialogues[bubbleKey].destroy();
-
-
-
-                delete activeDialogues[bubbleKey];
-
-
-
-            }
-
-
-
-            const isTouch = IS_TOUCH_DEVICE;
-
-
-
-            const fontSize = isTouch ? 13 : 12;
-
-
-
-            const textWidth = Math.min(320, Math.max(100, text.length * 8.5 + 24));
-
-
-
-            const bg = game.add.rectangle(x, y, textWidth, 32, 0x111827, 0.94);
-
-
-
-            bg.setStrokeStyle(2, 0x60a5fa);
-
-
-
-            const txt = game.add.text(x, y, text, {
-
-
-
-                fontFamily: 'ArkPixel, monospace',
-
-
-
-                fontSize: fontSize + 'px',
-
-
-
-                fill: '#f3f4f6',
-
-
-
-                align: 'center',
-
-
-
-                wordWrap: { width: textWidth - 16 }
-
-
-
-            }).setOrigin(0.5);
-
-
-
-            const container = game.add.container(0, 0, [bg, txt]);
-
-
-
-            container.setDepth(3500);
-
-
-
-            activeDialogues[bubbleKey] = container;
-
-
-
-            setTimeout(() => {
-
-
-
-                if (container && container.scene) {
-
-
-
-                    container.destroy();
-
-
-
+            const text = String(message || '').trim();
+            if (!text) return;
+            const key = `bubble_${Math.round(x)}_${Math.round(y)}`;
+            if (activeDialogues[key]) activeDialogues[key].destroy();
+            const bubble = game.add.text(
+                Math.max(190, Math.min(1090, x)),
+                Math.max(100, Math.min(680, y)), text, {
+                    fontFamily: 'Arial, sans-serif', fontSize: '18px',
+                    color: '#fff', backgroundColor: '#102137',
+                    stroke: '#08111f', strokeThickness: 2,
+                    padding: { x: 14, y: 10 },
+                    wordWrap: { width: 350, useAdvancedWrap: true },
+                    align: 'center', lineSpacing: 5
                 }
-
-
-
-                delete activeDialogues[bubbleKey];
-
-
-
+            ).setOrigin(0.5, 1).setDepth(3500);
+            activeDialogues[key] = bubble;
+            const caption = document.getElementById('office-caption');
+            if (caption) {
+                caption.textContent = text;
+                caption.hidden = false;
+                clearTimeout(captionTimer);
+                captionTimer = setTimeout(() => { caption.hidden = true; }, duration);
+            }
+            setTimeout(() => {
+                if (activeDialogues[key] === bubble) delete activeDialogues[key];
+                if (bubble.scene) bubble.destroy();
             }, duration);
-
-
-
         }
-
-
-
-
-
-
 
         function showAgentDialogue(agent) {
 
@@ -6604,7 +6539,7 @@
 
 
 
-            const quote = quotes[Math.floor(Math.random() * quotes.length)];
+            const quote = sleepingAgents.has(id) ? 'Sedang tidur di ruang istirahat.' : (agent.detail || quotes[Math.floor(Math.random() * quotes.length)]);
 
 
 
@@ -6660,139 +6595,12 @@
 
 
 
-        
-        // ── 22-Node Mansion Navigation Graph & Dijkstra Pathfinding (Strict Anti-Tembus Tembok) ──
-        const MANSION_NODES = {
-            'OFFICE_DESK':       { x: 125, y: 345 },
-            'OFFICE_DOOR':       { x: 270, y: 360 },
-            'LOUNGE_RUG':        { x: 400, y: 360 },
-            'LOUNGE_CHAIR':      { x: 485, y: 215 },
-            'SERVER_AREA':       { x: 670, y: 220 },
-            'SERVER_CORR':       { x: 670, y: 330 },
-            'BEDROOM_IN':        { x: 680, y: 420 },
-            'BEDROOM_DOOR':      { x: 680, y: 490 },
-            'CROSSROADS':        { x: 780, y: 420 },
-            'KITCHEN_DOOR':      { x: 840, y: 360 },
-            'DINING_TABLE':      { x: 915, y: 300 },
-            'BREAKROOM_COFFEE':  { x: 920, y: 180 },
-            'GAMING_LOUNGE':     { x: 1120, y: 270 },
-            'ARCADE':            { x: 1230, y: 360 },
-            'AQUARIUM_CORR':     { x: 680, y: 600 },
-            'DORM_DOOR':         { x: 560, y: 510 },
-            'DORM_AISLE':        { x: 300, y: 590 },
-            'CONF_DOOR':         { x: 900, y: 510 },
-            'CONF_TABLE_LEFT':   { x: 980, y: 590 },
-            'CONF_TABLE_MID':    { x: 1060, y: 590 },
-            'CONF_TABLE_RIGHT':  { x: 1140, y: 590 },
-            'CONF_CHART':        { x: 1070, y: 520 }
-        };
 
-        const MANSION_EDGES = [
-            ['OFFICE_DESK', 'OFFICE_DOOR'],
-            ['OFFICE_DOOR', 'LOUNGE_RUG'],
-            ['LOUNGE_RUG', 'LOUNGE_CHAIR'],
-            ['LOUNGE_RUG', 'CROSSROADS'],
-            ['LOUNGE_RUG', 'DORM_DOOR'],
-            ['LOUNGE_CHAIR', 'SERVER_AREA'],
-            ['SERVER_AREA', 'SERVER_CORR'],
-            ['SERVER_CORR', 'CROSSROADS'],
-            ['BEDROOM_IN', 'BEDROOM_DOOR'],
-            ['BEDROOM_DOOR', 'CROSSROADS'],
-            ['BEDROOM_DOOR', 'AQUARIUM_CORR'],
-            ['CROSSROADS', 'KITCHEN_DOOR'],
-            ['CROSSROADS', 'AQUARIUM_CORR'],
-            ['CROSSROADS', 'CONF_DOOR'],
-            ['KITCHEN_DOOR', 'DINING_TABLE'],
-            ['DINING_TABLE', 'BREAKROOM_COFFEE'],
-            ['DINING_TABLE', 'GAMING_LOUNGE'],
-            ['GAMING_LOUNGE', 'ARCADE'],
-            ['AQUARIUM_CORR', 'DORM_DOOR'],
-            ['DORM_DOOR', 'DORM_AISLE'],
-            ['CONF_DOOR', 'CONF_CHART'],
-            ['CONF_DOOR', 'CONF_TABLE_LEFT'],
-            ['CONF_CHART', 'CONF_TABLE_MID'],
-            ['CONF_TABLE_LEFT', 'CONF_TABLE_MID'],
-            ['CONF_TABLE_MID', 'CONF_TABLE_RIGHT']
-        ];
-
-        const MANSION_ADJ = {};
-        Object.keys(MANSION_NODES).forEach(k => { MANSION_ADJ[k] = []; });
-        MANSION_EDGES.forEach(([u, v]) => {
-            const duv = Math.hypot(MANSION_NODES[u].x - MANSION_NODES[v].x, MANSION_NODES[u].y - MANSION_NODES[v].y);
-            MANSION_ADJ[u].push({ node: v, dist: duv });
-            MANSION_ADJ[v].push({ node: u, dist: duv });
-        });
-
-        function findNearestMansionNode(x, y) {
-            let best = null, minDist = Infinity;
-            Object.keys(MANSION_NODES).forEach(k => {
-                const d = Math.hypot(MANSION_NODES[k].x - x, MANSION_NODES[k].y - y);
-                if (d < minDist) { minDist = d; best = k; }
-            });
-            return best;
-        }
-
+        // ── Office map navigation with wall and furniture clearance ──
         function getRealisticOfficePath(startX, startY, destX, destY) {
-            const directDist = Math.hypot(startX - destX, startY - destY);
-            if (directDist < 35) {
-                return [{ x: destX, y: destY }];
-            }
-
-            const startNode = findNearestMansionNode(startX, startY);
-            const endNode = findNearestMansionNode(destX, destY);
-
-            if (startNode === endNode) {
-                return [{ x: destX, y: destY }];
-            }
-
-            const dist = {};
-            const prev = {};
-            const unvisited = new Set(Object.keys(MANSION_NODES));
-
-            Object.keys(MANSION_NODES).forEach(k => { dist[k] = Infinity; });
-            dist[startNode] = 0;
-
-            while (unvisited.size > 0) {
-                let curr = null;
-                let smallest = Infinity;
-                unvisited.forEach(node => {
-                    if (dist[node] < smallest) { smallest = dist[node]; curr = node; }
-                });
-
-                if (!curr || smallest === Infinity || curr === endNode) break;
-                unvisited.delete(curr);
-
-                MANSION_ADJ[curr].forEach(({ node: nxt, dist: d }) => {
-                    if (!unvisited.has(nxt)) return;
-                    const alt = dist[curr] + d;
-                    if (alt < dist[nxt]) {
-                        dist[nxt] = alt;
-                        prev[nxt] = curr;
-                    }
-                });
-            }
-
-            const pathNodes = [];
-            let cur = endNode;
-            while (cur) {
-                pathNodes.unshift(cur);
-                cur = prev[cur];
-            }
-
-            const resultWaypoints = [];
-            pathNodes.forEach(name => {
-                resultWaypoints.push({ x: MANSION_NODES[name].x, y: MANSION_NODES[name].y });
-            });
-            resultWaypoints.push({ x: destX, y: destY });
-
-            return resultWaypoints;
+            if (currentOfficeBgTextureKey !== 'office_bg') return [];
+            return window.OfficeNavigation.path(startX, startY, destX, destY);
         }
-
-
-
-
-
-
 
         // Sequential Waypoint Walking Engine
 
@@ -6803,10 +6611,7 @@
 
 
             if (!path || path.length === 0) {
-
-
-
-                if (onComplete) onComplete();
+                return;
 
 
 
@@ -7038,7 +6843,7 @@
 
 
 
-                star.setPosition(217, 343);
+                star.setPosition(180, 405);
 
 
 
@@ -7198,169 +7003,48 @@
 
 
 
+        const HERMES_STATIONS = {
+            idle: { x: 610, y: 390 },
+            writing: { x: 180, y: 405 }, researching: { x: 405, y: 390 },
+            executing: { x: 600, y: 240 }, syncing: { x: 838, y: 280 },
+            error: { x: 838, y: 280 }
+        };
         let isInitialStatusLoaded = false;
-
-
-
-
-
-
-
-        function handleStarStateTransition(nextState) {
-
-
-
-            if (!isInitialStatusLoaded) {
-
-
-
-                isInitialStatusLoaded = true;
-
-
-
-                applyVisualState(nextState);
-
-
-
+        let hermesSleepTimer = null;
+        let hermesAsleep = false;
+        function considerHermesSleep() {
+            if (currentState !== 'idle' || hermesAsleep || !star?.scene) return;
+            if (Math.random() >= 0.5) {
+                hermesSleepTimer = setTimeout(considerHermesSleep, 30000);
                 return;
-
-
-
             }
-
-
-
-
-
-
-
-            if (nextState === 'writing' || nextState === 'researching') {
-
-
-
-                // Walk to desk
-
-
-
-                walkStarTo(217, 343, () => {
-
-
-
-                    star.setVisible(false);
-
-
-
-                    if (window.starWorking) {
-
-
-
-                        window.starWorking.setVisible(true);
-
-
-
-                        window.starWorking.anims.play('star_working', true);
-
-
-
-                    }
-
-
-
-                });
-
-
-
-            } else if (nextState === 'idle') {
-
-
-
-                // Walk to sofa
-
-
-
-                if (window.starWorking && window.starWorking.visible) {
-
-
-
-                    window.starWorking.setVisible(false);
-
-
-
-                    star.setPosition(217, 343);
-
-
-
-                    star.setVisible(true);
-
-
-
-                }
-
-
-
-                walkStarTo(IDLE_SOFA_ANCHOR.x, IDLE_SOFA_ANCHOR.y, () => {
-
-
-
-                    star.setScale(IDLE_STAR_SCALE);
-
-
-
-                    star.anims.play('star_idle', true);
-
-
-
-                    sofa.setTexture('sofa_idle');
-
-
-
-                });
-
-
-
-            } else if (nextState === 'syncing') {
-
-
-
-                walkStarTo(1050, 480, () => {
-
-
-
-                    // Syncing station
-
-
-
-                });
-
-
-
-            } else if (nextState === 'error') {
-
-
-
-                walkStarTo(980, 260, () => {
-
-
-
-                    // Error station
-
-
-
-                });
-
-
-
-            }
-
-
-
+            const pod = {x:480,y:565};
+            if (!getRealisticOfficePath(star.x,star.y,pod.x,pod.y).length) return;
+            walkStarTo(pod.x,pod.y,() => {
+                if (currentState !== 'idle') return;
+                hermesAsleep = true;
+                star.setAngle(-90).setAlpha(.82);
+                showBubbleAbove(pod.x,pod.y-70,'Hermes tidur di ruang istirahat.',5000);
+            });
         }
-
-
-
-
-
-
+        function handleStarStateTransition(nextState) {
+            const destination = HERMES_STATIONS[nextState] || HERMES_STATIONS.idle;
+            if (!star) return;
+            clearTimeout(hermesSleepTimer);
+            if (hermesAsleep) {
+                star.setAngle(0).setAlpha(.95);
+                hermesAsleep = false;
+            }
+            if (nextState === 'idle') hermesSleepTimer = setTimeout(considerHermesSleep, 30000);
+            if (window.starWorking) window.starWorking.setVisible(false);
+            star.setVisible(true);
+            if (!isInitialStatusLoaded) {
+                isInitialStatusLoaded = true;
+                applyVisualState(nextState);
+                return;
+            }
+            walkStarTo(destination.x, destination.y);
+        }
 
         // Click marker for floor click
 
@@ -7498,6 +7182,96 @@
 
 
 
+        const sleepingAgents = new Map();
+        const reservedPods = new Set();
+        const sleepPods = [
+            {x:480,y:565}, {x:480,y:645},
+            {x:190,y:565}, {x:190,y:645}
+        ];
+        function wakeAgent(agentId) {
+            const sleep = sleepingAgents.get(agentId);
+            if (!sleep) return false;
+            sleepingAgents.delete(agentId);
+            if (sleep.zzz?.scene) sleep.zzz.destroy();
+            const guest = guestSprites[agentId];
+            if (!guest?.sprite?.scene) return true;
+            guest.sprite.setAngle(0).setAlpha(1).clearTint();
+            guest.nameText.setText(sleep.name);
+            const home = getAgentHomePoint(agentId);
+            const route = home && getRealisticOfficePath(guest.sprite.x, guest.sprite.y, home.x, home.y);
+            if (route?.length) {
+                guestTweens[agentId] = {isRoaming:true};
+                walkSpriteAlongPath(guest.sprite, guest.nameText, route, 140, () => {
+                    delete guestTweens[agentId];
+                });
+            }
+            renderGuestAgentList();
+            return true;
+        }
+        function sleepAgent(agent) {
+            const id = agent.agentId;
+            const guest = guestSprites[id];
+            if (!guest?.sprite?.scene || sleepingAgents.has(id) || isAgentCurrentlyBusy(id)) return false;
+            const occupied = new Set([...sleepingAgents.values()].map(s => s.slot).concat([...reservedPods]));
+            const slot = sleepPods.findIndex((_, index) => !occupied.has(index));
+            if (slot < 0) return false;
+            const pod = sleepPods[slot];
+            const route = getRealisticOfficePath(guest.sprite.x, guest.sprite.y, pod.x, pod.y);
+            if (!route.length) return false;
+            reservedPods.add(slot);
+            guestTweens[id] = {isRoaming:true};
+            walkSpriteAlongPath(guest.sprite, guest.nameText, route, 135, () => {
+                reservedPods.delete(slot);
+                delete guestTweens[id];
+                if (!guest.sprite.scene) return;
+                guest.sprite.setAngle(-90).setAlpha(.82).setTint(0xb9d6ed);
+                const name = guest.nameText.text;
+                guest.nameText.setText(`${name} · tidur`);
+                const zzz = game.add.text(pod.x, pod.y - 58, 'Z z z', {
+                    fontFamily:'Arial, sans-serif', fontSize:'18px', color:'#c5eaff',
+                    backgroundColor:'#102137', padding:{x:5,y:3}
+                }).setOrigin(.5).setDepth(3500);
+                sleepingAgents.set(id, {slot, name, zzz});
+                showBubbleAbove(pod.x, pod.y - 74, `${name} sedang tidur di ruang istirahat.`, 4000);
+                renderGuestAgentList();
+            });
+            return true;
+        }
+        function stationEffect(x, y, label) {
+            if (!game) return;
+            const mark = game.add.text(x, y - 28, label, {
+                fontFamily:'Arial, sans-serif', fontSize:'21px',
+                color:'#a9e8f2', stroke:'#07131f', strokeThickness:3
+            }).setOrigin(.5).setDepth(3600);
+            game.tweens.add({targets:mark, y:y-58, alpha:0, duration:1100,
+                onComplete:() => mark.destroy()});
+        }
+        function installOfficeHotspots(scene) {
+            // The map has an explicit opening where the boardroom route enters.
+            const door = scene.add.graphics().setDepth(2);
+            door.fillStyle(0x1b2836, 1).fillRect(895, 510, 25, 58);
+            door.lineStyle(3, 0xb4833c, 1);
+            door.strokeRect(895, 510, 25, 58);
+            const hotspots = [
+                {x:140,y:315,w:175,h:130,label:'Meja eksekutif',detail:'Meja kerja untuk keputusan dan koordinasi.',mark:'⌘'},
+                {x:405,y:165,w:190,h:105,label:'Perpustakaan riset',detail:'Referensi dan catatan dapat dibaca di sini.',mark:'▤'},
+                {x:690,y:175,w:200,h:120,label:'Konsol server',detail:'Agen teknik memeriksa layanan dari konsol ini.',mark:'▣'},
+                {x:970,y:175,w:145,h:95,label:'Mesin kopi',detail:'Area jeda di pantry kantor.',mark:'☕'},
+                {x:1190,y:185,w:120,h:130,label:'Arcade',detail:'Permainan singkat untuk waktu istirahat.',mark:'✦'},
+                {x:1070,y:610,w:280,h:110,label:'Meja rapat',detail:'Ruang pembahasan keputusan tim.',mark:'◇'},
+                {x:350,y:590,w:310,h:125,label:'Pod tidur',detail:'Agen yang idle dapat beristirahat di sini.',mark:'Z'}
+            ];
+            hotspots.forEach(item => {
+                const zone = scene.add.zone(item.x,item.y,item.w,item.h).setInteractive({useHandCursor:true});
+                zone.setDepth(1);
+                zone.on('pointerup', pointer => {
+                    if (Math.hypot(pointer.x-pointer.downX,pointer.y-pointer.downY) > 8) return;
+                    stationEffect(item.x,item.y,item.mark);
+                    showBubbleAbove(item.x,item.y-35,`${item.label}: ${item.detail}`,5000);
+                });
+            });
+        }
+
         function checkAutonomousRoaming(time) {
 
 
@@ -7526,7 +7300,7 @@
 
 
 
-            const eligible = visitors.filter(v => guestSprites[v.agentId] && !isAgentCurrentlyBusy(v.agentId));
+            const eligible = visitors.filter(v => v.state === 'idle' && guestSprites[v.agentId] && !sleepingAgents.has(v.agentId) && !isAgentCurrentlyBusy(v.agentId));
 
 
 
@@ -7542,6 +7316,7 @@
 
 
 
+            if (Math.random() < 0.35 && sleepAgent(luckyAgent)) return;
             const g = guestSprites[luckyAgent.agentId];
 
 
@@ -7559,21 +7334,13 @@
 
 
             const destinations = [
-                { x: 920,  y: 180, msg: "☕ Mengambil secangkir kopi hangat di pantry..." },
-                { x: 955,  y: 560, msg: "💧 Mengambil air mineral di galon ruang rapat..." },
-                { x: 655,  y: 620, msg: "🐟 Mengamati ikan di akuarium lorong utama..." },
-                { x: 1120, y: 270, msg: "🛋️ Istirahat sejenak di sofa ruang santai..." },
-                { x: 1230, y: 360, msg: "🕹️ Mencoba mini-game di mesin arcade..." },
-                { x: 670,  y: 220, msg: "💻 Memeriksa log dan metrik rak server datacenter..." },
-                { x: 300,  y: 590, msg: "🛏️ Mengecek inventaris dan loker di asrama tim..." },
-                { x: 1070, y: 520, msg: "📈 Menganalisis grafik performa di papan presentasi..." }
+                { x: 975, y: 245, msg: 'Mengambil kopi di pantry.', mark:'☕' },
+                { x: 1190, y: 275, msg: 'Mencoba arcade saat jeda.', mark:'✦' },
+                { x: 650, y: 235, msg: 'Memeriksa konsol server.', mark:'▣' },
+                { x: 405, y: 390, msg: 'Membaca referensi di ruang riset.', mark:'▤' },
+                { x: 970, y: 545, msg: 'Meninjau papan strategi.', mark:'◇' },
+                { x: 520, y: 610, msg: 'Meninjau area istirahat.', mark:'Z' }
             ];
-
-
-
-
-
-
 
             const dest = destinations[Math.floor(Math.random() * destinations.length)];
 
@@ -7595,6 +7362,7 @@
 
 
 
+            if (!forwardPath.length) return;
             guestTweens[luckyAgent.agentId] = { isRoaming: true };
 
 
@@ -7607,7 +7375,8 @@
 
 
 
-                showBubbleAbove(g.sprite.x, g.sprite.y - 56, dest.msg, 3200);
+                stationEffect(g.sprite.x, g.sprite.y, dest.mark);
+                showBubbleAbove(g.sprite.x, g.sprite.y - 56, `${luckyAgent.name}: ${dest.msg}`, 4200);
 
 
 
@@ -8363,7 +8132,7 @@ function ensureMemoBgVisible() {
 
 
 
-        
+
 
 
 
@@ -8411,7 +8180,7 @@ function ensureMemoBgVisible() {
 
 
 
-        
+
 
 
 
@@ -8737,7 +8506,7 @@ function ensureMemoBgVisible() {
 
 
 
-        
+
 
 
 
@@ -9033,17 +8802,21 @@ function ensureMemoBgVisible() {
 
 
 
+        // Central anchor for the executive armchair (Star idle spot) — matches areas.breakroom
+        const IDLE_SOFA_ANCHOR = { x: 610, y: 390 };
+
         let game, star, sofa, serverroom, officeBgSprite, areas = {
-                door: { x: 780, y: 420 },         // Central crossroads
-                writing: { x: 125, y: 345 },      // Master Study Desk
-                researching: { x: 1060, y: 590 },  // Boardroom Conference Table
-                error: { x: 670, y: 180 },        // Server Racks & Red Beacon
-                breakroom: { x: 485, y: 215 }     // Hermes Executive Armchair
-            }; // 统一中心锚点（原 sofa 左上 670,144 的中心）
+            door: { x: 780, y: 420 },         // Central crossroads
+            writing: { x: 125, y: 345 },      // Master Study Desk
+            researching: { x: 1060, y: 590 },  // Boardroom Conference Table
+            error: { x: 670, y: 180 },        // Server Racks & Red Beacon
+            breakroom: { x: 485, y: 215 }     // Hermes Executive Armchair
+        };
+        let currentState = 'idle', pendingDesiredState = null, statusText, lastFetch = 0, lastBlink = 0, lastBubble = 0, targetX = 660, targetY = 170, bubble = null, typewriterText = '', typewriterTarget = '', typewriterIndex = 0, lastTypewriter = 0, syncAnimSprite = null, syncAnimPlayable = false, catBubble = null, selectionBoxGraphics = null;
 
 
 
-        const IDLE_STAR_SCALE = 1.0; // star idle 改为256帧原生显示，不再放大
+        const IDLE_STAR_SCALE = 0.38; // star idle 改为256帧原生显示，不再放大
 
 
 
@@ -9253,7 +9026,7 @@ function ensureMemoBgVisible() {
                 name: "Hermes",
                 role: "Chief Architect",
                 isMain: true,
-                department: "Executive Suite",
+                department: "Hermes Lounge",
                 state: "idle",
                 detail: "Memimpin orkestrasi sistem dan otomasi workspace",
                 avatar: "/static/hermes_avatar.png"
@@ -9273,7 +9046,7 @@ function ensureMemoBgVisible() {
                 name: "Bumi POS",
                 role: "Inventory & Kasir",
                 isMain: false,
-                department: "Boardroom / Retail Ops",
+                department: "Executive / Retail Ops",
                 state: "syncing",
                 detail: "Monitoring transaksi kasir dan stok Bumi Makmur",
                 avatar: "/static/guest_role_2.png"
@@ -9283,7 +9056,7 @@ function ensureMemoBgVisible() {
                 name: "Homestay Bot",
                 role: "Tenant & Booking",
                 isMain: false,
-                department: "Boardroom / Hospitality",
+                department: "Research / Hospitality",
                 state: "idle",
                 detail: "Katalog unit kamar dan reservasi Charisna Homestay",
                 avatar: "/static/guest_role_3.png"
@@ -9303,7 +9076,7 @@ function ensureMemoBgVisible() {
                 name: "Codex Dev",
                 role: "System Engineer",
                 isMain: false,
-                department: "Datacenter Rack A",
+                department: "Server Console",
                 state: "writing",
                 detail: "Pipeline build otomasi dan script execution",
                 avatar: "/static/guest_role_5.png"
@@ -9313,7 +9086,7 @@ function ensureMemoBgVisible() {
                 name: "Kuro Patrol",
                 role: "Watchdog & Security",
                 isMain: false,
-                department: "Datacenter Rack B",
+                department: "Server Patrol",
                 state: "idle",
                 detail: "Security sentinel, firewall & background watcher",
                 avatar: "/static/guest_role_6.png"
@@ -9344,7 +9117,13 @@ function ensureMemoBgVisible() {
 
 
 
-        const DEMO_MODE = new URLSearchParams(window.location.search).get('demo') === '1';
+        const DEMO_MODE = (function () {
+            try {
+                return new URLSearchParams(window.location.search).get('demo') === '1';
+            } catch (e) {
+                return false;
+            }
+        })();
 
 
 
@@ -13861,10 +13640,6 @@ function toggleBrokerPanel() {
 
 
 
-            try { setState('idle', t('moveSuccess').replace('✅ ', '')); } catch (e) {}
-
-
-
         }
 
 
@@ -13874,10 +13649,6 @@ function toggleBrokerPanel() {
 
 
         function setWorkingStatus(detail = '工作中') {
-
-
-
-            try { setState('writing', detail); } catch (e) {}
 
 
 
@@ -14889,10 +14660,6 @@ function toggleBrokerPanel() {
 
 
 
-                try { setState('idle', '已回退到上一次背景'); } catch (e) {}
-
-
-
             } catch (e) {
 
 
@@ -15246,10 +15013,6 @@ function toggleBrokerPanel() {
 
 
                 out.textContent = ok ? t('homeFavApplied') : `${t('homeFavApplied')}（局部刷新失败，可手动刷新页面）`;
-
-
-
-                try { setState('idle', '已应用收藏地图'); } catch (e) {}
 
 
 
@@ -16194,13 +15957,13 @@ function toggleBrokerPanel() {
             };
 
             const deptMap = {
-                star: 'Executive Suite',
+                star: 'Hermes Lounge',
                 onal: 'Boardroom / Analytics',
-                bumi: 'Boardroom / Retail Ops',
-                homestay: 'Boardroom / Hospitality',
+                bumi: 'Executive / Retail Ops',
+                homestay: 'Research / Hospitality',
                 moniflow: 'Boardroom / Finance',
-                codex: 'Datacenter Rack A',
-                kuro: 'Datacenter Rack B'
+                codex: 'Server Console',
+                kuro: 'Server Patrol'
             };
 
             const stateDisplay = {
@@ -16212,14 +15975,14 @@ function toggleBrokerPanel() {
             };
 
             const countBadge = document.getElementById('agent-count-badge');
-            if (countBadge) countBadge.textContent = `${agentsToShow.length} Online`;
+            if (countBadge) countBadge.textContent = `${agentsToShow.length} Agen`;
 
             list.innerHTML = agentsToShow.map(agent => {
                 const id = agent.agentId || 'agent';
                 const name = agent.name || id;
                 const role = agent.role || 'Specialist';
                 const dept = agent.department || deptMap[id] || 'HQ Campus';
-                const st = stateDisplay[agent.state] || stateDisplay.idle;
+                const st = sleepingAgents.has(id) ? {label:'Tidur',dot:'dot-idle'} : (stateDisplay[agent.state] || stateDisplay.idle);
                 const avatar = avatarMap[id] || '/static/hermes_avatar.png';
                 const detail = (agent.detail || '').replace(/"/g, '&quot;');
 
@@ -16258,21 +16021,15 @@ function toggleBrokerPanel() {
             }
 
             const boardroomSpots = {
-                onal:     { x: 960,  y: 645, speech: "Laporan knowledge base & SOP ekosistem siap dibahas!" },
-                moniflow: { x: 1020, y: 645, speech: "Jurnal audit kas MoniFlow siap diverifikasi tanpa selisih!" },
-                bumi:     { x: 1080, y: 645, speech: "Rekap transaksi kasir & stok Bumi Makmur siap!" },
-                homestay: { x: 1140, y: 645, speech: "Data unit dan okupansi Charisna Homestay aman!" },
-                codex:    { x: 970,  y: 545, speech: "CI/CD pipeline dan server background daemon normal!" },
-                kuro:     { x: 1025, y: 545, speech: "Perimeter keamanan sistem & firewall terpantau hijau!" }
-            };
+            onal: {x:970,y:545,speech:'Membuka ringkasan keputusan.'},
+            moniflow: {x:1035,y:545,speech:'Meninjau data pembukuan yang tersedia.'},
+            bumi: {x:1100,y:545,speech:'Meninjau status kasir dan stok.'},
+            homestay: {x:1165,y:545,speech:'Meninjau status unit dan reservasi.'},
+            codex: {x:935,y:535,speech:'Memeriksa kesiapan sistem.'},
+            kuro: {x:875,y:535,speech:'Menjaga akses ruang rapat.'}
+        };
 
-            if (typeof walkStarTo === 'function') {
-                walkStarTo(1070, 510, () => {
-                    showBubbleAbove(1070, 430, "📢 Rapat pleno dimulai! Mari review target ekosistem Charisna.", 4500);
-                });
-            }
-
-            Object.keys(boardroomSpots).forEach(agentId => {
+        Object.keys(boardroomSpots).forEach(agentId => {
                 const spot = boardroomSpots[agentId];
                 const g = guestSprites[agentId];
                 if (g && g.sprite) {
@@ -16298,22 +16055,19 @@ function toggleBrokerPanel() {
             }
 
             const breakroomSpots = {
-                onal:     { x: 920,  y: 180, speech: "☕ Mengambil kopi hangat di mesin espresso..." },
-                bumi:     { x: 915,  y: 285, speech: "🥪 Santai sejenak di meja makan breakroom..." },
-                homestay: { x: 955,  y: 285, speech: "🧃 Menikmati camilan setelah rekap kamar..." },
-                moniflow: { x: 1030, y: 360, speech: "🛋️ Duduk rileks di beanbag setelah hitung buku..." },
-                codex:    { x: 1230, y: 360, speech: "🕹️ Coba high-score baru di mesin arcade!" },
-                kuro:     { x: 1170, y: 280, speech: "🍵 Duduk di sofa sambil memantau sinyal patroli..." }
-            };
+            onal: {x:975,y:245,speech:'Berhenti sejenak untuk kopi.'},
+            bumi: {x:1065,y:400,speech:'Istirahat di ruang makan.'},
+            homestay: {x:850,y:405,speech:'Mengambil jeda singkat.'},
+            moniflow: {x:610,y:390,speech:'Duduk di lounge.'},
+            codex: {x:1190,y:275,speech:'Mencoba mesin arcade.'},
+            kuro: {x:838,y:280,speech:'Berpatroli di pantry.'}
+        };
 
-            if (typeof walkStarTo === 'function') {
-                walkStarTo(1110, 280, () => {
-                    showBubbleAbove(1110, 200, "☕ Waktu istirahat tim! Nikmati kopi dan rehat sejenak.", 4500);
-                });
-            }
-
-            Object.keys(breakroomSpots).forEach(agentId => {
+        let sleeperChosen = false;
+        Object.keys(breakroomSpots).forEach(agentId => {
                 const spot = breakroomSpots[agentId];
+                const agent = guestAgents.find(a => a.agentId === agentId);
+                if (!sleeperChosen && agent?.state === 'idle' && sleepAgent(agent)) { sleeperChosen = true; return; }
                 const g = guestSprites[agentId];
                 if (g && g.sprite) {
                     const path = getRealisticOfficePath(g.sprite.x, g.sprite.y, spot.x, spot.y);
@@ -16324,7 +16078,7 @@ function toggleBrokerPanel() {
             });
 
             const statusTextEl = document.getElementById('status-text');
-            if (statusTextEl) statusTextEl.textContent = '☕ Seluruh Agen Menikmati Waktu Istirahat di Breakroom';
+            if (statusTextEl) statusTextEl.textContent = 'Tim beristirahat di pantry atau pod tidur.';
         };
 
         window.returnAllToWorkstations = function() {
@@ -16337,17 +16091,12 @@ function toggleBrokerPanel() {
                 game.cameras.main.zoomTo(1.0, 800, 'Power2');
             }
 
-            if (typeof walkStarTo === 'function') {
-                walkStarTo(420, 290, () => {
-                    showBubbleAbove(420, 210, "⚡ Hermes kembali ke meja utama. Siap menerima instruksi Raja!", 3500);
-                });
-            }
-
             Object.keys(AGENT_HOME_POINTS).forEach(agentId => {
                 const home = AGENT_HOME_POINTS[agentId];
                 const g = guestSprites[agentId];
                 if (g && g.sprite) {
-                    const path = getRealisticOfficePath(g.sprite.x, g.sprite.y, home.x, home.y);
+                    if (wakeAgent(agentId)) return;
+                const path = getRealisticOfficePath(g.sprite.x, g.sprite.y, home.x, home.y);
                     walkSpriteAlongPath(g.sprite, g.nameText, path, 140, () => {
                         showBubbleAbove(home.x, home.y - 56, "Kembali ke pos workstation.", 2500);
                     });
@@ -16375,17 +16124,6 @@ function toggleBrokerPanel() {
 
             game.cameras.main.pan(targetX, targetY - 25, 600, 'Power2');
             game.cameras.main.zoomTo(1.65, 600, 'Power2');
-
-            if (spriteObj && game.tweens) {
-                game.tweens.add({
-                    targets: spriteObj,
-                    y: spriteObj.y - 16,
-                    duration: 160,
-                    yoyo: true,
-                    repeat: 2,
-                    ease: 'Sine.easeInOut'
-                });
-            }
 
             const agent = (guestAgents || []).find(a => a.agentId === agentId) || { agentId, name: agentId };
             setTimeout(() => {
@@ -16522,15 +16260,15 @@ function toggleBrokerPanel() {
 
 
 
-                breakroom: { x1: 511, y1: 262, x2: 841, y2: 621 },
+                breakroom: { x1: 840, y1: 390, x2: 860, y2: 410 },
 
 
 
-                writing:   { x1: 190, y1: 526, x2: 380, y2: 683 },
+                writing:   { x1: 390, y1: 385, x2: 420, y2: 405 },
 
 
 
-                error:     { x1: 932, y1: 275, x2: 1109, y2: 327 }
+                error:     { x1: 740, y1: 225, x2: 760, y2: 245 }
 
 
 
@@ -16587,19 +16325,13 @@ function toggleBrokerPanel() {
 
 
         const AGENT_HOME_POINTS = {
-            onal:     { x: 980,  y: 590 }, // Boardroom Chair 1 (Universal Memory & Analytics)
-            moniflow: { x: 1030, y: 590 }, // Boardroom Chair 2 (Finance & Books)
-            homestay: { x: 1085, y: 590 }, // Boardroom Chair 3 (Tenant & Booking)
-            bumi:     { x: 1140, y: 590 }, // Boardroom Chair 4 (POS & Inventory)
-            codex:    { x: 605,  y: 220 }, // Datacenter Server Rack 1 (DevOps & Engineering)
-            kuro:     { x: 730,  y: 220 }  // Sentinel Post & Red Beacon (Security & Patrol)
+            onal: { x: 970, y: 545 },
+            moniflow: { x: 1035, y: 545 },
+            bumi: { x: 180, y: 405 },
+            homestay: { x: 405, y: 390 },
+            codex: { x: 600, y: 240 },
+            kuro: { x: 838, y: 280 }
         };
-
-
-
-
-
-
 
         function getAgentHomePoint(agentId) {
 
@@ -16618,167 +16350,16 @@ function toggleBrokerPanel() {
 
 
         function getAreaPoint(area, idx, agentId) {
-
-
-
-            if (agentId && AGENT_HOME_POINTS[agentId]) {
-
-
-
-                return AGENT_HOME_POINTS[agentId];
-
-
-
-            }
-
-
-
-            const map = {
-
-
-
-                breakroom: [
-
-
-
-                    { x: 511, y: 262 },
-
-
-
-                    { x: 841, y: 621 },
-
-
-
-                    { x: 690, y: 470 },
-
-
-
-                    { x: 600, y: 340 },
-
-
-
-                    { x: 770, y: 540 },
-
-
-
-                    { x: 550, y: 420 },
-
-
-
-                    { x: 720, y: 310 },
-
-
-
-                    { x: 650, y: 580 }
-
-
-
-                ],
-
-
-
-                writing: [
-
-
-
-                    { x: 190, y: 526 },
-
-
-
-                    { x: 380, y: 683 },
-
-
-
-                    { x: 300, y: 610 },
-
-
-
-                    { x: 240, y: 570 },
-
-
-
-                    { x: 350, y: 640 },
-
-
-
-                    { x: 160, y: 600 },
-
-
-
-                    { x: 420, y: 560 },
-
-
-
-                    { x: 280, y: 660 }
-
-
-
-                ],
-
-
-
-                error: [
-
-
-
-                    { x: 932, y: 275 },
-
-
-
-                    { x: 1109, y: 327 },
-
-
-
-                    { x: 1020, y: 305 },
-
-
-
-                    { x: 960, y: 340 },
-
-
-
-                    { x: 1070, y: 280 },
-
-
-
-                    { x: 990, y: 260 },
-
-
-
-                    { x: 1050, y: 350 },
-
-
-
-                    { x: 940, y: 310 }
-
-
-
-                ]
-
-
-
+            if (agentId && AGENT_HOME_POINTS[agentId]) return AGENT_HOME_POINTS[agentId];
+            const points = {
+                breakroom: [{x:850,y:405},{x:1065,y:400},{x:610,y:390}],
+                writing: [{x:180,y:405},{x:405,y:390},{x:970,y:545},{x:650,y:235}],
+                error: [{x:750,y:235},{x:850,y:405}]
             };
-
-
-
-            const arr = map[area] || map.breakroom;
-
-
-
-            return arr[idx % arr.length];
-
-
-
+            const list = points[area] || points.breakroom;
+            return list[idx % list.length];
         }
 
-
-
-
-
-
-
-        
-        
         // Full Mansion Camera & Department Focus System
         window.currentRoomId = 'overview';
 
@@ -16797,7 +16378,7 @@ function toggleBrokerPanel() {
                 overview:  { x: 640,  y: 360, zoom: 1.0, name: 'Charisna Office Workspace (Full Campus)' },
                 boardroom: { x: 1060, y: 600, zoom: 1.5, name: 'Executive Boardroom & Strategy Center' },
                 servers:   { x: 670,  y: 220, zoom: 1.5, name: 'Datacenter Server Racks & Cyber Sentinel' },
-                hermes:    { x: 320,  y: 280, zoom: 1.4, name: 'Hermes Executive Lounge & Master Study' },
+                hermes:    { x: 650,  y: 355, zoom: 1.4, name: 'Hermes Lounge & Study' },
                 breakroom: { x: 1030, y: 260, zoom: 1.4, name: 'Kitchen, Dining & Gaming Breakroom' },
                 dormitory: { x: 280,  y: 580, zoom: 1.4, name: 'Team Quarters & Rest Dormitory' }
             };
@@ -16840,9 +16421,7 @@ function toggleBrokerPanel() {
 
 
                 const id = agent.agentId;
-
-
-
+                if (sleepingAgents.has(id) && agent.state !== 'idle') wakeAgent(id);
                 seenIds.add(id);
 
 
@@ -16903,7 +16482,7 @@ function toggleBrokerPanel() {
 
 
 
-                    
+
 
 
 
@@ -17115,15 +16694,11 @@ function toggleBrokerPanel() {
 
 
 
-                        fontFamily: 'ArkPixel, monospace',
-
-
-
-                        fontSize: '12px',
-
-
-
-                        fill: '#ffd700',
+                        fontFamily: 'Arial, sans-serif',
+                        fontSize: '14px',
+                        fill: '#ffffff',
+                        backgroundColor: '#102137',
+                        padding: { x: 5, y: 3 },
 
 
 
@@ -17163,11 +16738,11 @@ function toggleBrokerPanel() {
 
 
 
-                            scaleY: 2.5,
+                            scaleY: sprite.scaleY * 1.08,
 
 
 
-                            scaleX: 1.9,
+                            scaleX: sprite.scaleX * 1.08,
 
 
 
@@ -17540,6 +17115,7 @@ function toggleBrokerPanel() {
 
 
         function maybeShowGuestBubble(time) {
+            if (!DEMO_MODE) return;
 
 
 
@@ -17755,81 +17331,8 @@ function toggleBrokerPanel() {
 
 
 
-            const fontSize = IS_TOUCH_DEVICE ? 14 : 12;
-
-
-
-            const bg = game.add.rectangle(bx, by, text.length * 10 + 24, 28, 0xffffff, 0.95);
-
-
-
-            bg.setStrokeStyle(2, 0x000000);
-
-
-
-            const txt = game.add.text(bx, by, text, { fontFamily: 'ArkPixel, monospace', fontSize: fontSize + 'px', fill: '#000' }).setOrigin(0.5);
-
-
-
-            const bubble = game.add.container(0, 0, [bg, txt]);
-
-
-
-            bubble.setDepth(2700);
-
-
-
-            guestBubbles[id] = bubble;
-
-
-
-
-
-
-
-            // 让气泡跟随 sprite 锚点（用于 demo 平滑移动时也保持贴合）
-
-
-
-            bubble.__followAgentId = id;
-
-
-
-
-
-
-
-            setTimeout(() => {
-
-
-
-                if (guestBubbles[id]) {
-
-
-
-                    guestBubbles[id].destroy();
-
-
-
-                    delete guestBubbles[id];
-
-
-
-                }
-
-
-
-            }, 3200);
-
-
-
+            showBubbleAbove(bx, by, `${g.nameText?.text || id}: ${text}`, 4500);
         }
-
-
-
-
-
-
 
         function maybeRandomizeDemoVisitors() {
 
@@ -18755,7 +18258,7 @@ function toggleBrokerPanel() {
 
 
 
-            
+
 
 
 
@@ -18771,7 +18274,7 @@ function toggleBrokerPanel() {
 
 
 
-            
+
 
 
 
@@ -18791,7 +18294,7 @@ function toggleBrokerPanel() {
 
 
 
-            
+
 
 
 
@@ -19089,7 +18592,7 @@ function toggleBrokerPanel() {
 
 
 
-            const starIdleFrameMax = Math.max(0, (this.textures.get('star_idle')?.frameTotal || 1) - 1);
+            const starIdleFrameMax = Math.max(0, (this.textures.get('star_idle')?.frameTotal || 1) - 2);
 
 
 
@@ -19167,67 +18670,37 @@ function toggleBrokerPanel() {
             if (sofa) sofa.setVisible(false);
             if (sofaShadow) sofaShadow.setVisible(false);
 
+            // Star character (restored from git history e18bd44/fdfce97 — wipe commit dropped creation)
+            if (!star) {
+                star = game.physics.add.sprite(IDLE_SOFA_ANCHOR.x, IDLE_SOFA_ANCHOR.y, 'star_idle');
+                star.setOrigin(0.5);
+                star.setScale(IDLE_STAR_SCALE);
+                star.setAlpha(0.95);
+                star.setDepth(20); // Star on top of room fixtures, below overlays
+                star.setVisible(true);
+                star.anims.play('star_idle', true);
+                star.setInteractive({ useHandCursor: true });
+                star.on('pointerdown', () => {
+                    showAgentDialogue({ agentId: 'star', name: 'Hermes', detail: statusText?.textContent || 'Siap bertugas' });
+                });
+                window.starSprite = star;
+            }
 
 
 
 
 
 
-            // Random flower pot at (310,390), default scale 0.8 (top layer)
-
-
-
-            const flowerFrameCount = Math.max(1, FLOWERS_FRAME_COLS * FLOWERS_FRAME_ROWS); // 动态帧数
-
-
-
-            const randomFlowerFrame = Math.floor(Math.random() * flowerFrameCount);
-
-
-
-            const flower = this.add.sprite(310, 390, 'flowers', randomFlowerFrame).setOrigin(0.5);
-
-
-
-            flower.setScale(0.8);
-
-
-
-            flower.setDepth(1100); // highest among desk/starWorking
-
-
-
-            flower.setInteractive({ useHandCursor: true });
-
-
-
-            window.flowerSprite = flower;
-
-
-
-            window.flowerFrameCount = flowerFrameCount;
-
-
-
-            flower.on('pointerdown', () => {
-
-
-
-                const next = Math.floor(Math.random() * window.flowerFrameCount);
-
-
-
-                window.flowerSprite.setFrame(next);
-
-
-
-            });
 
 
 
 
 
 
+
+
+
+            installOfficeHotspots(this);
 
             // Star working at desk (217,333)
 
@@ -19442,6 +18915,7 @@ function toggleBrokerPanel() {
 
 
             syncAnimSprite.setFrame(0);
+            syncAnimSprite.setVisible(false); // hidden by default: empty bed must not sit in the boardroom
 
 
 
@@ -19541,7 +19015,7 @@ function toggleBrokerPanel() {
 
 
 
-            let panEnabled = false;
+            let panEnabled = true;
 
 
 
@@ -19849,349 +19323,28 @@ function toggleBrokerPanel() {
 
 
 
-            if (panToggle) {
+            setPanEnabled(true);
 
-
-
-                panToggle.addEventListener('click', () => setPanEnabled(!panEnabled));
-
-
-
-            }
-
-
-
-
-
-
-
-            // 手机端默认关闭拖动画面：由左上角“移动视野”开关显式开启
-
-
-
-            if (isTouchDevice) {
-
-
-
-                setPanEnabled(false);
-
-
-
-            }
-
-
-
-
-
-
-
-            // iOS/Safari 手势策略：
-
-
-
-            // - 保留垂直滚动（让页面能下滑看三个面板）
-
-
-
-            // - 水平方向拖动时才阻止默认行为，并转为 camera 横向平移
-
-
-
-            // 说明：iOS 对 pointer + touch-action 支持存在机型差异，所以这里加一套原生 touch 兜底。
-
-
-
-            const canvasEl = game.canvas;
-
-
-
-            let touchPan = null; // {x,y,sx,sy,lock:'x'|'y'|null}
-
-
-
-            if (canvasEl) {
-
-
-
-                // 手机端允许页面自然滚动，避免“不能滑动”
-
-
-
-                canvasEl.style.touchAction = 'auto';
-
-
-
-
-
-
-
-                canvasEl.addEventListener('touchstart', (e) => {
-
-
-
-                    if (!panEnabled || e.touches.length !== 1) return;
-
-
-
-                    const t = e.touches[0];
-
-
-
-                    touchPan = { x: t.clientX, y: t.clientY, sx: camera.scrollX, sy: camera.scrollY, lock: null };
-
-
-
-                }, { passive: true });
-
-
-
-
-
-
-
-                canvasEl.addEventListener('touchmove', (e) => {
-
-
-
-                    if (!panEnabled || !touchPan || e.touches.length !== 1) return;
-
-
-
-                    const t = e.touches[0];
-
-
-
-                    const dx = t.clientX - touchPan.x;
-
-
-
-                    const dy = t.clientY - touchPan.y;
-
-
-
-
-
-
-
-                    if (!touchPan.lock) {
-
-
-
-                        if (Math.abs(dx) < 6 && Math.abs(dy) < 6) return;
-
-
-
-                        touchPan.lock = Math.abs(dx) >= Math.abs(dy) ? 'x' : 'y';
-
-
-
-                    }
-
-
-
-
-
-
-
-                    if (touchPan.lock === 'x') {
-
-
-
-                        // 横向拖动交给办公室视野；阻止浏览器默认滚动
-
-
-
-                        e.preventDefault();
-
-
-
-                        hasManuallyPanned = true;
-
-
-
-                        camera.scrollX = clamp(touchPan.sx - dx, 0, maxScrollX());
-
-
-
-                    }
-
-
-
-                    // lock==='y' 时不阻止默认，交给页面纵向滚动
-
-
-
-                }, { passive: false });
-
-
-
-
-
-
-
-                const clearTouchPan = () => { touchPan = null; };
-
-
-
-                canvasEl.addEventListener('touchend', clearTouchPan, { passive: true });
-
-
-
-                canvasEl.addEventListener('touchcancel', clearTouchPan, { passive: true });
-
-
-
-            }
-
-
-
-
-
-
-
+            // Dragging always pans the map. Floor clicks never command Hermes.
             game.input.on('pointerdown', (pointer) => {
-
-
-
-                if (!panEnabled) return;
-
-
-
                 isPanning = true;
-
-
-
                 panStart = { x: pointer.x, y: pointer.y, sx: camera.scrollX, sy: camera.scrollY };
-
-
-
                 game.input.setDefaultCursor('grabbing');
-
-
-
             });
-
-
-
-
-
-
-
             game.input.on('pointerup', () => {
-
-
-
-                if (!panEnabled) return;
-
-
-
                 isPanning = false;
-
-
-
                 panStart = null;
-
-
-
                 game.input.setDefaultCursor('grab');
-
-
-
             });
-
-
-
-
-
-
-
             game.input.on('pointermove', (pointer) => {
-
-
-
-                if (!panEnabled || !isPanning || !panStart) return;
-
-
-
+                if (!isPanning || !panStart) return;
                 const dx = pointer.x - panStart.x;
-
-
-
                 const dy = pointer.y - panStart.y;
-
-
-
-
-
-
-
-                // 手机端优先“横向拖动看办公室”，纵向手势留给页面滚动看下方面板。
-
-
-
-                if (isTouchDevice && Math.abs(dy) > Math.abs(dx)) {
-
-
-
-                    return;
-
-
-
-                }
-
-
-
-
-
-
-
-                // 手指向右拖，视野跟着向右看：camera scroll 向左减小（反向）
-
-
-
-                const newX = panStart.sx - dx;
-
-
-
+                if (isTouchDevice && Math.abs(dy) > Math.abs(dx)) return;
                 hasManuallyPanned = true;
-
-
-
-                camera.scrollX = clamp(newX, 0, maxScrollX());
-
-
-
-
-
-
-
-                // 桌面端保留自由二维拖动
-
-
-
-                if (!isTouchDevice) {
-
-
-
-                    const newY = panStart.sy - dy;
-
-
-
-                    camera.scrollY = clamp(newY, 0, maxScrollY());
-
-
-
-                }
-
-
-
+                camera.scrollX = clamp(panStart.sx - dx, 0, maxScrollX());
+                if (!isTouchDevice) camera.scrollY = clamp(panStart.sy - dy, 0, maxScrollY());
             });
-
-
-
-
-
-
 
             // Mouse move handler for coordinate display
 
@@ -20230,50 +19383,6 @@ function toggleBrokerPanel() {
 
 
                 coordsOverlay.style.top = (pointer.y + 18) + 'px';
-
-
-
-            });
-
-
-
-
-
-
-
-            // Floor click: point-and-click walking!
-
-
-
-            game.input.on('pointerdown', (pointer, currentlyOver) => {
-
-
-
-                if (panEnabled) return;
-
-
-
-                if (currentlyOver && currentlyOver.length > 0) return;
-
-
-
-                const clickX = pointer.worldX;
-
-
-
-                const clickY = pointer.worldY;
-
-
-
-                if (clickX < 80 || clickX > 1200 || clickY < 120 || clickY > 660) return;
-
-
-
-                createClickMarker(clickX, clickY);
-
-
-
-                walkStarTo(clickX, clickY);
 
 
 
@@ -20793,193 +19902,18 @@ function toggleBrokerPanel() {
 
 
 
-            // Idle: show Star idle animation (main character)
-
-
-
-            if (nextState === 'idle') {
-
-
-
-                sofa.anims.stop();
-
-
-
-                sofa.setTexture('sofa_idle');
-
-
-
-
-
-
-
-                if (window.starWorking) {
-
-
-
-                    window.starWorking.setVisible(false);
-
-
-
-                    window.starWorking.anims.stop();
-
-
-
-                }
-
-
-
-
-
-
-
-                star.setVisible(true);
-
-
-
-                star.setScale(IDLE_STAR_SCALE);
-
-
-
-                star.anims.play('star_idle', true);
-
-
-
-                star.setPosition(IDLE_SOFA_ANCHOR.x, IDLE_SOFA_ANCHOR.y);
-
-
-
-            } else if (nextState === 'error') {
-
-
-
-                // Error: no working animation at desk
-
-
-
-                sofa.anims.stop();
-
-
-
-                sofa.setTexture('sofa_idle');
-
-
-
-                star.setVisible(false);
-
-
-
-                star.anims.stop();
-
-
-
-                if (window.starWorking) {
-
-
-
-                    window.starWorking.setVisible(false);
-
-
-
-                    window.starWorking.anims.stop();
-
-
-
-                }
-
-
-
-            } else if (nextState === 'syncing') {
-
-
-
-                // Syncing: also no working animation at desk
-
-
-
-                sofa.anims.stop();
-
-
-
-                sofa.setTexture('sofa_idle');
-
-
-
-                star.setVisible(false);
-
-
-
-                star.anims.stop();
-
-
-
-                if (window.starWorking) {
-
-
-
-                    window.starWorking.setVisible(false);
-
-
-
-                    window.starWorking.anims.stop();
-
-
-
-                }
-
-
-
-            } else {
-
-
-
-                // Non-idle non-error: starWorking animation at desk
-
-
-
-                sofa.anims.stop();
-
-
-
-                sofa.setTexture('sofa_idle');
-
-
-
-                // Hide moving star, show desk star
-
-
-
-                star.setVisible(false);
-
-
-
-                star.anims.stop();
-
-
-
-                if (window.starWorking) {
-
-
-
-                    window.starWorking.setVisible(true);
-
-
-
-                    window.starWorking.anims.play('star_working', true);
-
-
-
-                }
-
-
-
+            // Hermes remains the same autonomous character in every state.
+            if (window.starWorking) {
+                window.starWorking.setVisible(false);
+                window.starWorking.anims.stop();
             }
-
-
-
-
-
-
+            if (star) {
+                const destination = HERMES_STATIONS[nextState] || HERMES_STATIONS.idle;
+                star.setVisible(true);
+                star.setScale(IDLE_STAR_SCALE);
+                star.setPosition(destination.x, destination.y);
+                star.anims.play('star_idle', true);
+            }
 
             // Server room logic
 
@@ -21197,7 +20131,7 @@ function toggleBrokerPanel() {
 
 
 
-                            
+
                         const actDot = document.getElementById('activity-dot');
                         if (actDot) {
                             if (nextState === 'writing') {
@@ -21779,156 +20713,11 @@ typewriterTarget = nextLine;
 
 
         function showBubble() {
-
-
-
-            if (bubble) { bubble.destroy(); bubble = null; }
-
-
-
-            const texts = getBubbleTextsByState(currentState);
-
-
-
-            if (currentState === 'idle') return; // idle 不显示气泡（可按需开启）
-
-
-
-
-
-
-
-            // Bubble anchor should follow current visible character:
-
-
-
-            // - syncing: syncAnimSprite
-
-
-
-            // - error state: errorBug
-
-
-
-            // - working at desk: starWorking
-
-
-
-            // - other: star
-
-
-
-            let anchorX = star.x;
-
-
-
-            let anchorY = star.y;
-
-
-
-            if (currentState === 'syncing' && syncAnimSprite && syncAnimSprite.visible) {
-
-
-
-                anchorX = syncAnimSprite.x;
-
-
-
-                anchorY = syncAnimSprite.y;
-
-
-
-            } else if (currentState === 'error' && window.errorBug && window.errorBug.visible) {
-
-
-
-                anchorX = window.errorBug.x;
-
-
-
-                anchorY = window.errorBug.y;
-
-
-
-            } else if (!star.visible && window.starWorking && window.starWorking.visible) {
-
-
-
-                anchorX = window.starWorking.x;
-
-
-
-                anchorY = window.starWorking.y;
-
-
-
-            }
-
-
-
-
-
-
-
-            const text = texts[Math.floor(Math.random() * texts.length)];
-
-
-
-            const bubbleOffsetY = (currentState === 'writing') ? 85 : 70;
-
-
-
-            const bubbleY = anchorY - bubbleOffsetY;
-
-
-
-
-
-
-
-            // 只做手机端稍微调大一点，避免发糊
-
-
-
-            const isTouch = IS_TOUCH_DEVICE;
-
-
-
-            const fontSize = isTouch ? 14 : 12;
-
-
-
-            const bg = game.add.rectangle(anchorX, bubbleY, text.length * 10 + 20, 28, 0xffffff, 0.95);
-
-
-
-            bg.setStrokeStyle(2, 0x000000);
-
-
-
-            const txt = game.add.text(anchorX, bubbleY, text, { fontFamily: 'ArkPixel, monospace', fontSize: fontSize + 'px', fill: '#000', align: 'center' }).setOrigin(0.5);
-
-
-
-            bubble = game.add.container(0, 0, [bg, txt]);
-
-
-
-            bubble.setDepth(1200); // always above desk/star
-
-
-
-            setTimeout(() => { if (bubble) { bubble.destroy(); bubble = null; } }, 3000);
-
-
-
+            if (!star?.visible || currentState === 'idle') return;
+            const detail = String(typewriterTarget || statusText?.textContent || '').trim();
+            if (!detail) return;
+            showBubbleAbove(star.x, star.y - 64, `Hermes: ${detail}`, 5000);
         }
-
-
-
-
-
-
 
         function showCatBubble() {
 
